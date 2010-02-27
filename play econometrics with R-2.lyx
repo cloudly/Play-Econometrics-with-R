@@ -1,0 +1,1799 @@
+#LyX 1.6.5 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass sweave-ctex-book
+\begin_preamble
+% please do NOT remove these lines!
+% set file encoding for WinEdt
+% !Mode:: "TeX:UTF-8"
+% set typesetting program for TeXworks
+% !TEX program = LaTeXify
+\usepackage{xcolor}
+\lstset{breaklines,basicstyle={\small\ttfamily},frame=shadowbox,columns=flexible}
+\end_preamble
+\options UTF8,winfonts
+\use_default_options false
+\begin_modules
+figs-within-sections
+theorems-ams
+theorems-chap
+\end_modules
+\language chinese-simplified
+\inputencoding utf8-plain
+\font_roman default
+\font_sans default
+\font_typewriter cmtt
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\float_placement h
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen true
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 0
+\cite_engine natbib_authoryear
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2.5cm
+\topmargin 3cm
+\rightmargin 2.5cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+在R中玩转计量
+\begin_inset Newline newline
+\end_inset
+
+Play Econometrics with R
+\end_layout
+
+\begin_layout Author
+Cloudly
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Chapter*
+序言
+\end_layout
+
+\begin_layout Standard
+在经济学分析中不可避免的要和数据打交道，而目前数据分析中最主要的工具就是计量经济学。数据源于现实，而对待数据的态度方面，我更欣赏凯恩斯的观点：从数据中寻找直觉
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+参见《凯恩斯传》
+\begin_inset CommandInset citation
+LatexCommand citep
+key "skidelsky_john_2005"
+
+\end_inset
+
+一书，国内有上海三联出版社的中文译本
+\begin_inset CommandInset citation
+LatexCommand citep
+key "__2006"
+
+\end_inset
+
+。
+\end_layout
+
+\end_inset
+
+。既不是单纯的从计量的结果中寻求观点的佐证，也不是从归纳的角度来推理因果关系。这有些和“散点图是最好的统计图形”的观点有些不谋而合。但是数据本身的特性并不是简简
+单单的可以肉眼扫视原始数据 (raw data) 就可以得出的，这个时候借助计量这个分析工具更有利于我们发现隐藏在原始数据背后的蛛丝马迹，进而寻求灵感。因此，玩
+转数据是做经济学研究必不可少的一个环节。有句话说得好：Let's get our hands dirty with data first!
+\end_layout
+
+\begin_layout Standard
+当然做计量的时候很依赖计算机软件，常用的有Eviews、Stata、SPSS、SAS等。可以看出，这和统计学中常用的软件惊人的一致。追根溯源，计量经济学本来就是
+从数理统计学中的回归分析等渐渐延伸出来的，所以其方法在统计软件中可以很容易的实现。近几年R的快速蓬勃发展使之成为了最前沿的统计软件，由于其良好的拓展性，大量的免
+费的包 (package) 的出现使得R足以胜任最潮流的统计分析工作。因此，R也足以作为一个计量分析软件来处理计量经济学的问题。
+\end_layout
+
+\begin_layout Standard
+我作为一个经济学专业的学生，机缘巧合接触到了R，并为之深深沉迷。2009年冬天在第二届中国R语言会议做了一个简单的“在计量和经济学中使用R”的报告后，感到有必要
+写一个简单的小册子，介绍各种计量经济学方法在R中的实现，也希望借此从丰富的实例数据中找寻更多的直觉。
+\end_layout
+
+\begin_layout Standard
+这个小册子主要希望能对下列使用者有所裨益：
+\end_layout
+
+\begin_layout Enumerate
+想了解经济学和计量经济学分析方法的统计学学生，尤其是有至于转到经济学方向的。
+\end_layout
+
+\begin_layout Enumerate
+想使用更先进的统计软件R来分析计量经济问题的用户，尤其是想从Stata等转到R的。
+\end_layout
+
+\begin_layout Standard
+因水平所限，这本小册子将会比较简单，着重于介绍各种方法对应的R包和实现，帮助从未使用过R的朋友们尽快的熟悉、了解和应用这款软件。学习一个软件最好的方法无非是多多
+使用，因此除了囊括大量的实例，我想不出更好的办法。这些例子有些来源于现有出版的计量经济学书籍（例如伍德里奇的计量经济学导论
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+我手头的是第三版的英文影印版，国内也有中文译本（中国人民大学出版社，
+\begin_inset CommandInset citation
+LatexCommand citeyear
+before "中国人民大学出版社"
+key "wooldridge__2007"
+
+\end_inset
+
+）。目前已有英文第四版
+\begin_inset CommandInset citation
+LatexCommand citep
+key "wooldridge_introductory_2009"
+
+\end_inset
+
+出版，国内也已经有相应的影印版。
+\end_layout
+
+\end_inset
+
+），也有些摘取于公开发表的论文。当然，这对我来说是一项浩瀚而繁重的工作，因此诸位朋友的帮助显得格外的珍贵。
+\end_layout
+
+\begin_layout Standard
+从现有的关于计量经济学和R的书籍来说，从网上能找到几本英文的，大都是免费发行并具有非常高的质量。只是国内中文的资料还颇为零散。在撰写这个小册子的过程中，我参考了
+大量已有的成果并受益匪浅，也建议英文较好的朋友们直接去阅读相关的英文材料尤其是R包自带的介绍，相信会更深入的了解R。在这里特别要说的是
+\begin_inset CommandInset href
+LatexCommand href
+name "AER"
+target "http://cran.r-project.org/web/packages/AER/"
+
+\end_inset
+
+（全称：Applied Econometrics with R）这个包，是配合同名的书发行的包。不过通过demo可以详尽的看到各个例子的R源代码，也带有丰富的数
+据集（来自格林的《计量经济分析》等有名的著作），是非常好的练手的包。
+\end_layout
+
+\begin_layout Standard
+最后需要说明的是，这本小册子是我在担任统计之都中文论坛（
+\begin_inset CommandInset href
+LatexCommand href
+target "http://bbs.cos.name"
+
+\end_inset
+
+）“经济统计版”版主的时候所撰写的。承蒙站长谢益辉兄和诸位骨干成员的大力帮助，此册子凝结了COS诸多成员的心血，换言之我只是一个代笔者而已。我们通过Git这个多
+人协作平台共同完善，也借助了Sweave包来结合R与LaTeX (LyX)。这样高效且免费的开源平台使得我在撰写过程中受益匪浅，也使得本册子避免潜在的问题得以实
+现在互联网上的免费发行。
+\end_layout
+
+\begin_layout Chapter
+熟悉R
+\end_layout
+
+\begin_layout Standard
+关于R的中文入门有很多，在这里不再一一枚举（也不是本册子的职责所在 ^_^ ）。但我也不能在这里说，诸位客官回去学完R的基本结构再来吧。一是有点枯燥，二则我个人
+窃以为学习一个软件最好的办法就是不断的拿例子来磨练，遇到问题去网上搜寻，否则看再多的入门引导也只似过眼烟云，那些命令一会儿就抛到九霄云外了。所以我把会用到的一些
+东西直接融入在下面这个简单的例子中，有一些必要的说明，希望可以快速的熟悉R。
+\end_layout
+
+\begin_layout Standard
+下面是来自Papke(1995)的一个例子。他研究的是一个退休金计划和计划的慷慨度。
+\end_layout
+
+\begin_layout Example
+在401K.DTA这个数据集中，我们关心两个变量。
+\begin_inset Formula $prate$
+\end_inset
+
+是在合法的工人中拥有活跃帐户的比例。
+\begin_inset Formula $mrate$
+\end_inset
+
+是用来衡量这个计划的匹配程度（用来代表慷慨度），即如果
+\begin_inset Formula $mrate=0.5$
+\end_inset
+
+，则表示工人付出了
+\begin_inset Formula $\$10$
+\end_inset
+
+，其工作单位相应的付出了
+\begin_inset Formula $\$5$
+\end_inset
+
+。接下来，我们需要面对这么几个问题：
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+找到
+\begin_inset Formula $prate$
+\end_inset
+
+和
+\begin_inset Formula $mrate$
+\end_inset
+
+这两个变量的平均值。
+\end_layout
+
+\begin_layout Enumerate
+对下面这个方程进行最简单的OLS回归：
+\begin_inset Formula $\hat{prate}=\hat{\beta_{0}}+\hat{\beta_{1}}mrate$
+\end_inset
+
+，并报告
+\begin_inset Formula $R^{2}$
+\end_inset
+
+。
+\end_layout
+
+\begin_layout Enumerate
+找到当
+\begin_inset Formula $mrate=3.5$
+\end_inset
+
+的时候，
+\begin_inset Formula $prate$
+\end_inset
+
+的预测值。
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+做计量分析，离不开的就是数据。所以我们第一步先来导入需要的数据。
+\end_layout
+
+\begin_layout Section
+数据的导入
+\end_layout
+
+\begin_layout Standard
+获取数据有很多办法，在 R 里面通过Foreign包可以读/写Minitab, S, SAS, SPSS, Stata, Systat等等格式的数据。当然，R本
+身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。这里我采取的是读取Stata的数据（DTA格式）。
+\end_layout
+
+\begin_layout Standard
+当然，我们首先要加载Foreign包，可以在R中直接点击“加载程序包”，也可以手动输入：
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+library(foreign, pos=4)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+然后就可以使用read.dta()命令：
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\small\ttfamily},language=R"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+K <- read.dta("D:/data/401K.DTA",convert.dates=TRUE, convert.factors=TRUE,missing.typ
+e=TRUE,convert.underscore=TRUE, warn.missing.labels=TRUE)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\color red
+K
+\color inherit
+ 是我们赋值后在 R 里使用的数据表的名字。因为R是基于对象 (objection) 的，所以我们需要在读取数据的时候指定数据存储的对象。同样的，后面会不断的用
+到对象这一概念。
+\end_layout
+
+\begin_layout Standard
+如果觉得这些东西记起来比较麻烦，一个个字母的打起来也挺麻烦的
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+当然，对于习惯命令行的部分人来说，Tab键来补全命令也是不错的选择。只是我实在是不喜欢这东西，图形化界面多直观啊～
+\end_layout
+
+\end_inset
+
+，怎么办？好在有个包叫做Rcmdr。加载这个包之后就会出现图形界面，可以通过点击的方式来操作。
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+在R Commander中导入数据
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 2-1-1.JPG
+	width 450pt
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+数据分析
+\end_layout
+
+\begin_layout Subsection
+平均值
+\end_layout
+
+\begin_layout Standard
+我们可以使用 summary() 来获取该数据表的摘要信息，里面包含平均值、最大最小值 、中位数等。不过我们这里只关心两个变量
+\begin_inset Formula $prate$
+\end_inset
+
+和
+\begin_inset Formula $mrate$
+\end_inset
+
+，所以也可以使用numSummary()（需加载abind包）。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+load("D:/data/401K.rda")
+\begin_inset Newline newline
+\end_inset
+
+summary(K)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+可以从上表中读出
+\begin_inset Formula $prate$
+\end_inset
+
+和
+\begin_inset Formula $mrate$
+\end_inset
+
+的平均值。
+\end_layout
+
+\begin_layout Standard
+sumSummary()也可以通过R Commander的图形界面实现。
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+R Commander里调用sumSummary()分析数据
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 2-1-2.JPG
+	width 300pt
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+线性回归（普通最小二乘法，OLS）
+\end_layout
+
+\begin_layout Standard
+在R里面进行线性回归还是比较容易的，直接使用lm()就可以。值得注意的是，由于R的面向对象特性，我们需要不断的赋值。对于赋值，有三种基本方法，分别可以用“->”
+“<-”“=”实现，其中前两个是有方向的赋值，所以一般来说更为常用。比如我们可以对变量
+\begin_inset Formula $mrate$
+\end_inset
+
+和
+\begin_inset Formula $prate$
+\end_inset
+
+求乘积，并将结果赋予一个新变量
+\begin_inset Formula $mp$
+\end_inset
+
+，则只需写成
+\begin_inset Formula $mp<-mrate*prate$
+\end_inset
+
+。
+\end_layout
+
+\begin_layout Standard
+因此在做回归的时候写成：
+\end_layout
+
+\begin_layout Standard
+\align center
+
+\family typewriter
+RegModel<- lm(prate~mrate, data=K)
+\end_layout
+
+\begin_layout Standard
+这样RegModel里面就存储了这次回归所得的数据。
+\end_layout
+
+\begin_layout Standard
+我们还可以采用
+\family typewriter
+attach()
+\family default
+命令，这样就不用每次都指定回归向量所在的数据集了，直接写
+\family typewriter
+RegModel<- lm(prate~mrate)
+\family default
+，然后就可以用
+\family typewriter
+summary(RegModel)
+\family default
+来看回归的结果了。
+\end_layout
+
+\begin_layout Scrap
+<<echo=FALSE>>=
+\begin_inset Newline newline
+\end_inset
+
+RegModel<- lm(prate~mrate, data=K)
+\begin_inset Newline newline
+\end_inset
+
+summary(RegModel)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+可以看出估计后的回归方程应为：
+\begin_inset Formula \[
+\hat{prate}=83.0755+5.8611mrate\]
+
+\end_inset
+
+其中
+\begin_inset Formula $R^{2}$
+\end_inset
+
+为0.0747。呃，这个
+\begin_inset Formula $R^{2}$
+\end_inset
+
+为什么这么小？看看散点图就知道了。
+\end_layout
+
+\begin_layout Section
+作回归图像
+\end_layout
+
+\begin_layout Standard
+我们可以直接用最简单的plot()命令作图，用法如下：
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+plot (mrate,prate) 
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+abline(RegModel,col="red")
+\end_layout
+
+\begin_layout Standard
+第二行命令是添加了那条回归拟合线。
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+散点图和回归拟合线
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 2-1-4.eps
+	width 50page%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+可见这个图本来就很散，也难怪线性拟合效果这么差了。
+\end_layout
+
+\begin_layout Section
+点预测
+\end_layout
+
+\begin_layout Standard
+最后，就是依赖估计方程做预测了。这里需要的是做一个点预测。R里面需要依据另一个数据集来预测，而且这个数据集中必须含有
+\begin_inset Formula $mrate$
+\end_inset
+
+这个变量。新建一个数据集并赋值的办法有许多，最简单的就是直接赋值，方法如下：
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+mrate_new <- data.frame(mrate = 3.5)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+或者更简单的，也可利用数据编辑框来手动输入：
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+mrate_new <- edit(as.data.frame(NULL)) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+之后再利用predict()就可得到所需的预测值了。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+mrate_new <- data.frame(mrate = 3.5)
+\begin_inset Newline newline
+\end_inset
+
+predict(RegModel,mrate_new)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Section
+多元线性回归
+\end_layout
+
+\begin_layout Standard
+当然现实中我们很少做一元的线性回归，解释变量往往是两个或者更多。这可以依旧用上面的lm()。如下面这个例子，研究的是出勤率和ACT测试成绩、学习成绩之间的关系。
+\end_layout
+
+\begin_layout Example
+在ATTEND.DTA这个数据集中，
+\begin_inset Formula $atndrte$
+\end_inset
+
+是出勤率（采用百分比表示），
+\begin_inset Formula $ACT$
+\end_inset
+
+为ACT测试的成绩，
+\begin_inset Formula $priGPA$
+\end_inset
+
+是之前的学习平均分。我们需要估计如下的方程：
+\end_layout
+
+\begin_layout Example
+\begin_inset Formula \[
+atndrte=\beta_{0}+\beta_{1}priGPA+\beta_{2}ACT+u\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+很显然，这里我们和上面的例子一样，代码和结果如下：
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+library(foreign, pos=4)
+\begin_inset Newline newline
+\end_inset
+
+Attend <- read.dta("D:/data/attend.dta", convert.dates=TRUE, convert.factors=TRUE,
+ missing.type=FALSE, convert.underscore=TRUE, warn.missing.labels=TRUE)
+\begin_inset Newline newline
+\end_inset
+
+attach(Attend)
+\begin_inset Newline newline
+\end_inset
+
+Reg2<-lm(atndrte~priGPA+ACT) 
+\begin_inset Newline newline
+\end_inset
+
+summary(Reg2)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Section
+保存和编辑代码
+\end_layout
+
+\begin_layout Standard
+虽然我们有R Commander创造的图形界面，但是每次都指定参数也是件很烦的事儿。因此养成一个好习惯，保存好上次运行的代码，下次直接在R里面调用就可以了，有什
+么修改的也只需要稍作调整即可。R Commander里面本身就有File -> Save Script，可以把Script Window里面所有代码存储为***.
+R的格式，从而方便下次调用。Script Window里面也是可以直接编辑代码的，删掉一些自己不想要的，调整个别的参数都是很方便的。
+\end_layout
+
+\begin_layout Standard
+需要说明的是，.R文件就是告诉R应该怎么运行的文件，所以可以直接用文本编辑器软件打开并编辑。现在NotePad++, UltraEdit等等文本编辑软件都有支持R
+的插件，可以方便的把代码传送到R里面调用。R的基本界面中也是可以直接打开.R的脚本文件运行的。
+\end_layout
+
+\begin_layout Section
+寻求帮助
+\end_layout
+
+\begin_layout Standard
+有了上述的例子，相信大家已经基本熟悉R了。那么遇到问题怎么办呢？比如summary()这个函数，对于不同的模型会有不同的用法，那么我们就需要去查看原始的帮助。在
+R中，最简单的办法就算再想要查看的命令前加一个“?”号。例如
+\family typewriter
+?summary()
+\family default
+之后就会蹦出来帮助页面了。这是查看某一包作者撰写原始文档的最快捷方式。此外也可以用两个连续的问号“？？”来搜索所有相关的资料。
+\end_layout
+
+\begin_layout Standard
+但是如果根本不知道有哪些命令，则需要去找包内原始的资料。可以直接在Google等搜索引擎里面搜寻，也可以查看R包自带的说明，亦可以参照各种书籍。总之方法很多，多
+多利用互联网是最好的办法。国内最佳的地方自然是
+\begin_inset CommandInset href
+LatexCommand href
+name "统计之都论坛的R版"
+target "http://bbs.cos.name"
+
+\end_inset
+
+，里面有丰富的资料和资深的UseR为大家解惑。
+\end_layout
+
+\begin_layout Chapter
+从截面数据分析说起
+\end_layout
+
+\begin_layout Standard
+上面简单的说了一下多元回归，下面则是一些我们在回归分析中常用分析的实现。
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+参数检验
+\end_layout
+
+\begin_layout Standard
+得到一个回归方程后，关心的第一件事就是系数和方程整体的显著性，分别由t检验和F检验实现。来看下面这个有关法学院的例子。
+\end_layout
+
+\begin_layout Example
+在LAWSCH85.DTA这个数据集中，法学院应届生薪水的中位数由下面的方程决定：
+\begin_inset Formula \begin{multline*}
+log(salary)=\beta_{0}+\beta_{1}LAST+\beta_{2}GPA+\beta_{3}log(libvol)+\beta_{4}log(cost)+\beta_{5}rank+u\end{multline*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Example
+其中
+\begin_inset Formula $LSAT$
+\end_inset
+
+是班级里LSAT成绩中位数，
+\begin_inset Formula $GPA$
+\end_inset
+
+是班级学习成绩的中位数，
+\begin_inset Formula $libvol$
+\end_inset
+
+是法学院图书馆藏书卷数，
+\begin_inset Formula $cost$
+\end_inset
+
+是在法学院的年消费额，
+\begin_inset Formula $rank$
+\end_inset
+
+是法学院的排名（正序）。
+\end_layout
+
+\begin_layout Standard
+接下来我们估计这个方程。
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank,
+ data=LAW)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+很容易得到回归结果如下：
+\end_layout
+
+\begin_layout Scrap
+<<echo=FALSE>>=
+\begin_inset Newline newline
+\end_inset
+
+LAW <- read.dta("D:/data/LAWSCH85.DTA", convert.dates=TRUE, convert.factors=FALSE,
+ missing.type=FALSE, convert.underscore=TRUE, warn.missing.labels=TRUE)
+\begin_inset Newline newline
+\end_inset
+
+LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank,
+ data=LAW)
+\begin_inset Newline newline
+\end_inset
+
+summary(LAW_Result)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Subsection
+t检验
+\end_layout
+
+\begin_layout Standard
+在回归结果中已经报告了各变量的t统计值，从而可知：
+\begin_inset Formula $rank$
+\end_inset
+
+的估计值很显著（通过0.1%显著性水平检验）。而
+\begin_inset Formula $GPA$
+\end_inset
+
+和
+\begin_inset Formula $(log)libvol$
+\end_inset
+
+则通过了1%显著性水平检验。
+\end_layout
+
+\begin_layout Standard
+而变量
+\begin_inset Formula $LSAT$
+\end_inset
+
+系数估计值不显著。
+\end_layout
+
+\begin_layout Subsection
+F检验
+\end_layout
+
+\begin_layout Standard
+考虑到新生入学的时候只有
+\begin_inset Formula $GPA$
+\end_inset
+
+和
+\begin_inset Formula $LSAT$
+\end_inset
+
+两个变量可以观测，所以接下来我们进行变量
+\begin_inset Formula $GPA$
+\end_inset
+
+和
+\begin_inset Formula $LSAT$
+\end_inset
+
+的联合检验即F检验。该检验属于线性假设检验，在R Commander下可以在“Models -> Hypothesis Tests ->Linear
+ hypothesis”里面通过图形化界面完成。
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+F检验图形化界面
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 2-2-1.JPG
+	width 60page%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+其中设置为“2”行，而后分别在LAST和GPA输入1，保持右侧为0。相当于检验假设
+\begin_inset Formula \[
+H_{0}:\;\beta_{1}=\beta_{2}=0\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+可得到输出结果如下：
+\end_layout
+
+\begin_layout Scrap
+<<echo=FALSE>>=
+\begin_inset Newline newline
+\end_inset
+
+library("car")
+\begin_inset Newline newline
+\end_inset
+
+.Hypothesis <- matrix(c(0,1,0,0,0,0,0,0,1,0,0,0), 2, 6, byrow=TRUE) 
+\begin_inset Newline newline
+\end_inset
+
+.RHS <- c(0,0) 
+\begin_inset Newline newline
+\end_inset
+
+linear.hypothesis(LAW_Result, .Hypothesis, rhs=.RHS) 
+\begin_inset Newline newline
+\end_inset
+
+remove(.Hypothesis, .RHS)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+从上面结果可知，
+\begin_inset Formula $F=9.9517$
+\end_inset
+
+且通过了0.1%显著性水平检验，即变量
+\begin_inset Formula $LSAT$
+\end_inset
+
+和
+\begin_inset Formula $GPA$
+\end_inset
+
+联合显著。
+\end_layout
+
+\begin_layout Standard
+此外还可以分别加入
+\begin_inset Formula $clsize$
+\end_inset
+
+（班级容量）和
+\begin_inset Formula $faculty$
+\end_inset
+
+（教师规模）来进行回归，代码如下：
+\end_layout
+
+\begin_layout Standard
+由回归结果，这两个变量的系数均不显著，且方程F统计量有所下降（调整后的
+\begin_inset Formula $R^{2}$
+\end_inset
+
+变动不大），故不用加入到方程中
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+关于模型变量选择的问题，将在后面另行论述，这里只做简单的分析
+\end_layout
+
+\end_inset
+
+。
+\end_layout
+
+\begin_layout Section
+置信区间
+\end_layout
+
+\begin_layout Standard
+回归分析里还常用的一项分析就是得到某一显著性水平下的置信区间。
+\color red
+[未完成]
+\end_layout
+
+\begin_layout Section
+虚拟变量
+\end_layout
+
+\begin_layout Subsection
+按性质分组
+\end_layout
+
+\begin_layout Standard
+比较简单的例子就是已经含有分组变量的数据，比如变量
+\begin_inset Formula $gender$
+\end_inset
+
+有两个值male, female, 那么我们只需把它们变成factor形式就可以了。如我们可以把法学院例子中的变量
+\begin_inset Formula $north$
+\end_inset
+
+进行变化
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+其实这里不用这么麻烦也可以，因为north变量本身的赋值只有0和1，可以直接进行回归。在这里只是用这个例子来说明factor()函数的调用形式而已。
+\end_layout
+
+\end_inset
+
+：
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+LAW$north_true <- factor(LAW$north, labels=c('others','north')) 
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+可以这样做的原因是：R在调用lm()函数的时候会自动把factor类型的变量作为虚拟变量进行回归。
+\end_layout
+
+\begin_layout Subsection
+按数量值分组
+\end_layout
+
+\begin_layout Standard
+依旧采用法学院的例子。很明显在上面的分析中我们把各个学院排名直接当作一个可以“测距”的变量
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+其实它只是一个排序而已，并不代表实质的差距。
+\end_layout
+
+\end_inset
+
+来使用了，这可能会引起一些争议。因此，我们可以采取另一种模式，即引入虚拟变量，把学校分为六组：top 10，11-25名，26-40名，41-60名，61-10
+0名，100名开外。引入五个虚拟变量
+\begin_inset Formula $top10$
+\end_inset
+
+, 
+\begin_inset Formula $r11\_25$
+\end_inset
+
+, 
+\begin_inset Formula $r26\_40$
+\end_inset
+
+, 
+\begin_inset Formula $r41\_60$
+\end_inset
+
+, 
+\begin_inset Formula $r61\_100$
+\end_inset
+
+。
+\end_layout
+
+\begin_layout Standard
+我想你不会手动的把所有的学校都赋一个虚拟变量值吧？在R里面，我们需要先通过recode()来依照分组创建一个新的factor形式的变量
+\begin_inset Formula $rank\_f$
+\end_inset
+
+，然后再进行回归。这样我们就不需要在原来的数据库里面新增加五个变量并赋逻辑值了。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+LAW$rank_f <- recode(LAW$rank, '1:10="top10"; 11:25="r11_25"; 26:40="r26_40";
+    41:60="r41_60";  61:100="r61_100"; else="r101_"; ', as.factor.result=TRUE)
+\begin_inset Newline newline
+\end_inset
+
+LAW_Result2 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank_f,
+ data=LAW)
+\begin_inset Newline newline
+\end_inset
+
+summary(LAW_Result2)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Standard
+此外，我们可以通过R Commander里面，在“Data->Recode Variables
+\begin_inset Quotes erd
+\end_inset
+
+的方框里逐行输入。
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Recode Varibles图形化界面
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 2-3-1.JPG
+	width 345pt
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+记得指定变量名！
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+交叉分组
+\end_layout
+
+\begin_layout Standard
+我不知道这样叫是不是足够确切，在微观计量里面我们会经常用到两个变量相乘的回归项，比如
+\begin_inset Quotes erd
+\end_inset
+
+
+\begin_inset Formula $female\cdot single$
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+，即单身女士。相比而言这样的虚拟变量并不需要特别的处理，在回归方程里面直接写成相乘的形式即可。注意此时不需要再写
+\begin_inset Formula $female$
+\end_inset
+
+和
+\begin_inset Formula $single$
+\end_inset
+
+变量，lm()会默认加入这两个变量。例如，在法学院的例子中，我们可以对
+\begin_inset Formula $top10$
+\end_inset
+
+和
+\begin_inset Formula $west$
+\end_inset
+
+两个变量进行相乘回归（这里
+\begin_inset Formula $top10$
+\end_inset
+
+变量来源于数据库本身自带的）。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+LAW_Result3 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + top10*wes
+t, data=LAW)
+\begin_inset Newline newline
+\end_inset
+
+summary(LAW_Result3)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Standard
+当然也可以使用factor变量和其他虚拟变量相乘进行回归，反馈的结果中包含所有的相乘项。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+LAW_Result4 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank_f*we
+st, data=LAW)
+\begin_inset Newline newline
+\end_inset
+
+LAW_Result4
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Section
+异方差和他的朋友们
+\end_layout
+
+\begin_layout Standard
+有件很没办法的事儿，那就是要想让OLS回归出来的结果最佳，必须要符合那五条经典假设（尤其是小样本下）。但是事实中的数据那里会那么完美呢？首当其冲的问题就是异方差
+。
+\end_layout
+
+\begin_layout Subsection
+异方差检验
+\end_layout
+
+\begin_layout Standard
+异方差检验方法很多，这里给出两种常用的：BP检验 (Breusch-Pagan Test)、怀特检验 (White test for heteroskedast
+icity)。
+\end_layout
+
+\begin_layout Standard
+下面给出一个关于房价的例子
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+房价这个问题现在貌似很热啊，那么来看看美国房价的历史也不错。
+\end_layout
+
+\end_inset
+
+。
+\end_layout
+
+\begin_layout Example
+在Hprice1.dta这个数据集中，有
+\begin_inset Formula $price$
+\end_inset
+
+（房价，按套计算）、
+\begin_inset Formula $lotsize$
+\end_inset
+
+（地皮面积
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+要知道人家住的都是小别墅啊，自然要先有地、后建房，卖房子也都是一套一套的卖。
+\end_layout
+
+\end_inset
+
+）、
+\begin_inset Formula $sqrft$
+\end_inset
+
+（房屋面积）、
+\begin_inset Formula $bdrms$
+\end_inset
+
+（卧室数量）。接下来我们估计这个方程：
+\begin_inset Formula \[
+\hat{price}=\hat{\beta_{0}}+\hat{\beta_{1}}lotsize+\hat{\beta_{2}}sqrft+\hat{\beta_{3}}bdrms\]
+
+\end_inset
+
+使用OLS估计结果如下：
+\end_layout
+
+\begin_layout Scrap
+<<echo=FALSE>>=
+\begin_inset Newline newline
+\end_inset
+
+HPrice <- read.dta("D:/data/hprice1.dta", convert.dates=TRUE, convert.factors=TRUE,
+ missing.type=FALSE,    convert.underscore=TRUE, warn.missing.labels=TRUE)
+\begin_inset Newline newline
+\end_inset
+
+Hprice_Result <- lm(price~bdrms+lotsize+sqrft, data=HPrice)
+\begin_inset Newline newline
+\end_inset
+
+Hprice_Result
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Subsubsection
+BP检验 (Breusch-Pagan Test)
+\end_layout
+
+\begin_layout Standard
+下面我们进行BP检验来测定是否有异方差。进行BP检验需要加载包lmtest，而后者需要加载包zoo。调用BP检验最简单的方法就是直接写回归结果变量。更多参数
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+关于该命令各种参数设置请使用?bptest来查看帮助文档。
+\end_layout
+
+\end_inset
+
+可以通过R Commander里面的图形化界面设定，位于
+\begin_inset Quotes erd
+\end_inset
+
+Models > Numberical diagnostics > Breusch-Pagan Test for heteroskedasticity
+\begin_inset Quotes erd
+\end_inset
+
+。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+library("lmtest")
+\begin_inset Newline newline
+\end_inset
+
+bptest(Hprice_Result)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+由结果来看，存在异方差。由于对数形式是消除异方差（尤其针对价格数据）的常用方法，因此我们再对对数形式进行回归。
+\begin_inset Formula \[
+\hat{log(price)}=\hat{\beta_{0}}+\hat{\beta_{1}}log(lotsize)+\hat{\beta_{2}}log(sqrft)+\hat{\beta_{3}}bdrms\]
+
+\end_inset
+
+得到回归结果如下：
+\end_layout
+
+\begin_layout Scrap
+<<echo=FALSE>>=
+\begin_inset Newline newline
+\end_inset
+
+Hprice_Result2 <- lm(log(price)~bdrms+log(lotsize)+log(sqrft), data=HPrice)
+\begin_inset Newline newline
+\end_inset
+
+Hprice_Result2
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Standard
+此时再进行异方差检验。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+bptest(Hprice_Result2)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+因此可以接受原假设，已经不存在异方差。
+\end_layout
+
+\begin_layout Standard
+此外还有一个bptest()非常接近的ncv.test()，需加载car包。我们进行一下对比。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+ncv.test(Hprice_Result2)
+\begin_inset Newline newline
+\end_inset
+
+bptest(Hprice_Result2,studentize=FALSE,varformula = ~fitted.values(Hprice_Result2
+), data=HPrice)
+\begin_inset Newline newline
+\end_inset
+
+@
+\end_layout
+
+\begin_layout Standard
+可以看到ncv.test相当于把bptest()里面参数studentize设为FLASE，且进行固定值的检验。事实上，bptest()默认该项为TRUE，在TR
+UE时会采用Koenker (1981)的学生化检验算法，也是目前最广为接受的算法。
+\end_layout
+
+\begin_layout Subsubsection
+怀特检验 (White test for heteroskedasticity)
+\end_layout
+
+\begin_layout Standard
+还是上面这个例子，我们改用怀特检验。其实，我们可以把怀特检验看作广义上的BP检验的一种特殊形式，因此可以通过在bptest()里面赋予更多的参数来实现，即加入各
+个变量平方和交叉相乘的项。
+\end_layout
+
+\begin_layout Standard
+比如回归为
+\family typewriter
+fm <- lm(y ~ x + z, data = foo)
+\family default
+，那么则应写成
+\family typewriter
+bptest(fm, ~ x * z + I(x^2) + I(z^2), data = foo)
+\family default
+ 。因为这里写出来较麻烦，所以不再举例。
+\end_layout
+
+\begin_layout Standard
+另，也可以通过sandwich这个专门对付“三明治”的包来实现怀特检验。
+\end_layout
+
+\begin_layout Section
+加权最小二乘估计
+\end_layout
+
+\begin_layout Section
+最大似然估计
+\end_layout
+
+\begin_layout Section
+代理变量
+\end_layout
+
+\begin_layout Section
+序数模型
+\end_layout
+
+\begin_layout Subsection
+Probit
+\end_layout
+
+\begin_layout Subsection
+logit
+\end_layout
+
+\begin_layout Subsection
+Togit
+\end_layout
+
+\begin_layout Chapter
+与时间赛跑
+\end_layout
+
+\begin_layout Standard
+除了截面数据分析，另一项很重要的分析就是时间序列分析。由于时间序列分析目标之一就是用来预测，所以我们的工作实质上就是与时间赛跑，把未来的不确定性变为现在能预测的
+确定性的数值。
+\end_layout
+
+\begin_layout Section
+AR / MA
+\end_layout
+
+\begin_layout Section
+ARMA / ARIMA
+\end_layout
+
+\begin_layout Section
+向量自回归 (VAR)
+\end_layout
+
+\begin_layout Section
+误差修正模型 (ECM)
+\end_layout
+
+\begin_layout Section
+单位根检验 
+\end_layout
+
+\begin_layout Subsection
+DF 检验 (Dickey-Fuller test) 
+\end_layout
+
+\begin_layout Subsection
+ADF 检验 (Augmented Dickey-Fuller)
+\end_layout
+
+\begin_layout Subsection
+PP 检验 (Phillips-Perron)
+\end_layout
+
+\begin_layout Subsection
+DF-GLS 检验
+\end_layout
+
+\begin_layout Subsection
+KPSS 平稳性检验 
+\end_layout
+
+\begin_layout Section
+协整
+\end_layout
+
+\begin_layout Subsection
+VECM
+\end_layout
+
+\begin_layout Chapter
+面板数据分析
+\end_layout
+
+\begin_layout Section
+固定效应模型
+\end_layout
+
+\begin_layout Section
+随机效应模型
+\end_layout
+
+\begin_layout Section
+Hausman检验
+\end_layout
+
+\begin_layout Section
+动态面板分析
+\end_layout
+
+\begin_layout Standard
+GMM估计
+\end_layout
+
+\begin_layout Standard
+面板数据自回归模型
+\end_layout
+
+\begin_layout Section
+第一代面板单位根检验
+\end_layout
+
+\begin_layout Subsection
+LLC 检验 
+\end_layout
+
+\begin_layout Subsection
+IPS 检验 
+\end_layout
+
+\begin_layout Subsection
+Breitung 检验
+\end_layout
+
+\begin_layout Subsection
+Choi / ADF-Fisher / PP-Fisher检验
+\end_layout
+
+\begin_layout Subsection
+Hadri 检验 
+\end_layout
+
+\begin_layout Section
+第二代面板单位根检验
+\end_layout
+
+\begin_layout Subsection
+Bai and NG test
+\end_layout
+
+\begin_layout Subsection
+Phillips and Sul / Moon and Perron tests
+\end_layout
+
+\begin_layout Subsection
+Choi tests (2002)
+\end_layout
+
+\begin_layout Subsection
+Pesaran tests
+\end_layout
+
+\begin_layout Subsection
+O’Connell tests
+\end_layout
+
+\begin_layout Subsection
+Chang tests
+\end_layout
+
+\begin_layout Section
+面板数据协整
+\end_layout
+
+\begin_layout Chapter
+还有那些……
+\end_layout
+
+\begin_layout Section
+联立方程模型和工具变量
+\end_layout
+
+\begin_layout Subsection
+两阶段最小二乘法(2SLS)
+\end_layout
+
+\begin_layout Section
+3SLS
+\end_layout
+
+\begin_layout Section
+分位数回归
+\end_layout
+
+\begin_layout Section
+似不相关回归
+\end_layout
+
+\begin_layout Section
+非参数与半参数估计
+\end_layout
+
+\begin_layout Section
+贝叶斯估计
+\end_layout
+
+\begin_layout Chapter
+图形绘制
+\end_layout
+
+\begin_layout Chapter
+R编程
+\end_layout
+
+\begin_layout Chapter
+R与LaTeX整合
+\end_layout
+
+\begin_layout Standard
+这一章或许与本册子的主题稍稍偏离，但之所以加进来是因为在撰写论文的时候会不可避免的用到。R和LaTeX是天生的情人，最佳伴侣，用这两者合起来撰写论文那真的可谓如
+鱼得水（如果再加上Zotero来管理文献，只能谓之“暴强”-_-||）。当然这里我就不介绍LaTeX怎么用了，这里需要说的是Sweave，用来连接R和LaTeX
+的桥梁。
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "R2"
+options "authordate1"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
