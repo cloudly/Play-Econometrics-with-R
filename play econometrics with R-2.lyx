@@ -292,7 +292,15 @@ target "http://bbs.cos.name"
 
 \begin_layout Standard
 获取数据有很多办法，在 R 里面通过Foreign包可以读/写Minitab, S, SAS, SPSS, Stata, Systat等等格式的数据。当然，R本
-身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。这里我采取的是读取Stata的数据（DTA格式）。
+身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。此外，对于R包里面自带的数据集，我们可以直接用data(
+\begin_inset Quotes eld
+\end_inset
+
+name
+\begin_inset Quotes erd
+\end_inset
+
+)来加载数据集。这里我采取的是读取Stata的数据（DTA格式）。
 \end_layout
 
 \begin_layout Standard
@@ -398,6 +406,10 @@ status open
 \end_layout
 
 \begin_layout Standard
+在介绍关于平均值的函数前，先介绍另一个有用的函数names()。这个函数的作用是显示数据表中所有的变量名称。用法和效果见后面的代码例子。
+\end_layout
+
+\begin_layout Standard
 我们可以使用 summary() 来获取该数据表的摘要信息，里面包含平均值、最大最小值 、中位数等。不过我们这里只关心两个变量
 \begin_inset Formula $prate$
 \end_inset
@@ -415,6 +427,10 @@ status open
 \end_inset
 
 load("D:/data/401K.rda")
+\begin_inset Newline newline
+\end_inset
+
+names(K)
 \begin_inset Newline newline
 \end_inset
 
@@ -648,18 +664,9 @@ status open
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
 
-\begin_layout Plain Layout
-
+\family typewriter
 mrate_new <- data.frame(mrate = 3.5)
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -667,18 +674,9 @@ mrate_new <- data.frame(mrate = 3.5)
 \end_layout
 
 \begin_layout Standard
-\begin_inset listings
-inline false
-status open
 
-\begin_layout Plain Layout
-
-mrate_new <- edit(as.data.frame(NULL)) 
-\end_layout
-
-\end_inset
-
-
+\family typewriter
+mrate_new <- edit(as.data.frame(NULL))
 \end_layout
 
 \begin_layout Standard
@@ -1337,6 +1335,43 @@ LAW_Result4
 @ 
 \end_layout
 
+\begin_layout Subsection
+指定参照组
+\end_layout
+
+\begin_layout Standard
+当R处理factor形式的数据的时候，默认以数据中的第一个层次 (level) 作为参照组。比如上例中，我们想把
+\begin_inset Formula $top10$
+\end_inset
+
+这一组作为参照组，那么则需要使用relevel()命令。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+attach(LAW)
+\begin_inset Newline newline
+\end_inset
+
+rank_f2 <- relevel(rank_f, ref="top10")
+\begin_inset Newline newline
+\end_inset
+
+LAW_Result5 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank_f2,
+ data=LAW)
+\begin_inset Newline newline
+\end_inset
+
+summary(LAW_Result5)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
 \begin_layout Section
 异方差和他的朋友们
 \end_layout
@@ -1566,11 +1601,281 @@ bptest(fm, ~ x * z + I(x^2) + I(z^2), data = foo)
 \end_layout
 
 \begin_layout Section
-加权最小二乘估计
+加权最小二乘估计 (WLS)
+\end_layout
+
+\begin_layout Subsection
+加权形式已知
+\end_layout
+
+\begin_layout Standard
+有些情况下，我们可以写出加权的形式，比如扰动项服从
+\begin_inset Formula $Var(u_{i}|inc)=\sigma^{2}inc$
+\end_inset
+
+，那么可以直接在lm()函数里附加一项weight来实现。
+\end_layout
+
+\begin_layout Example
+我们来看一个跟人们的储蓄行为有关的例子，这是宏观经济学中和劳动经济学非常关注的话题。SAVING.DTA 数据集中有如下几个变量：年储蓄额 (
+\begin_inset Formula $sav$
+\end_inset
+
+)、年收入 (
+\begin_inset Formula $inc$
+\end_inset
+
+)、家庭成员数 (
+\begin_inset Formula $size$
+\end_inset
+
+)、户主受教育年限 (
+\begin_inset Formula $educ$
+\end_inset
+
+)、户主年龄 (
+\begin_inset Formula $age$
+\end_inset
+
+)、户主是否为黑人 (
+\begin_inset Formula $black$
+\end_inset
+
+)。然后我们估计如下的加权方程（在这里加权为
+\begin_inset Formula $/\sqrt{inc}$
+\end_inset
+
+，但是在调用lm()函数的时候权重指的是扰动项的形式）：
+\begin_inset Formula \[
+sav/\sqrt{inc}=\beta_{0}(1/\sqrt{inc})+\beta_{1}\sqrt{inc}+\beta_{2}size/\sqrt{inc}+\beta_{3}educ/\sqrt{inc}+\beta_{4}age/\sqrt{inc}+\beta_{5}black/\sqrt{inc}+u^{*}\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+SAVING <- read.dta("D:/data/SAVING.DTA", convert.dates=TRUE, convert.factors=FALSE,
+ missing.type=FALSE,    convert.underscore=TRUE, warn.missing.labels=FALSE)
+ 
+\begin_inset Newline newline
+\end_inset
+
+SAVING_wls <- lm(sav~inc+size+educ+age+black,data=SAVING,weights = 1/inc)
+\begin_inset Newline newline
+\end_inset
+
+summary(SAVING_wls)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Standard
+这个时候再进行异方差的BP检验，可知已经不能拒绝原假设。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+bptest(SAVING_wls)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Subsection
+可行广义最小二乘法 (Feasible GLS, FGLS)
+\end_layout
+
+\begin_layout Standard
+在大多数情况下我们并不能确切的知道扰动项方差的形式，这个时候就需要先估计异方差矩阵，而后再进行最小二乘估计。
+\end_layout
+
+\begin_layout Example
+下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (
+\begin_inset Formula $cigs$
+\end_inset
+
+)、年收入 (
+\begin_inset Formula $income$
+\end_inset
+
+)、该州烟的价格 (
+\begin_inset Formula $cigpric$
+\end_inset
+
+)、受访者年龄 (
+\begin_inset Formula $age$
+\end_inset
+
+)、受教育程度 (
+\begin_inset Formula $educ$
+\end_inset
+
+)、该州有无饭店内吸烟禁令 (
+\begin_inset Formula $restaurn$
+\end_inset
+
+)。而后我们需要研究决定烟草需求的因素，即
+\begin_inset Formula $cigs$
+\end_inset
+
+为被解释变量，其他为解释变量。
+\end_layout
+
+\begin_layout Itemize
+使用FGLS的第一步是进行OLS估计，得到残差项的估计值
+\begin_inset Formula $\hat{u}$
+\end_inset
+
+。对于价格数据，我们取其对数形式。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+load("d:/data/SMOKE.rda")
+\begin_inset Newline newline
+\end_inset
+
+SMOKE_OLS <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn,
+ data=SMOKE)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Itemize
+第二步则是使用
+\begin_inset Formula $log(\hat{u}^{2})$
+\end_inset
+
+对其余变量进行回归。对于线性回归lm()所得结果，residuals()存储的是残差项。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+SMOKE_auxreg <- lm(log(residuals(SMOKE_OLS)^2)~log(income)+log(cigpric)+educ+age
++I(age^2)+restaurn, data=SMOKE)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Itemize
+第三步则是进行最后的加权回归。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+SMOKE_FGLS <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn,
+ data=SMOKE, weights=1/exp(fitted(SMOKE_auxreg))) 
+\begin_inset Newline newline
+\end_inset
+
+summary(SMOKE_FGLS)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Itemize
+如果需要的话，可以进行多次的FGLS估计。这里可以使用R的循环方式while。
+\end_layout
+
+\begin_layout Scrap
+<<echo=TRUE>>=
+\begin_inset Newline newline
+\end_inset
+
+gamma2i <- coef(SMOKE_auxreg)[2]
+\begin_inset Newline newline
+\end_inset
+
+gamma2 <- 0
+\begin_inset Newline newline
+\end_inset
+
+while(abs((gamma2i - gamma2)/gamma2) > 1e-7){ 
+\begin_inset Newline newline
+\end_inset
+
+ gamma2 <- gamma2i
+\begin_inset Newline newline
+\end_inset
+
+ SMOKE_FGLSi<- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn,
+ data=SMOKE, weights = 1/exp(fitted(SMOKE_auxreg))) 
+\begin_inset Newline newline
+\end_inset
+
+ SMOKE_auxreg <- lm(log(residuals(SMOKE_FGLSi)^2)~ log(income)+log(cigpric)+educ
++age+I(age^2)+restaurn, data=SMOKE)
+\begin_inset Newline newline
+\end_inset
+
+ gamma2i <- coef(SMOKE_auxreg)[2]
+\begin_inset Newline newline
+\end_inset
+
+}
+\begin_inset Newline newline
+\end_inset
+
+SMOKE_FGLS2 <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn,
+ data=SMOKE, weights=1/exp(fitted(SMOKE_auxreg))) 
+\begin_inset Newline newline
+\end_inset
+
+summary(SMOKE_FGLS2)
+\begin_inset Newline newline
+\end_inset
+
+@ 
+\end_layout
+
+\begin_layout Standard
+在其中我们使用当
+\begin_inset Formula $log(income)$
+\end_inset
+
+的系数估计值收敛(
+\begin_inset Formula $<10^{-7}$
+\end_inset
+
+)当作循环的条件。
 \end_layout
 
 \begin_layout Section
 最大似然估计
+\end_layout
+
+\begin_layout Section
+广义矩估计
+\end_layout
+
+\begin_layout Section
+稳健标准差
 \end_layout
 
 \begin_layout Section
@@ -1586,11 +1891,19 @@ Probit
 \end_layout
 
 \begin_layout Subsection
+使用加权最小二乘法进行Probit估计
+\end_layout
+
+\begin_layout Subsection
 logit
 \end_layout
 
 \begin_layout Subsection
 Togit
+\end_layout
+
+\begin_layout Subsection
+计数模型 (count)
 \end_layout
 
 \begin_layout Chapter
