@@ -1,0 +1,35 @@
+
+> plot(RegModel.1)
+
+> abline(RegModel,col="red")
+
+> RegModel<- lm(prate~mrate, data=K)
+
+> abline(RegModel,col="red")
+
+> plot (mrate,prate)
+
+> abline(RegModel,col="red")
+
+> ?foreign
+No documentation for 'foreign' in specified packages and libraries:
+you could try '??foreign'
+
+> ??foreign
+
+> summary(K)
+     prate            mrate           totpart            totelg             age            totemp            sole       
+ Min.   :  3.00   Min.   :0.0100   Min.   :   50.0   Min.   :   51.0   Min.   : 4.00   Min.   :    58   Min.   :0.0000  
+ 1st Qu.: 78.02   1st Qu.:0.3000   1st Qu.:  156.2   1st Qu.:  176.0   1st Qu.: 7.00   1st Qu.:   261   1st Qu.:0.0000  
+ Median : 95.70   Median :0.4600   Median :  276.0   Median :  330.0   Median : 9.00   Median :   588   Median :0.0000  
+ Mean   : 87.36   Mean   :0.7315   Mean   : 1354.2   Mean   : 1628.5   Mean   :13.18   Mean   :  3568   Mean   :0.4876  
+ 3rd Qu.:100.00   3rd Qu.:0.8300   3rd Qu.:  749.5   3rd Qu.:  890.5   3rd Qu.:18.00   3rd Qu.:  1804   3rd Qu.:1.0000  
+ Max.   :100.00   Max.   :4.9100   Max.   :58811.0   Max.   :70429.0   Max.   :51.00   Max.   :144387   Max.   :1.0000  
+    ltotemp      
+ Min.   : 4.060  
+ 1st Qu.: 5.565  
+ Median : 6.377  
+ Mean   : 6.686  
+ 3rd Qu.: 7.498  
+ Max.   :11.880  
+
