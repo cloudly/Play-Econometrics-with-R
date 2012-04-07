@@ -83,3 +83,6 @@ K是我们赋值后在R里使用的数据表的名字。因为R是基于对象(o
 
 ![在R Commander中导入数据](http://i.imgur.com/OvRVp.jpg)
 
+# 数据分析
+## 平均值
+
