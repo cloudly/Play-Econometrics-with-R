@@ -421,6 +421,7 @@ summary(MROZ_2SLS)
 (@Grunfeld)
 我们现在来看投资和企业价值及资本存量之间的关系。在数据集Grunfeld之中，invest 代表总投资值，value 代表企业的价值，capital 代表企业的资本存量，以上数据都是剔除了通胀因素之后的真实值。
 为了简单起见，我们只考虑两个厂商Chrysler和IBM，因此首先要使用`subset()`函数来从原数据集中找出一个子集。厂商之间可能是有联系的，所以需要分别设定变量，这里我们就可以用到factor类型的数据。这里最方便的就是利用面板数据的类型，调用*plm*包里面的`plm.data()`函数。
+
 ``` {r sur}
 
 data(Grunfeld, package="AER") 
