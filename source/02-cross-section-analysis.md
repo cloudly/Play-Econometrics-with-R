@@ -42,7 +42,6 @@ linear.hypothesis(LAW_Result, .Hypothesis, rhs=.RHS)
 remove(.Hypothesis, .RHS)
 ````
 
-
 从上面结果可知，F=9.9517 且通过了0.1%显著性水平检验，即变量LSAT 和GPA 联合显著。
 
 此外还可以分别加入clsize （班级容量）和faculty （教师规模）来进行回归，代码如下： [未完成]
@@ -218,28 +217,21 @@ coeftest(Hprice_Result, vcov = vcovHC)
 下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (cigs )、年收入 (income )、该州烟的价格 (cigpric )、受访者年龄 (age )、受教育程度 (educ )、该州有无饭店内吸烟禁令 (restaurn )。而后我们需要研究决定烟草需求的因素，即cigs 为被解释变量，其他为解释变量。
 
 * 使用FGLS的第一步是进行OLS估计，得到残差项的估计值$\hat{u}$ 。对于价格数据，我们取其对数形式。
-	
-	``` {r fgls-step1}
+		``` {r fgls-step1}
 	load("data/SMOKE.rda")
 	SMOKE_OLS <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE)
 	````
-	
-* 第二步则是使用$log(\hat{u}^{2})$ 对其余变量进行回归。对于线性回归`lm()`所得结果，`residuals()`存储的是残差项。
-	
-	``` {r fgls-step2}
+	* 第二步则是使用$log(\hat{u}^{2})$ 对其余变量进行回归。对于线性回归`lm()`所得结果，`residuals()`存储的是残差项。
+		``` {r fgls-step2}
 	SMOKE_auxreg <- lm(log(residuals(SMOKE_OLS)^2)~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE)
 	````
-	
-* 第三步则是进行最后的加权回归。
-	
-	``` {r fgls-step3}
+	* 第三步则是进行最后的加权回归。
+		``` {r fgls-step3}
 	SMOKE_FGLS <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE, weights=1/exp(fitted(SMOKE_auxreg))) 
 	summary(SMOKE_FGLS)
 	````
-	
-* 如果需要的话，可以进行多次的FGLS估计。这里可以使用R的循环方式while。
-	
-	``` {r fgls-loop}
+	* 如果需要的话，可以进行多次的FGLS估计。这里可以使用R的循环方式while。
+		``` {r fgls-loop}
 
 	gamma2i <- coef(SMOKE_auxreg)[2]
 
@@ -262,8 +254,7 @@ coeftest(Hprice_Result, vcov = vcovHC)
 	summary(SMOKE_FGLS2)
 
 	````
-	
-在其中我们使用当`log(income)`的系数估计值收敛$(<10^{-7} )$当作循环的条件。
+	在其中我们使用当`log(income)`的系数估计值收敛$(<10^{-7} )$当作循环的条件。
 ## 广义线性估计 (GLM)
 通常被解释变量并不一定服从正态分布，因而产生了Probit, Logit等模型。在R中，在采取广义线性估计法（Generalized Linear Models, GLM）来估计的时候，我们可以调用*glm*包。
 
