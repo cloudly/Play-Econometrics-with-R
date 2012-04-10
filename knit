@@ -41,7 +41,10 @@ local({
   
   # knit all md files under ./source
   for (f in list.files('./source/', pattern = '^\\d{2}-.*\\.md$', full.names = TRUE)) {
+    unlink(basename(f))
     knit(f, output = basename(f))
+    # make sure you do not do stupid things (edit output instead of source)
+    Sys.chmod(basename(f), mode = '0444')
   }
 })
 
