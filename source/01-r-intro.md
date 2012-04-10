@@ -43,13 +43,11 @@ K是我们赋值后在R里使用的数据表的名字。因为R是基于对象(o
 我们可以使用`summary()`来获取该数据表的摘要信息，里面包含平均值、最大最小值 、中位数等。不过我们这里只关心两个变量`prate `和`mrate` ，所以也可以使用`numSummary()`（需加载abind包）。
 
 ``` {r load-401k}
-
 load("D:/data/401K.rda")
-
 names(K)
-
 summary(K)
 ````
+
 可以从上表中读出`prate`和`mrate`的平均值。
 
 `sumSummary()`也可以通过R Commander的图形界面实现。
@@ -59,10 +57,12 @@ summary(K)
 在R里面进行线性回归还是比较容易的，直接使用`lm()`就可以。值得注意的是，由于R的面向对象特性，我们需要不断的赋值。对于赋值，有三种基本方法，分别可以用“->”“<-”“=”实现，其中前两个是有方向的赋值，所以一般来说更为常用。比如我们可以对变量`mrate`和`prate` 求乘积，并将结果赋予一个新变量`mp`，则只需写成`mp<-mrate*prate`。
 
 因此在做回归的时候写成：
+
 ``` {r 401k-regression}
 RegModel<- lm(prate~mrate, data=K)
 summary(RegModel)
 ````
+
 这样RegModel里面就存储了这次回归所得的数据。
 
 我们还可以采用`attach()`命令，这样就不用每次都指定回归向量所在的数据集了，直接写`RegModel<- lm(prate~mrate)`，然后就可以用`summary(RegModel)`来看回归的结果了。(注：通常情况下不建议使用`attach()`，可能会导致变量名的一定程度混乱，尤其是在函数封装的时候。)
@@ -83,22 +83,26 @@ $\hat{prate}=83.0755+5.8611mrate$
  plot (mrate,prate) 
 abline(RegModel,col="red")
 ````
+
 第二行命令是添加了那条回归拟合线。
 可见这个图本来就很散，也难怪线性拟合效果这么差了。
+
 ###点预测
 最后，就是依赖估计方程做预测了。这里需要的是做一个点预测。R里面需要依据另一个数据集来预测，而且这个数据集中必须含有mrate 这个变量。新建一个数据集并赋值的办法有许多，最简单的就是直接赋值，方法如下：
+
 ``` {r new-variable-generation}
 mrate_new <- data.frame(mrate = 3.5)
 ````
-或者更简单的，也可利用数据编辑框来手动输入：
-``` {r new-variable-generation-edit}
-mrate_new <- edit(as.data.frame(NULL))
-````
+
+另外一种不推荐的方式是，利用数据编辑框来手动输入:`mrate_new <- edit(as.data.frame(NULL))`。不推荐的原因是难以有效的追溯数据的来源和数值，尤其是违背“可重复的研究”精神。
+
 之后再利用`predict()`就可得到所需的预测值了。
+
 ``` {r prediction-of-regression}
 mrate_new <- data.frame(mrate = 3.5)
 predict(RegModel,mrate_new)
 ````
+
 ###多元线性回归
 当然现实中我们很少做一元的线性回归，解释变量往往是两个或者更多。这可以依旧用上面的`lm()`。如下面这个例子，研究的是出勤率和ACT测试成绩、学习成绩之间的关系。
 
@@ -110,13 +114,9 @@ $atndrte=\beta_{0}+\beta_{1}priGPA+\beta_{2}ACT+u $
 很显然，这里我们和上面的例子一样，代码和结果如下：
 
 ``` {r multiple-regression}
-
 library(foreign)
-
 Attend <- read.dta("data/attend.dta", convert.dates=TRUE, convert.factors=TRUE, missing.type=FALSE, convert.underscore=TRUE, warn.missing.labels=TRUE)
-
 Reg2<-lm(atndrte~priGPA+ACT, data=Attend) 
-
 summary(Reg2)
 ````
 
