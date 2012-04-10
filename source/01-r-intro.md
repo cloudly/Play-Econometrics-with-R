@@ -258,6 +258,18 @@ library(data.table)
 
 注意：**R里面严格区分大小写**，所以大小写不对的话包是无法加载成功的。
 
+###订阅某个主题下的R包及其更新
+[CRAN下的Task Views](http://cran.r-project.org/web/views/)不仅仅罗列了各个主题下的R包情况，其本身亦作为一个R包*ctv*出现。在R中安装这个包之后，可以很方便的安装所有主题下的包。比如，我们希望安装Econometrics这个主题下所有提及的包，那么:
+
+```{r install-packages-via-ctv}
+install.packages("ctv")
+library("ctv")
+install.views("Econometrics") #安装Econometrics主题下的包
+update.views("Econometrics") #更新Econometrics主题下的包
+````
+
+对于刚刚接触R的用户来说，这样一次性下载并安装一系列R包，可以省去调用某些包时候需要现下载、安装的等待时间，也方便测试某些代码和函数。
+
 数据来源
 --------
 
@@ -588,13 +600,3 @@ write.table(sample_stat[i,],file=file_name,sep="\t",row.names=F, col.names=T, qu
 
 这里用到了for循环。另，`nrow()`是用来统计一个data.frame行数的函数，同样的`ncol()`会返回其列数。符号:会生成一个向量，从1到`nrow(sample_stat)`。常用的循环还有while，同时可以使用if来进行一些判断。这里不再赘述。
 
-
-
-
-
-
-
-
-
-
-@
