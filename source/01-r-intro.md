@@ -529,6 +529,30 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
 	sample_merged <- sample_merged[,c("BOOK_ID","CLASS_ID")]
     ````
     会只保留`BOOK_ID`, `CLASS_ID` 两个变量。
+	
+数据集形状的转换（reshape2包）
+---------------
+除了这些基本的变量操作之外，还有一类可能的需求就是对于整个数据集做一个形状的转换，比如把“长数据集”转换为“宽数据集”。这样的过程类似于“揉面”，而帮我们玩转面团的利器便是*reshape2*这个包。
+
+在正式介绍强大的*reshape2*包之前，需要先提到一个轻量级武器——`reshape()`函数。这个函数可以帮我们在数据的长、宽形状之间自由玩转，比如我们现在有一个用户逐月购买记录，为长格式，想把它变为宽格式：
+
+```{r reshape-example}
+load("data/reshape_sample.rdata") #载入样本数据集
+summary(reshape_sample) #基本统计量，有CUSTOMER_ID（顾客ID）、MONTH（月份）、PURCHASE（消费额）三个变量
+head(reshape_sample) #调用数据的前几行，显示为长格式
+reshape_sample_wide <- reshape(reshape_sample, idvar="CUSTOMER_ID", timevar="MONTH", direction="wide") #变为宽格式
+head(reshape_sample_wide)  #宽格式展现
+summary(reshape_sample_wide) #宽格式下基本统计量
+````
+
+在*reshape2*包中，`melt()`函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：
+
+```{r melt-example}
+reshape_sample_long <- melt(reshape_sample_wide, id=c("CUSTOMER_ID")) #转回长数据格式
+head(reshape_sample_long[order(reshape_sample_long$CUSTOMER_ID),]) #长格式展示
+````
+
+此外，该包提供的`acast()`/`dcast()`函数可以进一步帮我们分类展现数据及其统计量，具体使用请参见函数包内帮助。
 
 数据的导出
 ==========
