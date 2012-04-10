@@ -178,7 +178,7 @@ getwd()
 
 在我们撰写R脚本之前，往往希望事前指定一个工作目录，这个时候就可以利用`setwd(file_path)`.
 
-R里面大多数操作都是面向对象的，所以上述代码的含义就是给`file_path`这个object赋上了`` `"E:/example/`" ``这个文本串作为其值。然后利用`setwd()`函数来指定工作目录。显然，这个代码和直接调用`` setwd(`"E:/example/`") ``是等同的。
+R里面大多数操作都是面向对象的，所以上述代码的含义就是给`file_path`这个object赋上了`` "E:/example/" ``这个文本串作为其值。然后利用`setwd()`函数来指定工作目录。显然，这个代码和直接调用`` setwd("E:/example/") ``是等同的。
 
 ### 加载分析包
 
@@ -343,7 +343,7 @@ sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
 
 ### 其他数据格式
 
-大多数常见的数据都可以通过`foreign`这个包读入：
+大多数常见的数据都可以通过*foreign*这个包读入：
 
 -   SPSS： `read.spss()`
 
@@ -439,7 +439,7 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
     如果我们基于一些记录判断生成新的变量，比如基于如果`用户购买量>0`，则我们认为其在当日有购买行为，那么可以使用：
 
     ```{r logic-variable}
-    sample$purchase<- sample$AMOUNT>0
+    sample$purchase <- sample$AMOUNT > 0
     ````
 
     这样就生成了一个新的逻辑型变量purchase（取值为TRUE  或者FALSE）。逻辑型变量的一大用处就是可以直接通过相乘操作来进行多个行为之间的交集运算，比如除了是否购买之外，我们还关心购买的书籍是不是在标号为200的书店购买的，那么就可以：
@@ -484,7 +484,7 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
     ````
     这个时候就得到的相应的新变量。`paste()`函数有个参数是`sep`，用来指定各个部分之间的连接符，默认为空格，如果不需要任何额外的符号用一对双引号设置为空即可。
 
-    字符的其他操作亦包括查找、截取substr()等。
+    字符的其他操作亦包括查找、截取`substr()`等。
 
 数据集合并操作
 --------------
@@ -541,7 +541,7 @@ write.table(book_map, file="book_map_new.txt", row.names=F, col.names=T, sep="\t
 
 -   append：是否附加在现有文件后面（如为FALSE则新文件覆盖原有文件）
 
-分类统计（`data.table`）
+分类统计（*data.table*包）
 ======================
 
 日常分析工作中，最常用到的就是分类统计了。简单的说，就是按一个字段归类之后，统计其他字段的量。
@@ -562,7 +562,7 @@ library(data.table)
 sample_stat_by_day <- data.table(sample)
 sample_stat_by_day <- sample_stat_by_day[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),                       by=c("CUSTOMER","RECORD_DAY")]
 sample_stat
-@
+````
 
 这样返回的就是逐日统计的每位顾客的购买数量了。值得多说的是，`sum()`函数代表求和，`length()`函数代表计数，而`unique()`函数则是去掉重复值。
 
