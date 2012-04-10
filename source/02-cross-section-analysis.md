@@ -322,7 +322,7 @@ Heckit模型实际上就是先进行一个probit回归，而后再利用前面�
 对于应用在结构单一的方程上的两阶段最小二乘法，我们只需要调用*sem*包中的`tsls()`函数。
 回到例2.5，我们想研究教育的回报率。这个时候需要估计工资log(wage)和受教育程度（educ）、经验（exper）之间的关系。但是我们怀疑受教育程度educ 是内生变量，但他父母的受教育程度$motheduc,\;\; fatheduc$ 则为外生变量，所以可以作为educ 的工具变量。
 
-``` {r 2sls}
+``` {r label='2sls'}
 library(sem)
 MROZ_2SLS <- tsls(lwage~educ+exper+I(exper^2),~exper+I(exper^2)+motheduc+fatheduc, data=MROZ) 
 summary(MROZ_2SLS)

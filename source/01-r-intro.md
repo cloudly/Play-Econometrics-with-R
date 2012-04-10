@@ -24,7 +24,7 @@ library(foreign)
 
 然后就可以使用`read.dta()`命令：
 
-``` {r read-401k}
+``` {r label='read-401k'}
 K = read.dta("data/401K.DTA", convert.dates=TRUE, convert.factors=TRUE, missing.type=TRUE, convert.underscore=TRUE, warn.missing.labels=TRUE)
 summary(K)
 ````
@@ -42,7 +42,7 @@ K是我们赋值后在R里使用的数据表的名字。因为R是基于对象(o
 
 我们可以使用`summary()`来获取该数据表的摘要信息，里面包含平均值、最大最小值 、中位数等。不过我们这里只关心两个变量`prate `和`mrate` ，所以也可以使用`numSummary()`（需加载abind包）。
 
-``` {r load-401k}
+``` {r label='load-401k'}
 load("D:/data/401K.rda")
 names(K)
 summary(K)
@@ -58,7 +58,7 @@ summary(K)
 
 因此在做回归的时候写成：
 
-``` {r 401k-regression}
+``` {r label='401k-regression'}
 RegModel<- lm(prate~mrate, data=K)
 summary(RegModel)
 ````
