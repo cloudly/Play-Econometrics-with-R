@@ -6,8 +6,7 @@
 一阶差分法（First-Differenced）
 -----------------------------
 
-在对付面板数据的时候，一阶差分法有时是一种简便易行且有效的方法。如\citet{wooldridge_introductory_2009}第14章所指出的，“在只有两期数据的情况下，一阶差分法（FD）和固定效应模型（FE）等价；当多于两期的时候，两者在满足假定的条件下都是小样本下无偏且大样本下一致的。然而在误差项$u_{it}$序列不相关时，FE比FD更为有效；当$u_{it}$为随机游走（Random
-Walk）时，FD显然更有效；当$\Delta u_{it}$呈现序列负相关特性时，FE更有效。然而在长面板（即时间维度长而观测个体少）的情况下，FE更为敏感，故FD更有优势。更需值得注意的是，FD和FE都对解释变量是否服从经典假设很敏感，但是在解释变量和残差项不相关的情况下，即使其他假设被违反，FE估计量比FD的偏差会小些（除非时间$T=2$）。”
+在对付面板数据的时候，一阶差分法有时是一种简便易行且有效的方法。如 \citet{wooldridge_introductory_2009} 第14章所指出的，“在只有两期数据的情况下，一阶差分法（FD）和固定效应模型（FE）等价；当多于两期的时候，两者在满足假定的条件下都是小样本下无偏且大样本下一致的。然而在误差项$u_{it}$序列不相关时，FE比FD更为有效；当$u_{it}$为随机游走（Random Walk）时，FD显然更有效；当$\Delta u_{it}$呈现序列负相关特性时，FE更有效。然而在长面板（即时间维度长而观测个体少）的情况下，FE更为敏感，故FD更有优势。更需值得注意的是，FD和FE都对解释变量是否服从经典假设很敏感，但是在解释变量和残差项不相关的情况下，即使其他假设被违反，FE估计量比FD的偏差会小些（除非时间$T=2$）。”
 
 在R中，使用**pml**包中的`plm()`函数就可以完成该估计，由于该函数同时可同于估计多种面板数据模型（包括固定效应模型、混合模型pooled
 model、随机效应模型、一阶差分法、组间估计法between
@@ -45,8 +44,7 @@ WAGE_PLM_between <- plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, dat
 
 一般说来，OLS估计（混合回归）不如其他方法有效。而在上例中我们可以看出，为了估计不随时间变化的量（种族、受教育程度），我们必须用到随机效应模型。然而对于随时间变化的量（经验等），固定效应模型或一阶差分法显然更为有效。此外，对于随机效应模型，还可以使用`fixef()`函数来提取其中的固定效应。
 
-实际上，`plm()`函数不仅仅支持这些基本的模型，而且对于每种模型还提供了不同参数以调整具体方法，如双向模型（two-way
-model）和时间效应等。例如，在使用双向模型的时候，只需在调用函数`plm()`中加一个参数`effect = "twoways"`即可，但此时如果使用`fixef()`函数来提取其中的固定效应则需写成`` fixef(YOUR_MODLE, effect = `"time`") ``。具体说来，随机效应模型支持增加参数`random.method`，可选择 `amemiya、swar、walhus、nerlove`，而对应的误差分量的变化可以直接调用`ercomp()`函数指定`method`和`effect`来估计。
+实际上，`plm()`函数不仅仅支持这些基本的模型，而且对于每种模型还提供了不同参数以调整具体方法，如双向模型（two-way model）和时间效应等。例如，在使用双向模型的时候，只需在调用函数`plm()`中加一个参数`effect = "twoways"`即可，但此时如果使用`fixef()`函数来提取其中的固定效应则需写成`` fixef(YOUR_MODLE, effect = "time") ``。具体说来，随机效应模型支持增加参数`random.method`，可选择 `amemiya、swar、walhus、nerlove`，而对应的误差分量的变化可以直接调用`ercomp()`函数指定`method`和`effect`来估计。
 
 非平衡面板（Unbalanced panels）
 -----------------------------
@@ -141,6 +139,7 @@ summary(g_varr)
 前面说到，使用固定效应模型的时候无法估计不随时间变化的量的影响。在没有理想的外部工具变量的情况下，我们可以采用Hausman-Taylor估计法来进行工具变量的运用。但是该方法有一个前提假设，就是有部分变量为外生，和残差项不相关；另一部分变量为内生，和残差项相关，在具体研究中需要证明这一点才能保证估计的一致性。
 
 调用该方法的函数为`pht()`。我们下面再来看一个工资的问题，这个时候使用Wages数据集，其包含了1976到1982年美国595个个体的数据。
+
 ```{r hausman-taylor}
 data("Wages", package = "plm")
 ht <- pht(lwage~wks + south + smsa + married + exp + I(exp2) + bluecol + ind + union + sex + black + ed sex + black + bluecol + south + smsa + ind, data = Wages, index = 595)
@@ -154,7 +153,7 @@ summary(ht)
 
 我们依旧来看那个犯罪率的问题。这里我们扩展到整个面板数据，调用**plm**包中的Crime数据集，里面包含了1981-1987年间美国90个郡的数据。我们这里依旧想研究影响犯罪率的因素。
 
-因为变量比较多，所以不一一解释其含义，可以直接参照包中的说明。下面我们希望以$log(taxpc)$和$log(mix)$作为工具变量，分别代替$log(prbarr)$和$log(polpc)$，故只需要在原始回归方程中加入` . - log(prbarr) - log(polpc) + log(taxpc) + +log(mix)`即可。
+因为变量比较多，所以不一一解释其含义，可以直接参照包中的说明。下面我们希望以$log(taxpc)$和$log(mix)$作为工具变量，分别代替$log(prbarr)$和$log(polpc)$，故只需要在原始回归方程中加入` . - log(prbarr) - log(polpc) + log(taxpc) + log(mix)`即可。
 
 ```{r iv-panel-data}
 data("Crime", package = "plm")
