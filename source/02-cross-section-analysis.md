@@ -68,8 +68,8 @@ summary(LAW_Result2)
 ``` {r intersections}
 LAW_Result3 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + top10*west, data=LAW)
 summary(LAW_Result3)
-`
-``` 
+```` 
+
 当然也可以使用factor变量和其他虚拟变量相乘进行回归，反馈的结果中包含所有的相乘项。
 
 ``` {r intersections-2}
