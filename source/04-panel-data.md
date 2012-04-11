@@ -6,7 +6,10 @@
 一阶差分法（First-Differenced）
 -----------------------------
 
-在对付面板数据的时候，一阶差分法有时是一种简便易行且有效的方法。如 \citet{wooldridge_introductory_2009} 第14章所指出的，“在只有两期数据的情况下，一阶差分法（FD）和固定效应模型（FE）等价；当多于两期的时候，两者在满足假定的条件下都是小样本下无偏且大样本下一致的。然而在误差项$u_{it}$序列不相关时，FE比FD更为有效；当$u_{it}$为随机游走（Random Walk）时，FD显然更有效；当$\Delta u_{it}$呈现序列负相关特性时，FE更有效。然而在长面板（即时间维度长而观测个体少）的情况下，FE更为敏感，故FD更有优势。更需值得注意的是，FD和FE都对解释变量是否服从经典假设很敏感，但是在解释变量和残差项不相关的情况下，即使其他假设被违反，FE估计量比FD的偏差会小些（除非时间$T=2$）。”
+在对付面板数据的时候，一阶差分法有时是一种简便易行且有效的方法。如 \citet{wooldridge_introductory_2009} 第14章所指出的，
+
+> 在只有两期数据的情况下，一阶差分法（FD）和固定效应模型（FE）等价；当多于两期的时候，两者在满足假定的条件下都是小样本下无偏且大样本下一致的。然而在误差项$u_{it}$序列不相关时，FE比FD更为有效；当$u_{it}$为随机游走（Random Walk）时，FD显然更有效；当$\Delta u_{it}$呈现序列负相关特性时，FE更有效。
+> 然而在长面板（即时间维度长而观测个体少）的情况下，FE更为敏感，故FD更有优势。更需值得注意的是，FD和FE都对解释变量是否服从经典假设很敏感，但是在解释变量和残差项不相关的情况下，即使其他假设被违反，FE估计量比FD的偏差会小些（除非时间$T=2$）。”
 
 在R中，使用**pml**包中的`plm()`函数就可以完成该估计，由于该函数同时可同于估计多种面板数据模型（包括固定效应模型、混合模型pooled
 model、随机效应模型、一阶差分法、组间估计法between
@@ -22,24 +25,24 @@ model等），所以用法在下面的例子中一并给出。
 
 在下面我们依次进行混合回归、一阶差分法、固定效应、随机效应来估计该例。然而在进行分析之前，我们需要先调用`plm.data()`命令来将现有数据集中的数据转换为面板数据模式。
 
-``` {r panel-data}
-load("data/WAGEPAN.rda")
+``` {r label='panel-data'}
+load("data/WAGEPAN.rdata")
 library("plm")
 WAGE_data <- plm.data(WAGEPAN, index = c("nr", "year"))
 #混合OLS
-WAGE_PLM_Pooled <- plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, data=WAGE_data, model="pooling")
+WAGE_PLM_Pooled <- plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, data=WAGE_data, model="pooling")
 summary(WAGE_PLM_Pooled)
 #一阶差分
-WAGE_PLM_FD <-plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, data=WAGE_data, model="fd")
+WAGE_PLM_FD <-plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, data=WAGE_data, model="fd")
 summary(WAGE_PLM_FD)
 #固定效应模型
-WAGE_PLM_fixed <- plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, data=WAGE_data, model="within")
+WAGE_PLM_fixed <- plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, data=WAGE_data, model="within")
 summary(WAGE_PLM_fixed)
 #随机效应模型
-WAGE_PLM_random <- plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, data=WAGE_data, model="random")
+WAGE_PLM_random <- plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, data=WAGE_data, model="random")
 summary(WAGE_PLM_random)
 #组内模型
-WAGE_PLM_between <- plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, data=WAGE_data, model="between")
+WAGE_PLM_between <- plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, data=WAGE_data, model="between")
 ````
 
 一般说来，OLS估计（混合回归）不如其他方法有效。而在上例中我们可以看出，为了估计不随时间变化的量（种族、受教育程度），我们必须用到随机效应模型。然而对于随时间变化的量（经验等），固定效应模型或一阶差分法显然更为有效。此外，对于随机效应模型，还可以使用`fixef()`函数来提取其中的固定效应。
@@ -51,7 +54,7 @@ WAGE_PLM_between <- plm(lwage~educ+black+hisp+exper+I(exper2)+married+union, dat
 
 如果在不同时期的个体是不同的（增加或减少），那么该面板数据就成为了非平衡面板。目前**plm**包中对于非平衡面板还不能进行双向效应估计，能提供的误差分量估计法也只有一种。Baltagi(2001)重新估计了房地产市场的特徽价格方程（hedonic housing prices function），代码如下：
 
-``` {r panel-data-unbalanced-panels}
+``` {r label='panel-data-unbalanced-panels'}
 data("Hedonic", package = "plm")
 Hed <- plm(mv~crim + zn + indus + chas + nox + rm + age + dis + rad + tax + ptratio + blacks + lstat, Hedonic, model = "random", index = "townid")
 summary(Hed)
@@ -64,15 +67,17 @@ summary(Hed)
 
 在进行面板数据分析前，一般会考虑到一个问题：对于每个个体，解释变量系数都是一样的吗？换言之，个体效应是否存在？当然，一般说来个体效应都会存在的，否则后面的分析就没有意义了，直接采用混合模型就好。可混合性检验就是用来检验个体效应的。我们这里需要调用`pooltest()`函数进行检验。回到例2.8，继续看公司的投资与真实价值和资本存量的关系。最简单的调用方法如下：
 
-``` {r Tests-of-poolability}
+``` {r label='Tests-of-poolability'}
 data(Grunfeld, package="plm")
 pooltest(inv~value + capital, data = Grunfeld, model = "within")
 ````
 
 其实，该函数需要的由两部分组成，一为通过`plm()`得到的模型，二为通过`pvcm()`得到的固定效应模型。因此，上面的代码实则等价于：
-`znp <- pvcm(inv~value + capital, data = Grunfeld, model = "within")  `
-`zplm <- plm(inv~value + capital, data = Grunfeld)`
-`pooltest(zplm, znp) `
+```
+znp <- pvcm(inv~value + capital, data = Grunfeld, model = "within") 
+zplm <- plm(inv~value + capital, data = Grunfeld)
+pooltest(zplm, znp) 
+```
 
 实际上，这里的`pvcm()`函数进行的正是变系数回归，而可混合性检验的实质也就是对这两种模型进行比较的F检验。
 
@@ -80,14 +85,14 @@ pooltest(inv~value + capital, data = Grunfeld, model = "within")
 
 用拉格朗格乘子法可以检验相对于混合模型的个体或时间效应。这里可以调用`plmtest()`函数。调用方式有两种，其一可以先做一个混合回归再进行检验（如双向效应）：
 
-``` {r effects-test}
+``` {r label='effects-test'}
 g_pooled <- plm(inv~value + capital, data = Grunfeld, model = "pooling")
 plmtest(g_pooled, effect = "twoways", type = "ghm")
 ````
 
 此外也可以直接在调用检验函数的同时指定回归模型，如：
 
-``` {r effects-test2}
+``` {r label='effects-test2'}
 plmtest(inv~value + capital, data = Grunfeld, effect = "twoways", type = "ghm")
 ````
 
@@ -95,7 +100,7 @@ plmtest(inv~value + capital, data = Grunfeld, effect = "twoways", type = "ghm")
 
 此外，还可以做各种效应的F检验（基于混合模型与固定效应模型之间的比较）。依旧用例2.8：
 
-``` {r f-test}
+``` {r label='f-test'}
 g_fixed_twoways <- plm(inv~value + capital, data = Grunfeld, effect = "twoways", model = "within")
 pFtest(g_fixed_twoways, g_pooled)
 ````
@@ -106,7 +111,7 @@ pFtest(g_fixed_twoways, g_pooled)
 
 为了判断到底是采用固定效应还是随机效应模型，我们一般采取经典的Hausman检验，这可以通过调用`phtest()`函数实现。注：这里我们只展示Hausman检验的用法，至于实际应用中该检验结果是否足以支撑模型选择，则需另作学术讨论。
 
-``` {r Hausman-test}
+``` {r label='Hausman-test'}
 gw <- plm(inv~value + capital, data = Grunfeld, model = "within")
 gr <- plm(inv~value + capital, data = Grunfeld, model = "random")
 phtest(gw, gr)
@@ -114,7 +119,7 @@ phtest(gw, gr)
 
 同理，对于例4.1，我们也可以采用该检验来判断应该使用哪个模型。因为我们上面已经分别作了固定效应和随机效应的回归，所以此时直接调用两个回归模型结果就可以。
 
-``` {r Hausman-test2}
+``` {r label='Hausman-test2'}
 phtest(WAGE_PLM_fixed, WAGE_PLM_random)
 ````
 
@@ -125,7 +130,7 @@ phtest(WAGE_PLM_fixed, WAGE_PLM_random)
 
 一般说来在固定或随机效应模型中，系数都被假设为不变的而截距项是变化的。下面我们可以考虑系数也变化的情形。依旧以2.8（Grunfeld）为例，欲使用变系数模型我们只需要调用`pvcm()`函数即可。
 
-```{r Variable coeffcients model}
+``` {r label='Variable-coeffcients-model'}
 g_varw <- pvcm(inv~value + capital, data = Grunfeld, model ="within")
 g_varr <- pvcm(inv~value + capital, data = Grunfeld, model ="random")
 summary(g_varr)
@@ -140,7 +145,7 @@ summary(g_varr)
 
 调用该方法的函数为`pht()`。我们下面再来看一个工资的问题，这个时候使用Wages数据集，其包含了1976到1982年美国595个个体的数据。
 
-```{r hausman-taylor}
+``` {r label='hausman-taylor'}
 data("Wages", package = "plm")
 ht <- pht(lwage~wks + south + smsa + married + exp + I(exp2) + bluecol + ind + union + sex + black + ed sex + black + bluecol + south + smsa + ind, data = Wages, index = 595)
 summary(ht)
@@ -155,7 +160,7 @@ summary(ht)
 
 因为变量比较多，所以不一一解释其含义，可以直接参照包中的说明。下面我们希望以$log(taxpc)$和$log(mix)$作为工具变量，分别代替$log(prbarr)$和$log(polpc)$，故只需要在原始回归方程中加入` . - log(prbarr) - log(polpc) + log(taxpc) + log(mix)`即可。
 
-```{r iv-panel-data}
+``` {r label='iv-panel-data'}
 data("Crime", package = "plm")
 cr <- plm(log(crmrte)~log(prbarr) + log(polpc) + log(prbconv) + log(prbpris) + log(avgsen) + log(density) + log(wcon) + log(wtuc) + log(wtrd) + log(wfir) + log(wser) + log(wmfg) + log(wfed) + log(wsta) + log(wloc) + log(pctymle) + log(pctmin) + region + smsa + factor(year) . - log(prbarr) - log(polpc) + log(taxpc) + log(mix), data = Crime, model = "random")
 summary(cr)
@@ -176,7 +181,7 @@ summary(cr)
 
 在这里我们首先用差分GMM来估计，选择双向效应和两步法。
 
-```{r difference-gmm}
+``` {r label='difference-gmm'}
 data("EmplUK", package = "plm")
 emp.gmm <- pgmm(log(emp)~lag(log(emp), 1:2) + lag(log(wage), + 0:1) + log(capital) + lag(log(output), 0:1)+lag(log(emp), 2:99), data=EmplUK, effect = "twoways", model = "twosteps")
 summary(emp.gmm)
@@ -184,7 +189,7 @@ summary(emp.gmm)
 
 当然我们也可以用系统GMM来估计，只需要加上一个参数`` transformation = "ld" ``即可。最后可以在`summary()`中加入`robust = TRUE`来查看模型的稳健性。
 
-```{r system-gmm}
+``` {r label='system-gmm'}
 z2 <- pgmm(log(emp)~lag(log(emp), 1) + lag(log(wage), 0:1) + lag(log(capital), 0:1)+lag(log(emp), 2:99) + lag(log(wage), 2:99) + lag(log(capital), 2:99), data = EmplUK, effect = "twoways", model = "onestep", transformation = "ld")
 summary(z2, robust = TRUE)
 ````
@@ -195,7 +200,7 @@ summary(z2, robust = TRUE)
 一般广义最小二乘法（General FGLS models）
 ---------------------------------------
 
-pggls()
+`pggls()`
 
 面板单位根检验（第一代）
 ----------------------

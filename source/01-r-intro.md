@@ -4,7 +4,7 @@
 
 下面是来自Papke(1995)的一个例子。他研究的是一个退休金计划和计划的慷慨度。
 
-(@401K) 在401K.DTA这个数据集中，我们关心两个变量。prate是在合法的工人中拥有活跃帐户的比例。mrate是用来衡量这个计划的匹配程度（用来代表慷慨度），即如果mrate = 0:5，则表示工人付出了$10，其工作单位相应的付出了$5。接下来，我们需要面对这么几个问题：
+(@401K) 在401K.DTA这个数据集中，我们关心两个变量。prate是在合法的工人中拥有活跃帐户的比例。mrate是用来衡量这个计划的匹配程度（用来代表慷慨度），即如果mrate = 0.5，则表示工人付出了$10，其工作单位相应的付出了$5。接下来，我们需要面对这么几个问题：
 
     1. 找到prate和mrate这两个变量的平均值。
     2. 对下面这个方程进行最简单的OLS回归：$\hat{prate} = \hat{\beta}_0 + \hat{\beta}_1mrate$，并报告$R^2$。
@@ -25,41 +25,43 @@ library(foreign)
 然后就可以使用`read.dta()`命令：
 
 ``` {r label='read-401k'}
-K = read.dta("data/401K.DTA", convert.dates=TRUE, convert.factors=TRUE, missing.type=TRUE, convert.underscore=TRUE, warn.missing.labels=TRUE)
-summary(K)
+Papke_1995 = read.dta("data/401K.DTA")
+summary(Papke_1995)
 ````
 
-K是我们赋值后在R里使用的数据表的名字。因为R是基于对象(object)的，所以我们需要在读取数据的时候指定数据存储的对象。同样的，后面会不断的用到对象这一概念。
+Papke_1995是我们赋值后在R里使用的数据表的名字。因为R是基于对象(object)的，所以我们需要在读取数据的时候指定数据存储的对象。同样的，后面会不断的用到对象这一概念。
 
 如果觉得这些东西记起来比较麻烦，一个个字母的打起来也挺麻烦的，怎么办？好在有个包叫做**Rcmdr**。加载这个包之后就会出现图形界面，可以通过点击的方式来操作。
 
-![在R Commander中导入数据](http://i.imgur.com/OvRVp.jpg)
+![在R Commander中导入数据](imgs/import_data_from_rcmdr.JPG)
+
+之后，R Commander会自动记录每一步对应的代码，可供下次重复使用。
 
 ## 数据分析
 
 ### 平均值
 在介绍关于平均值的函数前，先介绍另一个有用的函数`names()`。这个函数的作用是显示数据表中所有的变量名称。用法和效果见后面的代码例子。
 
-我们可以使用`summary()`来获取该数据表的摘要信息，里面包含平均值、最大最小值 、中位数等。不过我们这里只关心两个变量`prate `和`mrate` ，所以也可以使用`numSummary()`（需加载abind包）。
+我们可以使用`summary()`来获取该数据表的摘要信息，里面包含平均值、最大最小值 、中位数等。不过我们这里只关心两个变量`prate `和`mrate` ，所以也可以使用`numSummary()`（需加载**abind**包）。
 
-``` {r label='load-401k'}
-load("data/401K.rda")
-names(K)
-summary(K)
+``` {r label='load-Papke-1995'}
+load("data/Papke_1995.rdata")
+names(Papke_1995)
+summary(Papke_1995)
 ````
 
 可以从上表中读出`prate`和`mrate`的平均值。
 
 `sumSummary()`也可以通过R Commander的图形界面实现。
-![R Commander里调用sumSummary()分析数据](2-1-2.JPG)
+![R Commander里调用sumSummary()分析数据](imgs/numerical_summary_rcmdr.JPG)
 
 ### 线性回归（普通最小二乘法，OLS）
-在R里面进行线性回归还是比较容易的，直接使用`lm()`就可以。值得注意的是，由于R的面向对象特性，我们需要不断的赋值。对于赋值，有三种基本方法，分别可以用“->”“<-”“=”实现，其中前两个是有方向的赋值，所以一般来说更为常用。比如我们可以对变量`mrate`和`prate` 求乘积，并将结果赋予一个新变量`mp`，则只需写成`mp<-mrate*prate`。
+在R里面进行线性回归还是比较容易的，直接使用`lm()`就可以。值得注意的是，由于R的面向对象特性，我们需要不断的赋值。对于赋值，有三种基本方法，分别可以用`->`、`<-`和`=`实现，其中前两个是有方向的赋值，所以一般来说更为常用。比如我们可以对变量`mrate`和`prate` 求乘积，并将结果赋予一个新变量`mp`，则只需写成`mp <- mrate*prate`。
 
 因此在做回归的时候写成：
 
 ``` {r label='401k-regression'}
-RegModel<- lm(prate~mrate, data=K)
+RegModel<- lm(prate~mrate, data=Papke_1995)
 summary(RegModel)
 ````
 
@@ -79,8 +81,8 @@ $\hat{prate}=83.0755+5.8611mrate$
 
 [ggplot2]: ggplot2       "ggplot2"
  
-``` {r scatter-the-data}
- plot (mrate,prate) 
+``` {r label='scatter-the-data'}
+plot(Papke_1995$mrate,Papke_1995$prate) 
 abline(RegModel,col="red")
 ````
 
@@ -90,7 +92,7 @@ abline(RegModel,col="red")
 ###点预测
 最后，就是依赖估计方程做预测了。这里需要的是做一个点预测。R里面需要依据另一个数据集来预测，而且这个数据集中必须含有mrate 这个变量。新建一个数据集并赋值的办法有许多，最简单的就是直接赋值，方法如下：
 
-``` {r new-variable-generation}
+``` {r label='new-variable-generation'}
 mrate_new <- data.frame(mrate = 3.5)
 ````
 
@@ -98,7 +100,7 @@ mrate_new <- data.frame(mrate = 3.5)
 
 之后再利用`predict()`就可得到所需的预测值了。
 
-``` {r prediction-of-regression}
+``` {r label='prediction-of-regression'}
 mrate_new <- data.frame(mrate = 3.5)
 predict(RegModel,mrate_new)
 ````
@@ -109,13 +111,13 @@ predict(RegModel,mrate_new)
 (@ATTEND)  
 在ATTEND.DTA这个数据集中，atndrte 是出勤率（采用百分比表示），ACT 为ACT测试的成绩，priGPA 是之前的学习平均分。我们需要估计如下的方程：
 
-$atndrte=\beta_{0}+\beta_{1}priGPA+\beta_{2}ACT+u $
+$atndrte=\beta_{0}+\beta_{1}priGPA+\beta_{2}ACT+u$
 
 很显然，这里我们和上面的例子一样，代码和结果如下：
 
 ``` {r multiple-regression}
 library(foreign)
-Attend <- read.dta("data/attend.dta", convert.dates=TRUE, convert.factors=TRUE, missing.type=FALSE, convert.underscore=TRUE, warn.missing.labels=TRUE)
+Attend <- read.dta("data/attend.dta")
 Reg2<-lm(atndrte~priGPA+ACT, data=Attend) 
 summary(Reg2)
 ````
@@ -128,11 +130,11 @@ summary(Reg2)
 
 ##寻求帮助
 
-有了上述的例子，相信大家已经基本熟悉R了。那么遇到问题怎么办呢？比如`summary()`这个函数，对于不同的模型会有不同的用法，那么我们就需要去查看原始的帮助。在R中，最简单的办法就算再想要查看的命令前加一个“?”号。例如`?summary`之后就会蹦出来帮助页面了。这是查看某一包作者撰写原始文档的最快捷方式。此外也可以用两个连续的问号“??”来搜索所有相关的资料。
+有了上述的例子，相信大家已经基本熟悉R了。那么遇到问题怎么办呢？比如`summary()`这个函数，对于不同的模型会有不同的用法，那么我们就需要去查看原始的帮助。在R中，最简单的办法就算再想要查看的命令前加一个`?`号。例如`?summary`之后就会蹦出来帮助页面了。这是查看某一包作者撰写原始文档的最快捷方式。此外也可以用两个连续的问号`??`来搜索所有相关的资料。
 
 但是如果根本不知道有哪些命令，则需要去找包内原始的资料。可以直接在Google等搜索引擎里面搜寻，也可以查看R包自带的说明，亦可以参照各种书籍。总之方法很多，多多利用互联网是最好的办法。国内最佳的地方自然是[统计之都论坛的R版](http://cos.name/cn/ "统计之都论坛的R版")，里面有丰富的资料和资深的UseR为大家解惑。
 
-下面，我们将介绍一些R的基础知识，包括软件的安装、配置和基本的数据清理工作，为后续的分析打下坚实的基础（曾经某位自身的数据分析专家说过，“在数据正式进入模型之前，最关键的就是*数据整理*”。这一步可能会耗费很多时间，但把数据整理为理想的格式会为后面的统计分析提供极大的便利）。
+下面，我们将介绍一些R的基础知识，包括软件的安装、配置和基本的数据清理工作，为后续的分析打下坚实的基础（曾经某位自身的数据分析专家说过，“在数据正式进入模型之前，最关键的就是**数据整理**”。这一步可能会耗费很多时间，但把数据整理为理想的格式会为后面的统计分析提供极大的便利）。
 
 基础数据整理与分析
 ==================
@@ -164,13 +166,13 @@ RStudio界面，分为四块。左上角是脚本编辑框和数据浏览框；�
 
 在R中，默认的工作目录依系统配置而变化，可以在直接启动R之后，通过`getwd()`命令来查看。
 
-```{r set-working-directory}
+``` {r label='set-working-directory'}
 getwd() 
 ````
 
 另外，如果是通过后缀名为.R的脚本文件来直接调用R，那么工作目录就为该脚本文件所在的目录。如果对于任何命令的参数等希望得到进一步的说明，那么可以在命令前加上“?”来直接调用帮助。比如，
 
-```{r help} 
+``` {r label='help'} 
 ?getwd
 ````
 
@@ -252,7 +254,7 @@ R作为一个开源软件，最大的特性就是有很多人在不断的贡献�
 
 安装完包之后，可以直接通过`library()`命令加载。如我们常用的`data.table`这个包：
 
-```{r library}
+``` {r label='library'}
 library(data.table) 
 ````
 
@@ -261,7 +263,7 @@ library(data.table)
 ###订阅某个主题下的R包及其更新
 [CRAN下的Task Views](http://cran.r-project.org/web/views/)不仅仅罗列了各个主题下的R包情况，其本身亦作为一个R包*ctv*出现。在R中安装这个包之后，可以很方便的安装所有主题下的包。比如，我们希望安装Econometrics这个主题下所有提及的包，那么:
 
-```{r install-packages-via-ctv}
+``` {r label='install-packages-via-ctv'}
 install.packages("ctv")
 library("ctv")
 install.views("Econometrics") #安装Econometrics主题下的包
@@ -289,7 +291,7 @@ update.views("Econometrics") #更新Econometrics主题下的包
 
 比如在当前工作目录下，我们有一个制表符（Tab或`\t`）分割的文本文件`sample.txt`，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：
 
-```{r read-text-files}
+``` {r label='read-text-files'}
 sample <- read.table("data/sample.txt",header=TRUE, sep="")
 ````
 
@@ -323,25 +325,23 @@ sample <- read.table("data/sample.txt",header=TRUE, sep="")
 
 Excel格式除了可以采用excel里面导出文本文件或者csv文件的方式外，还可以采取`ODBC`方式读入(Windows和Mac下)。如果采用这种方式，需要加载*RODBC*这个包。
 
-`library(RODBC)`
-
-`` excel_channel <- odbcConnectExcel(`"data/sample.xls`") ``
-
-`` sample_excel <- sqlFetch(excel_channel, `"sample`") #参数为要导入的excel数据表的名字 ``
-
-`odbcClose(channel)`
-
-`` sample_excel_2007 <- odbcConnectExcel2007(`"data/sample.xlsx`") #对于07版excel文件 ``
+```
+library(RODBC)
+excel_channel <- odbcConnectExcel(`"data/sample.xls`") 
+sample_excel <- sqlFetch(excel_channel, `"sample`") #参数为要导入的excel数据表的名字
+odbcClose(channel)
+sample_excel_2007 <- odbcConnectExcel2007(`"data/sample.xlsx`") #对于07版excel文件
+```
 
 当然，除了excel之外，所有基于ODBC接口的数据都可以读入，包括常见的MySQL、Access等。在Linux下，MySQL数据库建议使用另外的`RMySQL`包连接。
 
-### Excel 格式：通过*xlsx*包
+### Excel 格式：通过xlsx包
 
-除了ODBC之外，另一种简单的方式则是调用*xlsx*包（在linux平台下也可运行）。该包不仅仅可以读入excel数据，还可以“将Excel读取为数据框，以及将数据框写入为Excel文件都不是问题，而更加强大的是它能处理Excel中的格式，比如合并单元格，设置列的宽度，设置字体和颜色等等”（具体请参见[yixuan的介绍](http://yixuan.cos.name/cn/2012/01/new-method-to-read-excel-file-in-r/)）。这样，就为通过R脚本重复生成excel格式的报表等铺平了道路。
+除了ODBC之外，另一种简单的方式则是调用**xlsx**包（在linux平台下也可运行）。该包不仅仅可以读入excel数据，还可以“将Excel读取为数据框，以及将数据框写入为Excel文件都不是问题，而更加强大的是它能处理Excel中的格式，比如合并单元格，设置列的宽度，设置字体和颜色等等”（具体请参见[yixuan的介绍](http://yixuan.cos.name/cn/2012/01/new-method-to-read-excel-file-in-r/)）。这样，就为通过R脚本重复生成excel格式的报表等铺平了道路。
 
 如果只是读入数据，那么直接调用`read.xlsx()`就可以了。
 
-```{r read-excel-via-xlsx}
+``` {r label='read-excel-via-xlsx'}
 library(xlsx)
 file <- system.file("tests", "test_import.xlsx", package = "xlsx")
 sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
@@ -355,7 +355,7 @@ sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
 
 ### 其他数据格式
 
-大多数常见的数据都可以通过*foreign*这个包读入：
+大多数常见的数据都可以通过**foreign**这个包读入：
 
 -   SPSS： `read.spss()`
 
@@ -365,17 +365,16 @@ sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
 
 -   Stata：`read.dta()`
 
-变量操作
-========
+##变量操作
 
-变量重命名
-----------
+
+###变量重命名
 
 导入数据之后，可以在RStudio的右上方Workspace那里看到一个新的数据，名为sample，共有针对17个变量的99行记录。单击可以在左上角的数据浏览窗内看到对应的数据样本。
 
 这个时候，可以用`names()`来查看变量名：
 
-```{r names-of-variables}
+``` {r label='names-of-variables'}
 names(sample) 
 ````
 
@@ -383,14 +382,14 @@ names(sample)
 
 比如，我们想把第二个字段重命名为RECORD_DAY：
 
-```{r rename-variables}
+``` {r label='rename-variables'}
 names(sample)[2] <- "RECORD_DAY" 
 ````
 这里把`names(sample)`返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。
 
 或者，我们希望对导入的没有变量名的数据集进行重命名（一般这种情况下对应的默认变量名是V1、V2等），那么可以直接对整个数据集操作。
 
-```{r rename-all-variables}
+``` {r label='rename-all-variables'}
 names(sample) <- c("CUSTOMER","RECORD_DAY","LOCATION","LOCATION2","FROM","NOTE","BOOK_ID","NOTE2","BOOK_TYPE","CLASS_ID","CLASS_NAME","AMOUNT","LENGTH","LENGTH2","PAGES","PAGES2","BOOK_NAME")
 ````
 
@@ -399,26 +398,24 @@ data.frame的行、列操作
 
 在一个data.frame中，我们可以直接用$来调用其中的一个变量，是最简单的调用列的格式。如果希望调用某些行列，则需要分别指定调用条件，比如：
 
-```{r data-frame}
+``` {r label='data-frame'}
 sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")] 
 ````
 
 那么sub_sample里面现在就得到了购买过编号为348368158这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
 
-数据格式的转换
---------------
+###数据格式的转换
 
 -   vector, data.frame , matrix, list
-
     对于各种数据集，一般读入之后默认的是data.frame格式。此外我们常用的还有向量格式vector、矩阵格式matrix、混合格式list等。简单的说，一个data.frame的一列就是一个vector，比如我们需要所有顾客的ID这个向量：
 
-    ```{r vector-selection}
+    ``` {r label='vector-selection'}
     CUSTOMER_ID <- sample$CUSTOMER
     ````
 
     这个时候就会在workspace那里出现一个新向量CUSTOMER_ID。各个格式之间可以直接转换，比如
 
-    ```{r data-frame-transform}
+    ``` {r label='data-frame-transform'}
     CUSTOMER_ID <- as.data.frame(CUSTOMER_ID)
     ````
 
@@ -426,37 +423,34 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
 
 -   logic, character, integer, numeric, factor
 
-    对于向量中的元素，记录的格式则可能是逻辑型、文本型、整数型、数值型、因素型等等。各个向量格式之间可以直接转换，比如对于CLASS_ID这个变量，虽然是数值记录的但数值本身没有任何意义，只是一个相互区别和识别的代码，因此可以考虑专为character或者factor格式：
+	对于向量中的元素，记录的格式则可能是逻辑型、文本型、整数型、数值型、因素型等等。各个向量格式之间可以直接转换，比如对于CLASS_ID这个变量，虽然是数值记录的但数值本身没有任何意义，只是一个相互区别和识别的代码，因此可以考虑专为character或者factor格式：
 
-    ```{r as-factor}
+    ``` {r label='as-factor'}
     sample$CLASS_ID <- as.factor(sample$CLASS_ID)
     ````
 
     之后R里面就会识别其为文本或者因素型数据了。值得注意的是，如果需要把一个因素型的数据重新转换为整数型，则需要经过文本型过渡：
 
-    ```{r as-integer}
+    ``` {r label='as-integer'}
     sample$CLASS_ID <- as.character(sample$CLASS_ID)
     sample$CLASS_ID <- as.integer(sample$CLASS_ID)
     ````
 
-    否则会被直接重编码，丢失原有的数据串信息[^1]。
+    否则会被直接重编码，丢失原有的数据串信息。（注：花开两朵、各表一枝。实际上，我们也可以应用这种特性来进行重编码工作。）
 
-[^1]: 花开两朵、各表一枝：实际上，我们也可以应用这种特性来进行重编码工作。
-
-新变量生成
-----------
+###新变量生成
 
 -   逻辑型
 
     如果我们基于一些记录判断生成新的变量，比如基于如果`用户购买量>0`，则我们认为其在当日有购买行为，那么可以使用：
 
-    ```{r logic-variable}
+    ``` {r label='logic-variable'}
     sample$purchase <- sample$AMOUNT > 0
     ````
 
     这样就生成了一个新的逻辑型变量purchase（取值为TRUE  或者FALSE）。逻辑型变量的一大用处就是可以直接通过相乘操作来进行多个行为之间的交集运算，比如除了是否购买之外，我们还关心购买的书籍是不是在标号为200的书店购买的，那么就可以：
 
-    ```{r logic-variable-2}
+    ``` {r label='logic-variable-2'}
 	sample$book_store_200 <- sample$LOCATION == 200
 	sample$purchase_bs200 <- sample$book_store_200*sample$purchase
 	````
@@ -465,7 +459,7 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
 
     这里还一并介绍一个有用的`%in%`运算符，表示一个元素是否属于一个给定的集合，比如：
 
-    ```{r in-operation}
+    ``` {r label='in-operation'}
 	sample$book_store <- sample$LOCATION %in% c(200,300)
 	````
 
@@ -491,15 +485,14 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
 
     字符操作最常见的就是字符串生成操作，比如我们有CUSTOMER、LOCATION、和BOOK_NAME三个变量，希望批量生成一个变量，然后发送给顾客作为反馈记录，希望的格式为“CUSTOMER顾客您好，您在编号为LOCATION的书店购买了书籍BOOK_NAME，仅供确认。”，那么我们可以使用paste()这个函数：
 
-    ```{r character-operation}
+    ``` {r label='character-operation'}
 	sample$message <- paste(sample$CUSTOMER,"顾客您好，您在编号为",sample$LOCATION,"的书店购买了书籍",sample$BOOK_NAME,"，仅供确认。",sep="")
     ````
     这个时候就得到的相应的新变量。`paste()`函数有个参数是`sep`，用来指定各个部分之间的连接符，默认为空格，如果不需要任何额外的符号用一对双引号设置为空即可。
 
     字符的其他操作亦包括查找、截取`substr()`等。
 
-数据集合并操作
---------------
+###数据集合并操作
 
 -   列合并：对于两个含有完全一样变量的数据集，可以采用` rbind() `函数来直接将一个data.frame附加在另外一个后面。
 
@@ -508,7 +501,7 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
 -   数据集合并：`merge()`函数提供了更强大的数据集合并操作命令，可以按照一个主键（即用来识别个体的变量）来合并，比如我们另有一个文件
     BOOK_MAP.txt，里面记录的是重编码后的书籍ID和原编码对照表，则可以读入之后利用来`merge()`合并：
 
-    ```{r merge-operation}
+    ``` {r label='merge-operation'}
 	book_map <- read.delim("data/BOOK_MAP.txt", header= T)
 	sample_merged <- merge(sample,book_map, by.x="BOOK_ID", by.y="BOOK_ID", all.x=T, all.y=F)
 	````
@@ -519,24 +512,25 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")]
 
     如果要删除某个变量，可以直接使用NULL值置空，即：
 
-    ```{r delete-variable}
+    ``` {r label='delete-variable'}
 	sample_merged$CLASS_NAME <- NULL
     ````
 
     会删除掉` CLASS_NAME`这个变量。在需要删除多个变量的时候，不如只保留几个变量，如：
 
-    ```{r reserve-variable}
+    ``` {r label='reserve-variable'}
 	sample_merged <- sample_merged[,c("BOOK_ID","CLASS_ID")]
     ````
+	
     会只保留`BOOK_ID`, `CLASS_ID` 两个变量。
 	
-数据集形状的转换（reshape2包）
----------------
-除了这些基本的变量操作之外，还有一类可能的需求就是对于整个数据集做一个形状的转换，比如把“长数据集”转换为“宽数据集”。这样的过程类似于“揉面”，而帮我们玩转面团的利器便是*reshape2*这个包。
+###数据集形状的转换（reshape2包）
+
+除了这些基本的变量操作之外，还有一类可能的需求就是对于整个数据集做一个形状的转换，比如把“长数据集”转换为“宽数据集”。这样的过程类似于“揉面”，而帮我们玩转面团的利器便是**reshape2**这个包。
 
 在正式介绍强大的*reshape2*包之前，需要先提到一个轻量级武器——`reshape()`函数。这个函数可以帮我们在数据的长、宽形状之间自由玩转，比如我们现在有一个用户逐月购买记录，为长格式，想把它变为宽格式：
 
-```{r reshape-example}
+``` {r label='reshape-example'}
 load("data/reshape_sample.rdata") #载入样本数据集
 summary(reshape_sample) #基本统计量，有CUSTOMER_ID（顾客ID）、MONTH（月份）、PURCHASE（消费额）三个变量
 head(reshape_sample) #调用数据的前几行，显示为长格式
@@ -547,19 +541,18 @@ summary(reshape_sample_wide) #宽格式下基本统计量
 
 在*reshape2*包中，`melt()`函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：
 
-```{r melt-example}
+``` {r label='melt-example'}
 reshape_sample_long <- melt(reshape_sample_wide, id=c("CUSTOMER_ID")) #转回长数据格式
 head(reshape_sample_long[order(reshape_sample_long$CUSTOMER_ID),]) #长格式展示
 ````
 
 此外，该包提供的`acast()`/`dcast()`函数可以进一步帮我们分类展现数据及其统计量，具体使用请参见函数包内帮助。
 
-数据的导出
-==========
+##数据的导出
 
 数据导出最常用的应该就是`write.table`函数。比如我们要输出book_map这个数据集为文本格式，那么使用：
 
-```{r output-table}
+``` {r label='output-table'}
 write.table(book_map, file="book_map_new.txt", row.names=F, col.names=T, sep="\t", quote=F)
 ````
 
@@ -577,14 +570,13 @@ write.table(book_map, file="book_map_new.txt", row.names=F, col.names=T, sep="\t
 
 -   append：是否附加在现有文件后面（如为FALSE则新文件覆盖原有文件）
 
-分类统计（*data.table*包）
-======================
+## 分类统计（**data.table**包）
 
 日常分析工作中，最常用到的就是分类统计了。简单的说，就是按一个字段归类之后，统计其他字段的量。
 
 比如，我们现在希望知道每个顾客购买的图书的总数。那么可以使用如下的代码：
 
-```{r data-table-sum}
+``` {r label='data-table-sum'}
 library(data.table)
 sample_stat <- data.table(sample)
 sample_stat <- sample_stat[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),by="CUSTOMER"]
@@ -593,7 +585,7 @@ sample_stat
 
 这样在新的对象sample_stat里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载`data.table`这个包，然后利用`data.table()`函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如
 
-```{r data-table-by-group}
+``` {r label='data-table-by-group'}
 library(data.table)
 sample_stat_by_day <- data.table(sample)
 sample_stat_by_day <- sample_stat_by_day[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),                       by=c("CUSTOMER","RECORD_DAY")]
@@ -602,8 +594,7 @@ sample_stat
 
 这样返回的就是逐日统计的每位顾客的购买数量了。值得多说的是，`sum()`函数代表求和，`length()`函数代表计数，而`unique()`函数则是去掉重复值。
 
-循环和判断
-==========
+## 循环和判断
 
 我们常用的循环和判断有三种：
 
@@ -615,7 +606,7 @@ sample_stat
 
 循环和判断是基本的逻辑操作语句。在R中，大部分常用功能都已经有现成的函数，所以极少用到循环，我们也非常不提倡在R里面写循环（效率一般很低，因为一个循环背后往往是现有函数内部的许多层循环）。有的时候，为了一些特殊的情况，知道怎么写循环还是有用的。比如，我们希望把统计好的顾客购买记录按照顾客ID写入不同的文本文件，这里就需要用到for循环或者while循环。
 
-```{r loops}
+``` {r label='loops'}
 for (i in 1:nrow(sample_stat)) 
 {file_name <- paste("data/result_",sample_stat[i,]$CUSTOMER,"_record.txt",sep="")  
 write.table(sample_stat[i,],file=file_name,sep="\t",row.names=F, col.names=T, quote= F)    
