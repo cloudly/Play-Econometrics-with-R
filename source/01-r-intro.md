@@ -398,8 +398,8 @@ data.frame的行、列操作
 
 在一个data.frame中，我们可以直接用$来调用其中的一个变量，是最简单的调用列的格式。如果希望调用某些行列，则需要分别指定调用条件，比如：
 
-``` {r label='data-frame'}
-sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER,"RECORD_DAY","BOOK_ID")] 
+```{r label='data-frame'}
+sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")] 
 ````
 
 那么sub_sample里面现在就得到了购买过编号为348368158这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
