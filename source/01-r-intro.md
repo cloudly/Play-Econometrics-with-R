@@ -263,7 +263,7 @@ library(data.table)
 ###订阅某个主题下的R包及其更新
 [CRAN下的Task Views](http://cran.r-project.org/web/views/)不仅仅罗列了各个主题下的R包情况，其本身亦作为一个R包*ctv*出现。在R中安装这个包之后，可以很方便的安装所有主题下的包。比如，我们希望安装Econometrics这个主题下所有提及的包，那么:
 
-``` {r label='install-packages-via-ctv'}
+``` {r label='install-packages-via-ctv', eval=FALSE}
 install.packages("ctv")
 library("ctv")
 install.views("Econometrics") #安装Econometrics主题下的包
