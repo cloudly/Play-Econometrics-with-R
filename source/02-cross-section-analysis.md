@@ -201,27 +201,27 @@ coeftest(Hprice_Result, vcov = vcovHC)
 
 * 使用FGLS的第一步是进行OLS估计，得到残差项的估计值$\hat{u}$ 。对于价格数据，我们取其对数形式。
 		
-	``` {r label='fgls-step1'}
+``` {r label='fgls-step1'}
 	load("data/SMOKE.rda")
 	SMOKE_OLS <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE)
-	````
+````
 
 * 第二步则是使用$log(\hat{u}^{2})$ 对其余变量进行回归。对于线性回归`lm()`所得结果，`residuals()`存储的是残差项。
 		
-	``` {r label='fgls-step2'}
+``` {r label='fgls-step2'}
 	SMOKE_auxreg <- lm(log(residuals(SMOKE_OLS)^2)~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE)
-	````
+````
 
 * 第三步则是进行最后的加权回归。
 		
-	``` {r label='fgls-step3'}
+``` {r label='fgls-step3'}
 	SMOKE_FGLS <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE, weights=1/exp(fitted(SMOKE_auxreg))) 
 	summary(SMOKE_FGLS)
-	````
+````
 
 * 如果需要的话，可以进行多次的FGLS估计。这里可以使用R的循环方式while。
 		
-	``` {r label='fgls-loop'}
+``` {r label='fgls-loop'}
 	gamma2i <- coef(SMOKE_auxreg)[2]
 	gamma2 <- 0
 	while(abs((gamma2i - gamma2)/gamma2) > 1e-7){ 
@@ -232,7 +232,7 @@ coeftest(Hprice_Result, vcov = vcovHC)
 	}
 	SMOKE_FGLS2 <- lm(cigs~log(income)+log(cigpric)+educ+age+I(age^2)+restaurn, data=SMOKE, weights=1/exp(fitted(SMOKE_auxreg))) 
 	summary(SMOKE_FGLS2)
-	````
+````
 
 在其中我们使用当`log(income)`的系数估计值收敛$(<10^{-7})$当作循环的条件。
 
@@ -421,7 +421,8 @@ $log(crmrte_{87})=\beta_{0}+\beta_{1}unem+\beta_{2}lawexpc+\beta_{3}log(crmrte_{
 
 但是在这个数据集中，每个观测值均有犯罪率和年份两个属性，也就是为面板数据的形式。好在对于87年的数据，已经给出对应82年的犯罪率lcrmrte.1 ，故选取87年数据直接回归即可。
 
-``` {r label='proxy'}
+``` {r label='proxy',eval=FALSE}
+##need to correct data source
 load("data/CRIME2.rda")
 OLS87<- lm(lcrmrte ~ lcrmrt.1 +llawexpc + unem, data=CRIME2,    subset=(year==87))
 summary(OLS87)

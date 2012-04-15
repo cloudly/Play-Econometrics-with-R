@@ -81,7 +81,7 @@ $\hat{prate}=83.0755+5.8611mrate$
 
 [ggplot2]: ggplot2       "ggplot2"
  
-``` {r label='scatter-the-data'}
+``` {r label='scatter-the-data',eval=FALSE}
 plot(Papke_1995$mrate,Papke_1995$prate) 
 abline(RegModel,col="red")
 ````
@@ -292,7 +292,7 @@ update.views("Econometrics") #更新Econometrics主题下的包
 比如在当前工作目录下，我们有一个制表符（Tab或`\t`）分割的文本文件`sample.txt`，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：
 
 ``` {r label='read-text-files'}
-sample <- read.table("data/sample.txt",header=TRUE, sep="")
+sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
 ````
 
 而`read.csv()`、`read.csv2()`、`read.delim()`、`read.delim2()`都是`read.table()`不同默认参数的变形：
@@ -409,15 +409,15 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
 -   vector, data.frame , matrix, list
     对于各种数据集，一般读入之后默认的是data.frame格式。此外我们常用的还有向量格式vector、矩阵格式matrix、混合格式list等。简单的说，一个data.frame的一列就是一个vector，比如我们需要所有顾客的ID这个向量：
 
-    ``` {r label='vector-selection'}
-    CUSTOMER_ID <- sample$CUSTOMER
-    ````
+``` {r label='vector-selection'}
+CUSTOMER_ID <- sample$CUSTOMER
+````
 
     这个时候就会在workspace那里出现一个新向量CUSTOMER_ID。各个格式之间可以直接转换，比如
 
-    ``` {r label='data-frame-transform'}
-    CUSTOMER_ID <- as.data.frame(CUSTOMER_ID)
-    ````
+``` {r label='data-frame-transform'}
+CUSTOMER_ID <- as.data.frame(CUSTOMER_ID)
+````
 
     那么这个时候customer_ID就成为了只有一个变量的data.frame格式了。
 
@@ -425,16 +425,16 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
 
 	对于向量中的元素，记录的格式则可能是逻辑型、文本型、整数型、数值型、因素型等等。各个向量格式之间可以直接转换，比如对于CLASS_ID这个变量，虽然是数值记录的但数值本身没有任何意义，只是一个相互区别和识别的代码，因此可以考虑专为character或者factor格式：
 
-    ``` {r label='as-factor'}
-    sample$CLASS_ID <- as.factor(sample$CLASS_ID)
-    ````
+``` {r label='as-factor'}
+sample$CLASS_ID <- as.factor(sample$CLASS_ID)
+````
 
     之后R里面就会识别其为文本或者因素型数据了。值得注意的是，如果需要把一个因素型的数据重新转换为整数型，则需要经过文本型过渡：
 
-    ``` {r label='as-integer'}
-    sample$CLASS_ID <- as.character(sample$CLASS_ID)
-    sample$CLASS_ID <- as.integer(sample$CLASS_ID)
-    ````
+``` {r label='as-integer'}
+sample$CLASS_ID <- as.character(sample$CLASS_ID)
+sample$CLASS_ID <- as.integer(sample$CLASS_ID)
+````
 
     否则会被直接重编码，丢失原有的数据串信息。（注：花开两朵、各表一枝。实际上，我们也可以应用这种特性来进行重编码工作。）
 
@@ -444,24 +444,24 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
 
     如果我们基于一些记录判断生成新的变量，比如基于如果`用户购买量>0`，则我们认为其在当日有购买行为，那么可以使用：
 
-    ``` {r label='logic-variable'}
-    sample$purchase <- sample$AMOUNT > 0
-    ````
+``` {r label='logic-variable'}
+sample$purchase <- sample$AMOUNT > 0
+````
 
     这样就生成了一个新的逻辑型变量purchase（取值为TRUE  或者FALSE）。逻辑型变量的一大用处就是可以直接通过相乘操作来进行多个行为之间的交集运算，比如除了是否购买之外，我们还关心购买的书籍是不是在标号为200的书店购买的，那么就可以：
 
-    ``` {r label='logic-variable-2'}
-	sample$book_store_200 <- sample$LOCATION == 200
-	sample$purchase_bs200 <- sample$book_store_200*sample$purchase
-	````
+``` {r label='logic-variable-2'}
+sample$book_store_200 <- sample$LOCATION == 200
+sample$purchase_bs200 <- sample$book_store_200*sample$purchase
+````
 
     最后得到的变量purchase_bs200为TRUE则该用户是在200号书店购买的图书。类似的，我们可以统计是不是每个月都有购买行为等。
 
     这里还一并介绍一个有用的`%in%`运算符，表示一个元素是否属于一个给定的集合，比如：
 
-    ``` {r label='in-operation'}
-	sample$book_store <- sample$LOCATION %in% c(200,300)
-	````
+``` {r label='in-operation'}
+sample$book_store <- sample$LOCATION %in% c(200,300)
+````
 
     表示用户在200或者300号书店进行了购买。`c()`为向量生成函数，故得到的向量含有200和300两个元素。
 
@@ -485,9 +485,9 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
 
     字符操作最常见的就是字符串生成操作，比如我们有CUSTOMER、LOCATION、和BOOK_NAME三个变量，希望批量生成一个变量，然后发送给顾客作为反馈记录，希望的格式为“CUSTOMER顾客您好，您在编号为LOCATION的书店购买了书籍BOOK_NAME，仅供确认。”，那么我们可以使用paste()这个函数：
 
-    ``` {r label='character-operation'}
-	sample$message <- paste(sample$CUSTOMER,"顾客您好，您在编号为",sample$LOCATION,"的书店购买了书籍",sample$BOOK_NAME,"，仅供确认。",sep="")
-    ````
+``` {r label='character-operation'}
+sample$message <- paste(sample$CUSTOMER,"顾客您好，您在编号为",sample$LOCATION,"的书店购买了书籍",sample$BOOK_NAME,"，仅供确认。",sep="")
+````
     这个时候就得到的相应的新变量。`paste()`函数有个参数是`sep`，用来指定各个部分之间的连接符，默认为空格，如果不需要任何额外的符号用一对双引号设置为空即可。
 
     字符的其他操作亦包括查找、截取`substr()`等。
@@ -501,10 +501,10 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
 -   数据集合并：`merge()`函数提供了更强大的数据集合并操作命令，可以按照一个主键（即用来识别个体的变量）来合并，比如我们另有一个文件
     BOOK_MAP.txt，里面记录的是重编码后的书籍ID和原编码对照表，则可以读入之后利用来`merge()`合并：
 
-    ``` {r label='merge-operation'}
-	book_map <- read.delim("data/BOOK_MAP.txt", header= T)
-	sample_merged <- merge(sample,book_map, by.x="BOOK_ID", by.y="BOOK_ID", all.x=T, all.y=F)
-	````
+``` {r label='merge-operation'}
+book_map <- read.delim("data/BOOK_MAP.txt", header= T)
+sample_merged <- merge(sample,book_map, by.x="BOOK_ID", by.y="BOOK_ID", all.x=T, all.y=F)
+````
 
 	这样就有了一列新的变量，记录的是重编码之后的书籍ID。
 
@@ -512,15 +512,15 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
 
     如果要删除某个变量，可以直接使用NULL值置空，即：
 
-    ``` {r label='delete-variable'}
+``` {r label='delete-variable'}
 	sample_merged$CLASS_NAME <- NULL
-    ````
+````
 
     会删除掉` CLASS_NAME`这个变量。在需要删除多个变量的时候，不如只保留几个变量，如：
 
-    ``` {r label='reserve-variable'}
+``` {r label='reserve-variable'}
 	sample_merged <- sample_merged[,c("BOOK_ID","CLASS_ID")]
-    ````
+````
 	
     会只保留`BOOK_ID`, `CLASS_ID` 两个变量。
 	
@@ -542,6 +542,7 @@ summary(reshape_sample_wide) #宽格式下基本统计量
 在*reshape2*包中，`melt()`函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：
 
 ``` {r label='melt-example'}
+library(reshape2)
 reshape_sample_long <- melt(reshape_sample_wide, id=c("CUSTOMER_ID")) #转回长数据格式
 head(reshape_sample_long[order(reshape_sample_long$CUSTOMER_ID),]) #长格式展示
 ````
@@ -553,7 +554,7 @@ head(reshape_sample_long[order(reshape_sample_long$CUSTOMER_ID),]) #长格式展
 数据导出最常用的应该就是`write.table`函数。比如我们要输出book_map这个数据集为文本格式，那么使用：
 
 ``` {r label='output-table'}
-write.table(book_map, file="book_map_new.txt", row.names=F, col.names=T, sep="\t", quote=F)
+write.table(book_map, file="/book_map_new.txt", row.names=F, col.names=T, sep="\t", quote=F)
 ````
 
 这个时候就会得到book_map_new.txt这个文本文件，以制表符分隔。`write.table()`的主要参数有：

@@ -43,6 +43,7 @@ WAGE_PLM_random <- plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, dat
 summary(WAGE_PLM_random)
 #组内模型
 WAGE_PLM_between <- plm(lwage~educ+black+hisp+exper+I(exper^2)+married+union, data=WAGE_data, model="between")
+summary(WAGE_PLM_between)
 ````
 
 一般说来，OLS估计（混合回归）不如其他方法有效。而在上例中我们可以看出，为了估计不随时间变化的量（种族、受教育程度），我们必须用到随机效应模型。然而对于随时间变化的量（经验等），固定效应模型或一阶差分法显然更为有效。此外，对于随机效应模型，还可以使用`fixef()`函数来提取其中的固定效应。
@@ -147,7 +148,10 @@ summary(g_varr)
 
 ``` {r label='hausman-taylor'}
 data("Wages", package = "plm")
-ht <- pht(lwage~wks + south + smsa + married + exp + I(exp2) + bluecol + ind + union + sex + black + ed sex + black + bluecol + south + smsa + ind, data = Wages, index = 595)
+ht <- plm(lwage~wks+south+smsa+married+exp+I(exp^2)+
+          bluecol+ind+union+sex+black+ed | 
+          sex+black+bluecol+south+smsa+ind,
+          data=Wages,model="ht",index=595)
 summary(ht)
 ````
 
@@ -162,7 +166,13 @@ summary(ht)
 
 ``` {r label='iv-panel-data'}
 data("Crime", package = "plm")
-cr <- plm(log(crmrte)~log(prbarr) + log(polpc) + log(prbconv) + log(prbpris) + log(avgsen) + log(density) + log(wcon) + log(wtuc) + log(wtrd) + log(wfir) + log(wser) + log(wmfg) + log(wfed) + log(wsta) + log(wloc) + log(pctymle) + log(pctmin) + region + smsa + factor(year) . - log(prbarr) - log(polpc) + log(taxpc) + log(mix), data = Crime, model = "random")
+cr <- plm(log(crmrte) ~ log(prbarr) + log(polpc) + log(prbconv) +
+ log(prbpris) + log(avgsen) + log(density) + log(wcon) +
+ log(wtuc) + log(wtrd) + log(wfir) + log(wser) + log(wmfg) +
+ log(wfed) + log(wsta) + log(wloc) + log(pctymle) + log(pctmin) +
+ region + smsa + factor(year) | . - log(prbarr) -log(polpc) +
+ log(taxpc) + log(mix), data = Crime,
+ model = "random")
 summary(cr)
 ````
 
@@ -183,14 +193,18 @@ summary(cr)
 
 ``` {r label='difference-gmm'}
 data("EmplUK", package = "plm")
-emp.gmm <- pgmm(log(emp)~lag(log(emp), 1:2) + lag(log(wage), + 0:1) + log(capital) + lag(log(output), 0:1)+lag(log(emp), 2:99), data=EmplUK, effect = "twoways", model = "twosteps")
+emp.gmm <- pgmm(log(emp)~lag(log(emp), 1:2) + lag(log(wage), 0:1) + log(capital) + lag(log(output), 0:1)|lag(log(emp), 2:99), data=EmplUK, effect = "twoways", model = "twosteps")
 summary(emp.gmm)
 ````
 
 当然我们也可以用系统GMM来估计，只需要加上一个参数`` transformation = "ld" ``即可。最后可以在`summary()`中加入`robust = TRUE`来查看模型的稳健性。
 
 ``` {r label='system-gmm'}
-z2 <- pgmm(log(emp)~lag(log(emp), 1) + lag(log(wage), 0:1) + lag(log(capital), 0:1)+lag(log(emp), 2:99) + lag(log(wage), 2:99) + lag(log(capital), 2:99), data = EmplUK, effect = "twoways", model = "onestep", transformation = "ld")
+z2 <- pgmm(log(emp) ~ lag(log(emp), 1)+ lag(log(wage), 0:1) +
+ lag(log(capital), 0:1) | lag(log(emp), 2:99) +
+ lag(log(wage), 2:99) + lag(log(capital), 2:99),
+ data = EmplUK, effect = "twoways", model = "onestep",
+ transformation = "ld")
 summary(z2, robust = TRUE)
 ````
 
