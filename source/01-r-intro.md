@@ -166,7 +166,7 @@ RStudio界面，分为四块。左上角是脚本编辑框和数据浏览框；�
 
 在R中，默认的工作目录依系统配置而变化，可以在直接启动R之后，通过`getwd()`命令来查看。
 
-``` {r label='set-working-directory'}
+``` {r label='set-working-directory', eval=FALSE}
 getwd() 
 ````
 
