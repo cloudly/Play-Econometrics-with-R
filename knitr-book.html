@@ -189,7 +189,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </ol>
 <p>做计量分析，离不开的就是数据。所以我们第一步先来导入需要的数据。</p>
 <h2 id="数据的导入"><a href="#TOC"><span class="header-section-number">2.1</span> 数据的导入</a></h2>
-<p>获取数据有很多办法，在R 里面通过<em>Foreign</em>包可以读/写Minitab, S, SAS, SPSS, Stata, Systat等等格式的数据。当然，R本身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。此外，对于R包里面自带的数据集，我们可以直接用<code>data(&quot;name&quot;)</code>来加载数据集。这里我采取的是读取Stata的数据（DTA格式）。</p>
+<p>获取数据有很多办法，在R 里面通过<strong>foreign</strong>包可以读/写Minitab, S, SAS, SPSS, Stata, Systat等等格式的数据。当然，R本身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。此外，对于R包里面自带的数据集，我们可以直接用<code>data(&quot;name&quot;)</code>来加载数据集。这里我采取的是读取Stata的数据（DTA格式）。</p>
 <p>当然，我们首先要加载<strong>foreign</strong>包，可以在R中直接点击“加载程序包”，也可以手动输入：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(foreign)</code></pre>
 <p>然后就可以使用<code>read.dta()</code>命令：</p>
@@ -274,6 +274,9 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>我们可以直接用最简单的<code>plot()</code>命令作图(当然更好的一个选择可能是<em><a href="ggplot2" title="ggplot2">ggplot2</a></em>)，用法如下：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Papke_1995$mrate, Papke_1995$prate)
 <span class="kw">abline</span>(RegModel, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</code></pre>
+<div class="figure">
+<img src="http://i.imgur.com/Gk0cu.png" alt="plot of chunk scatter-the-data" /><p class="caption">plot of chunk scatter-the-data</p>
+</div>
 <p>第二行命令是添加了那条回归拟合线。 可见这个图本来就很散，也难怪线性拟合效果这么差了。</p>
 <h3 id="点预测"><a href="#TOC"><span class="header-section-number">2.2.4</span> 点预测</a></h3>
 <p>最后，就是依赖估计方程做预测了。这里需要的是做一个点预测。R里面需要依据另一个数据集来预测，而且这个数据集中必须含有mrate 这个变量。新建一个数据集并赋值的办法有许多，最简单的就是直接赋值，方法如下：</p>
@@ -409,12 +412,10 @@ Reg2 &lt;- <span class="kw">lm</span>(atndrte ~ priGPA + ACT, <span class="dt">d
 <p>比如在当前工作目录下，我们有一个制表符（Tab或<code>\t</code>）分割的文本文件<code>sample.txt</code>，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：</p>
 <pre class="sourceCode r"><code class="sourceCode r">sample &lt;- <span class="kw">read.table</span>(<span class="st">&quot;data/sample.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre>
 <p>而<code>read.csv()</code>、<code>read.csv2()</code>、<code>read.delim()</code>、<code>read.delim2()</code>都是<code>read.table()</code>不同默认参数的变形：</p>
-<blockquote>
-<p><code>read.csv(file, header = TRUE, sep = `&quot;,`&quot;, quote=`&quot;\`&quot;`&quot;, dec=`&quot;.`&quot;, fill = TRUE, comment.char=`&quot;`&quot;, ...)</code></p>
-<p><code>read.csv2(file, header = TRUE, sep = `&quot;;`&quot;, quote=`&quot;\`&quot;`&quot;, dec=`&quot;,`&quot;, fill = TRUE, comment.char=`&quot;`&quot;, ...)</code></p>
-<p><code>read.delim(file, header = TRUE, sep = `&quot;\t`&quot;, quote=`&quot;\`&quot;`&quot;, dec=`&quot;.`&quot;, fill = TRUE, comment.char=`&quot;`&quot;, ...)</code></p>
-<p><code>read.delim2(file, header = TRUE, sep = `&quot;\t`&quot;, quote=`&quot;\`&quot;`&quot;, dec=`&quot;,`&quot;, fill = TRUE, comment.char=`&quot;`&quot;, ...)</code></p>
-</blockquote>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read.csv</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;,</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>.<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) 
+<span class="kw">read.csv2</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;;</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>,<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) 
+<span class="kw">read.delim</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;</span><span class="ch">\t</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>.<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) 
+<span class="kw">read.delim2</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;</span><span class="ch">\t</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>,<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) </code></pre>
 <p>当数据不整齐的时候，R会在读入过程中报错，并给出出错的行数。当然我们也可以通过更改参数来强制读入。<code>read.table()</code>的常用参数定义如下：</p>
 <ul>
 <li><p><code>header</code>：是否把第一行读为变量名</p></li>
@@ -427,11 +428,11 @@ Reg2 &lt;- <span class="kw">lm</span>(atndrte ~ priGPA + ACT, <span class="dt">d
 <p>其他的参数如<code>as.is</code>、<code>na.strings</code>等，可参见<code>?read.table</code>的说明。</p>
 <h3 id="excel-格式通过odbc接口"><a href="#TOC"><span class="header-section-number">3.3.2</span> Excel 格式：通过ODBC接口</a></h3>
 <p>Excel格式除了可以采用excel里面导出文本文件或者csv文件的方式外，还可以采取<code>ODBC</code>方式读入(Windows和Mac下)。如果采用这种方式，需要加载<em>RODBC</em>这个包。</p>
-<pre><code>library(RODBC)
-excel_channel &lt;- odbcConnectExcel(`&quot;data/sample.xls`&quot;) 
-sample_excel &lt;- sqlFetch(excel_channel, `&quot;sample`&quot;) #参数为要导入的excel数据表的名字
-odbcClose(channel)
-sample_excel_2007 &lt;- odbcConnectExcel2007(`&quot;data/sample.xlsx`&quot;) #对于07版excel文件</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(RODBC)
+excel_channel &lt;- <span class="kw">odbcConnectExcel</span>(<span class="st">&quot;data/sample.xls&quot;</span>)
+sample_excel &lt;- <span class="kw">sqlFetch</span>(excel_channel, <span class="st">&quot;sample&quot;</span>)  <span class="co">#参数为要导入的excel数据表的名字</span>
+<span class="kw">odbcClose</span>(channel)
+sample_excel_2007 &lt;- <span class="kw">odbcConnectExcel2007</span>(<span class="st">&quot;data/sample.xlsx&quot;</span>)  <span class="co">#对于07版excel文件</span></code></pre>
 <p>当然，除了excel之外，所有基于ODBC接口的数据都可以读入，包括常见的MySQL、Access等。在Linux下，MySQL数据库建议使用另外的<code>RMySQL</code>包连接。</p>
 <h3 id="excel-格式通过xlsx包"><a href="#TOC"><span class="header-section-number">3.3.3</span> Excel 格式：通过xlsx包</a></h3>
 <p>除了ODBC之外，另一种简单的方式则是调用<strong>xlsx</strong>包（在linux平台下也可运行）。该包不仅仅可以读入excel数据，还可以“将Excel读取为数据框，以及将数据框写入为Excel文件都不是问题，而更加强大的是它能处理Excel中的格式，比如合并单元格，设置列的宽度，设置字体和颜色等等”（具体请参见<a href="http://yixuan.cos.name/cn/2012/01/new-method-to-read-excel-file-in-r/">yixuan的介绍</a>）。这样，就为通过R脚本重复生成excel格式的报表等铺平了道路。</p>
@@ -464,8 +465,12 @@ sample_sheet1 &lt;- <span class="kw">read.xlsx</span>(file, <span class="dv">1</
 <h3 id="变量重命名"><a href="#TOC"><span class="header-section-number">3.4.1</span> 变量重命名</a></h3>
 <p>导入数据之后，可以在RStudio的右上方Workspace那里看到一个新的数据，名为sample，共有针对17个变量的99行记录。单击可以在左上角的数据浏览窗内看到对应的数据样本。</p>
 <p>这个时候，可以用<code>names()</code>来查看变量名：</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(sample)</code></pre>
-<pre><code>## NULL</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample &lt;- <span class="kw">read.table</span>(<span class="st">&quot;data/sample.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+<span class="kw">names</span>(sample)</code></pre>
+<pre><code>##  [1] &quot;CUSTOMER&quot;   &quot;DAY&quot;        &quot;LOCATION&quot;   &quot;LOCATION2&quot;  &quot;FROM&quot;      
+##  [6] &quot;NOTE&quot;       &quot;BOOK_ID&quot;    &quot;NOTE2&quot;      &quot;BOOK_TYPE&quot;  &quot;CLASS_ID&quot;  
+## [11] &quot;CLASS_NAME&quot; &quot;AMOUNT&quot;     &quot;LENGTH&quot;     &quot;LENGTH2&quot;    &quot;PAGES&quot;     
+## [16] &quot;PAGES2&quot;     &quot;BOOK_NAME&quot; </code></pre>
 <p>而后，可以对变量进行重新命名：</p>
 <p>比如，我们想把第二个字段重命名为RECORD_DAY：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(sample)[<span class="dv">2</span>] &lt;- <span class="st">&quot;RECORD_DAY&quot;</span></code></pre>
@@ -566,7 +571,7 @@ sample_merged &lt;- <span class="kw">merge</span>(sample, book_map, <span class=
 <pre><code>会只保留`BOOK_ID`, `CLASS_ID` 两个变量。</code></pre>
 <h3 id="数据集形状的转换reshape2包"><a href="#TOC"><span class="header-section-number">3.5.4</span> 数据集形状的转换（reshape2包）</a></h3>
 <p>除了这些基本的变量操作之外，还有一类可能的需求就是对于整个数据集做一个形状的转换，比如把“长数据集”转换为“宽数据集”。这样的过程类似于“揉面”，而帮我们玩转面团的利器便是<strong>reshape2</strong>这个包。</p>
-<p>在正式介绍强大的<em>reshape2</em>包之前，需要先提到一个轻量级武器——<code>reshape()</code>函数。这个函数可以帮我们在数据的长、宽形状之间自由玩转，比如我们现在有一个用户逐月购买记录，为长格式，想把它变为宽格式：</p>
+<p>在正式介绍强大的<strong>reshape2</strong>包之前，需要先提到一个轻量级武器——<code>reshape()</code>函数。这个函数可以帮我们在数据的长、宽形状之间自由玩转，比如我们现在有一个用户逐月购买记录，为长格式，想把它变为宽格式：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;data/reshape_sample.rdata&quot;</span>)  <span class="co">#载入样本数据集</span>
 <span class="kw">summary</span>(reshape_sample)  <span class="co">#基本统计量，有CUSTOMER_ID（顾客ID）、MONTH（月份）、PURCHASE（消费额）三个变量</span></code></pre>
 <pre><code>##   CUSTOMER_ID        MONTH          PURCHASE     
@@ -634,7 +639,7 @@ sample_merged &lt;- <span class="kw">merge</span>(sample, book_map, <span class=
 ##  3rd Qu.:  1737  
 ##  Max.   :110981  
 ##                  </code></pre>
-<p>在<em>reshape2</em>包中，<code>melt()</code>函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：</p>
+<p>在<strong>reshape2</strong>包中，<code>melt()</code>函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(reshape2)
 reshape_sample_long &lt;- <span class="kw">melt</span>(reshape_sample_wide, <span class="dt">id =</span> <span class="kw">c</span>(<span class="st">&quot;CUSTOMER_ID&quot;</span>))  <span class="co">#转回长数据格式</span>
 <span class="kw">head</span>(reshape_sample_long[<span class="kw">order</span>(reshape_sample_long$CUSTOMER_ID), 
@@ -649,8 +654,8 @@ reshape_sample_long &lt;- <span class="kw">melt</span>(reshape_sample_wide, <spa
 <p>此外，该包提供的<code>acast()</code>/<code>dcast()</code>函数可以进一步帮我们分类展现数据及其统计量，具体使用请参见函数包内帮助。</p>
 <h2 id="数据的导出"><a href="#TOC"><span class="header-section-number">3.6</span> 数据的导出</a></h2>
 <p>数据导出最常用的应该就是<code>write.table</code>函数。比如我们要输出book_map这个数据集为文本格式，那么使用：</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.table</span>(book_map, <span class="dt">file =</span> <span class="st">&quot;/book_map_new.txt&quot;</span>, <span class="dt">row.names =</span> F, 
-    <span class="dt">col.names =</span> T, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote =</span> F)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write.table</span>(book_map, <span class="dt">file =</span> <span class="st">&quot;book_map_new.txt&quot;</span>, <span class="dt">row.names =</span> F, <span class="dt">col.names =</span> T, 
+    <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">quote =</span> F)</code></pre>
 <p>这个时候就会得到book_map_new.txt这个文本文件，以制表符分隔。<code>write.table()</code>的主要参数有：</p>
 <ul>
 <li><p>file：指定文件名</p></li>
@@ -730,9 +735,9 @@ sample_stat_by_day &lt;- sample_stat_by_day[, <span class="kw">list</span>(<span
 <p>其中LSAT 是班级里LSAT成绩中位数，GPA 是班级学习成绩的中位数，libvol 是法学院图书馆藏书卷数，cost 是在法学院的年消费额，rank 是法学院的排名（正序）。 接下来我们估计这个方程:</p>
 <p>\(LAW_Result &lt;- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank, data=LAW)\)</p>
 <p>很容易得到回归结果如下：</p>
-<pre class="sourceCode r"><code class="sourceCode r">LAW &lt;- <span class="kw">read.dta</span>(<span class="st">&quot;data/LAWSCH85.DTA&quot;</span>, <span class="dt">convert.dates =</span> <span class="ot">TRUE</span>, <span class="dt">convert.factors =</span> <span class="ot">FALSE</span>, 
-    <span class="dt">missing.type =</span> <span class="ot">FALSE</span>, <span class="dt">convert.underscore =</span> <span class="ot">TRUE</span>, <span class="dt">warn.missing.labels =</span> <span class="ot">TRUE</span>)
-LAW_Result &lt;- <span class="kw">lm</span>(<span class="kw">log</span>(salary) ~ LSAT + GPA + <span class="kw">log</span>(libvol) + <span class="kw">log</span>(cost) + 
+<pre class="sourceCode r"><code class="sourceCode r">LAW &lt;- <span class="kw">read.dta</span>(<span class="st">&quot;data/LAWSCH85.DTA&quot;</span>)</code></pre>
+<pre><code>## Warning message: cannot read factor labels from Stata 5 files</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">LAW_Result &lt;- <span class="kw">lm</span>(<span class="kw">log</span>(salary) ~ LSAT + GPA + <span class="kw">log</span>(libvol) + <span class="kw">log</span>(cost) + 
     rank, <span class="dt">data =</span> LAW)
 <span class="kw">summary</span>(LAW_Result)</code></pre>
 <pre><code>## 
@@ -765,16 +770,13 @@ LAW_Result &lt;- <span class="kw">lm</span>(<span class="kw">log</span>(salary) 
 <h3 id="f检验"><a href="#TOC"><span class="header-section-number">4.1.2</span> F检验</a></h3>
 <p>考虑到新生入学的时候只有GPA 和LSAT 两个变量可以观测，所以接下来我们进行变量GPA 和LSAT 的联合检验即F检验。该检验属于线性假设检验，在<em>RCommander</em>下可以在<code>Models -&gt; Hypothesis Tests -&gt;Linear hypothesis</code>里面通过图形化界面完成。</p>
 <p><img src="imgs/f_test.JPG" alt="F检验图形化界面" /> 其中设置为“2”行，而后分别在LAST和GPA输入1，保持右侧为0。相当于检验假设</p>
-<p>$H<em>{0}:;</em>{1}=_{2}=0 $</p>
+<p>\(H_{0}:\;\beta_{1}=\beta_{2}=0\)</p>
 <p>可得到输出结果如下：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;car&quot;</span>)
 .Hypothesis &lt;- <span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">2</span>, <span class="dv">6</span>, 
     <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
 .RHS &lt;- <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">0</span>)
-<span class="kw">linear.hypothesis</span>(LAW_Result, .Hypothesis, <span class="dt">rhs =</span> .RHS)</code></pre>
-<pre><code>## Warning message: &#39;linear.hypothesis&#39; is deprecated.
-## Use &#39;linearHypothesis&#39; instead.
-## See help(&quot;Deprecated&quot;) and help(&quot;car-deprecated&quot;).</code></pre>
+<span class="kw">linearHypothesis</span>(LAW_Result, .Hypothesis, <span class="dt">rhs =</span> .RHS)</code></pre>
 <pre><code>## Linear hypothesis test
 ## 
 ## Hypothesis:
@@ -931,7 +933,7 @@ LAW_Result5 &lt;- <span class="kw">lm</span>(<span class="kw">log</span>(salary)
 <p>有件很没办法的事儿，那就是要想让OLS回归出来的结果最佳，必须要符合那五条经典假设（尤其是小样本下）。但是事实中的数据那里会那么完美呢？首当其冲的问题就是异方差。 异方差检验方法很多，这里给出两种常用的：BP检验 (Breusch-Pagan Test)、怀特检验 (White test for heteroskedasticity)。</p>
 <p>下面给出一个关于房价的例子。</p>
 <p>(@Hprice1) 在Hprice1.dta这个数据集中，有price （房价，按套计算）、lotsize （地皮面积要知道人家住的都是小别墅啊，自然要先有地、后建房，卖房子也都是一套一套的卖。）、sqrft （房屋面积）、bdrms （卧室数量）。接下来我们估计这个方程：</p>
-<p>$=+lotsize+sqrft+bdrms $</p>
+<p>\(\hat{price}=\hat{\beta_{0}}+\hat{\beta_{1}}lotsize+\hat{\beta_{2}}sqrft+\hat{\beta_{3}}bdrms\)</p>
 <p>使用OLS估计结果如下：</p>
 <pre class="sourceCode r"><code class="sourceCode r">HPrice &lt;- <span class="kw">read.dta</span>(<span class="st">&quot;data/hprice1.dta&quot;</span>)
 Hprice_Result &lt;- <span class="kw">lm</span>(price ~ bdrms + lotsize + sqrft, <span class="dt">data =</span> HPrice)
@@ -1011,7 +1013,7 @@ Hprice_Result2</code></pre>
 ## bdrms        -221.25362  133.67499  0.0475633 -0.3056587
 ## lotsize        -0.06168    0.04756  0.0000511 -0.0002524
 ## sqrft          -0.23992   -0.30566 -0.0002524  0.0016591</code></pre>
-<p><code>vcovHC()</code>函数可以选择各种形式，在后面附加type = 即可。可选形式有“HC3”, “const”, “HC”, “HC0”, “HC1”, “HC2”, “HC4”，分别对应不同的异方差假设形式。如该函数的文档中所述，const对应$<sup>{2}(X’X)</sup>{-1} \(，HC（或HC0）对应\)(X’X)<sup>{-1}X’X(X’X)</sup>{-1}$ ，更多解释请参照<code>?vcovHC</code>。 之后我们就可以采用该异方差矩阵进行参数检验，如t检验。这里调用<em>lmtest</em>包内另一个非常有用的函数<code>coeftest()</code>。</p>
+<p><code>vcovHC()</code>函数可以选择各种形式，在后面附加type = 即可。可选形式有“HC3”, “const”, “HC”, “HC0”, “HC1”, “HC2”, “HC4”，分别对应不同的异方差假设形式。如该函数的文档中所述，const对应 \(\sigma^{2}(X&#39;X)^{-1}\) ，HC（或HC0）对应 \((X&#39;X)^{-1}X&#39;\Omega X(X&#39;X)^{-1}\) ，更多解释请参照<code>?vcovHC</code>。 之后我们就可以采用该异方差矩阵进行参数检验，如t检验。这里调用<em>lmtest</em>包内另一个非常有用的函数<code>coeftest()</code>。</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">coeftest</span>(Hprice_Result, <span class="dt">vcov =</span> vcovHC)</code></pre>
 <pre><code>## 
 ## t test of coefficients:
@@ -1790,7 +1792,7 @@ Hed &lt;- <span class="kw">plm</span>(mv ~ crim + zn + indus + chas + nox + rm +
 <p>此外，还可以做各种效应的F检验（基于混合模型与固定效应模型之间的比较）。依旧用例2.8：</p>
 <pre class="sourceCode r"><code class="sourceCode r">g_fixed_twoways &lt;- <span class="kw">plm</span>(inv ~ value + capital, <span class="dt">data =</span> Grunfeld, <span class="dt">effect =</span> <span class="st">&quot;twoways&quot;</span>, 
     <span class="dt">model =</span> <span class="st">&quot;within&quot;</span>)</code></pre>
-<pre><code>## Error: object &#39;inv&#39; not found</code></pre>
+<pre><code>## Error: cannot open file &#39;cache-upload/sur_1fc09f25342da747c062498313dc32c6.rdb&#39;: No such file or directory</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pFtest</span>(g_fixed_twoways, g_pooled)</code></pre>
 <pre><code>## Error: object &#39;g_fixed_twoways&#39; not found</code></pre>
 <p>当然，<code>pFtest()</code>函数也提供了另外一种直接的调用形式，如<code>pFtest(inv value + capital, data = Grunfeld, effect = &quot;twoways&quot;)</code>。</p>

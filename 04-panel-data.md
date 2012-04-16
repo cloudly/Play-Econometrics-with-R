@@ -426,7 +426,7 @@ g_fixed_twoways <- plm(inv ~ value + capital, data = Grunfeld, effect = "twoways
 
 
 ```
-## Error: object 'inv' not found
+## Error: cannot open file 'cache-upload/sur_1fc09f25342da747c062498313dc32c6.rdb': No such file or directory
 ```
 
 

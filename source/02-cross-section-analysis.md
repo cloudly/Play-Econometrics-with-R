@@ -19,7 +19,7 @@ $LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank, dat
 很容易得到回归结果如下：
 
 ``` {r label='load-law-data'}
-LAW <- read.dta("data/LAWSCH85.DTA", convert.dates=TRUE, convert.factors=FALSE, missing.type=FALSE, convert.underscore=TRUE, warn.missing.labels=TRUE)
+LAW <- read.dta("data/LAWSCH85.DTA")
 LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank, data=LAW)
 summary(LAW_Result)
 ````
@@ -36,7 +36,7 @@ summary(LAW_Result)
 ![F检验图形化界面](imgs/f_test.JPG)
 其中设置为“2”行，而后分别在LAST和GPA输入1，保持右侧为0。相当于检验假设
 
-$H_{0}:\;\beta_{1}=\beta_{2}=0 $
+$H_{0}:\;\beta_{1}=\beta_{2}=0$
 
 可得到输出结果如下：
 
@@ -44,7 +44,7 @@ $H_{0}:\;\beta_{1}=\beta_{2}=0 $
 library("car")
 .Hypothesis <- matrix(c(0,1,0,0,0,0,0,0,1,0,0,0), 2, 6, byrow=TRUE) 
 .RHS <- c(0,0) 
-linear.hypothesis(LAW_Result, .Hypothesis, rhs=.RHS) 
+linearHypothesis(LAW_Result, .Hypothesis, rhs=.RHS) 
 remove(.Hypothesis, .RHS)
 ````
 
@@ -120,7 +120,7 @@ summary(LAW_Result5)
 (@Hprice1)
 在Hprice1.dta这个数据集中，有price （房价，按套计算）、lotsize （地皮面积要知道人家住的都是小别墅啊，自然要先有地、后建房，卖房子也都是一套一套的卖。）、sqrft （房屋面积）、bdrms （卧室数量）。接下来我们估计这个方程：
 
-$\hat{price}=\hat{\beta_{0}}+\hat{\beta_{1}}lotsize+\hat{\beta_{2}}sqrft+\hat{\beta_{3}}bdrms $
+$\hat{price}=\hat{\beta_{0}}+\hat{\beta_{1}}lotsize+\hat{\beta_{2}}sqrft+\hat{\beta_{3}}bdrms$
 
 使用OLS估计结果如下：
 
@@ -181,7 +181,7 @@ library("sandwich")
 vcovHC(Hprice_Result)
 ````
 
-`vcovHC()`函数可以选择各种形式，在后面附加type = 即可。可选形式有"HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4"，分别对应不同的异方差假设形式。如该函数的文档中所述，const对应$\sigma^{2}(X'X)^{-1} $，HC（或HC0）对应$(X'X)^{-1}X'\Omega X(X'X)^{-1}$ ，更多解释请参照`?vcovHC`。
+`vcovHC()`函数可以选择各种形式，在后面附加type = 即可。可选形式有"HC3", "const", "HC", "HC0", "HC1", "HC2", "HC4"，分别对应不同的异方差假设形式。如该函数的文档中所述，const对应 $\sigma^{2}(X'X)^{-1}$ ，HC（或HC0）对应 $(X'X)^{-1}X'\Omega X(X'X)^{-1}$ ，更多解释请参照`?vcovHC`。
 之后我们就可以采用该异方差矩阵进行参数检验，如t检验。这里调用*lmtest*包内另一个非常有用的函数`coeftest()`。
 
 ``` {r label='coef-test'}

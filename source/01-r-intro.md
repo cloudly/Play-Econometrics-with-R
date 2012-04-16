@@ -14,7 +14,7 @@
 
 ## 数据的导入
 
-获取数据有很多办法，在R 里面通过*Foreign*包可以读/写Minitab, S, SAS, SPSS, Stata, Systat等等格式的数据。当然，R本身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。此外，对于R包里面自带的数据集，我们可以直接用`data("name")`来加载数据集。这里我采取的是读取Stata的数据（DTA格式）。
+获取数据有很多办法，在R 里面通过**foreign**包可以读/写Minitab, S, SAS, SPSS, Stata, Systat等等格式的数据。当然，R本身是支持从文本文件（包括CSV格式）和剪贴板中直接读取数据的。此外，对于R包里面自带的数据集，我们可以直接用`data("name")`来加载数据集。这里我采取的是读取Stata的数据（DTA格式）。
 
 当然，我们首先要加载**foreign**包，可以在R中直接点击“加载程序包”，也可以手动输入：
 
@@ -81,7 +81,7 @@ $\hat{prate}=83.0755+5.8611mrate$
 
 [ggplot2]: ggplot2       "ggplot2"
  
-``` {r label='scatter-the-data',eval=FALSE}
+``` {r label='scatter-the-data'}
 plot(Papke_1995$mrate,Papke_1995$prate) 
 abline(RegModel,col="red")
 ````
@@ -291,19 +291,18 @@ update.views("Econometrics") #更新Econometrics主题下的包
 
 比如在当前工作目录下，我们有一个制表符（Tab或`\t`）分割的文本文件`sample.txt`，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：
 
-``` {r label='read-text-files'}
+``` {r label='read-text-files',cache=TRUE}
 sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
 ````
 
 而`read.csv()`、`read.csv2()`、`read.delim()`、`read.delim2()`都是`read.table()`不同默认参数的变形：
 
-> `` read.csv(file, header = TRUE, sep = `",`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) ``
->
-> `` read.csv2(file, header = TRUE, sep = `";`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) ``
->
-> `` read.delim(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) ``
->
-> `` read.delim2(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) ``
+``` {r label='other-read-functions',eval=FALSE}
+read.csv(file, header = TRUE, sep = `",`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
+read.csv2(file, header = TRUE, sep = `";`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
+read.delim(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
+read.delim2(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
+````
 
 当数据不整齐的时候，R会在读入过程中报错，并给出出错的行数。当然我们也可以通过更改参数来强制读入。`read.table()`的常用参数定义如下：
 
@@ -325,12 +324,12 @@ sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
 
 Excel格式除了可以采用excel里面导出文本文件或者csv文件的方式外，还可以采取`ODBC`方式读入(Windows和Mac下)。如果采用这种方式，需要加载*RODBC*这个包。
 
-```
+``` {r label='RODBC',eval=FALSE}
 library(RODBC)
-excel_channel <- odbcConnectExcel(`"data/sample.xls`") 
-sample_excel <- sqlFetch(excel_channel, `"sample`") #参数为要导入的excel数据表的名字
+excel_channel <- odbcConnectExcel("data/sample.xls") 
+sample_excel <- sqlFetch(excel_channel, "sample") #参数为要导入的excel数据表的名字
 odbcClose(channel)
-sample_excel_2007 <- odbcConnectExcel2007(`"data/sample.xlsx`") #对于07版excel文件
+sample_excel_2007 <- odbcConnectExcel2007("data/sample.xlsx") #对于07版excel文件
 ```
 
 当然，除了excel之外，所有基于ODBC接口的数据都可以读入，包括常见的MySQL、Access等。在Linux下，MySQL数据库建议使用另外的`RMySQL`包连接。
@@ -375,6 +374,7 @@ sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
 这个时候，可以用`names()`来查看变量名：
 
 ``` {r label='names-of-variables'}
+sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
 names(sample) 
 ````
 
@@ -528,7 +528,7 @@ sample_merged <- merge(sample,book_map, by.x="BOOK_ID", by.y="BOOK_ID", all.x=T,
 
 除了这些基本的变量操作之外，还有一类可能的需求就是对于整个数据集做一个形状的转换，比如把“长数据集”转换为“宽数据集”。这样的过程类似于“揉面”，而帮我们玩转面团的利器便是**reshape2**这个包。
 
-在正式介绍强大的*reshape2*包之前，需要先提到一个轻量级武器——`reshape()`函数。这个函数可以帮我们在数据的长、宽形状之间自由玩转，比如我们现在有一个用户逐月购买记录，为长格式，想把它变为宽格式：
+在正式介绍强大的**reshape2**包之前，需要先提到一个轻量级武器——`reshape()`函数。这个函数可以帮我们在数据的长、宽形状之间自由玩转，比如我们现在有一个用户逐月购买记录，为长格式，想把它变为宽格式：
 
 ``` {r label='reshape-example'}
 load("data/reshape_sample.rdata") #载入样本数据集
@@ -539,7 +539,7 @@ head(reshape_sample_wide)  #宽格式展现
 summary(reshape_sample_wide) #宽格式下基本统计量
 ````
 
-在*reshape2*包中，`melt()`函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：
+在**reshape2**包中，`melt()`函数进一步简化了这个过程。比如我们现在希望把宽数据转回长数据：
 
 ``` {r label='melt-example'}
 library(reshape2)
@@ -553,8 +553,8 @@ head(reshape_sample_long[order(reshape_sample_long$CUSTOMER_ID),]) #长格式展
 
 数据导出最常用的应该就是`write.table`函数。比如我们要输出book_map这个数据集为文本格式，那么使用：
 
-``` {r label='output-table'}
-write.table(book_map, file="/book_map_new.txt", row.names=F, col.names=T, sep="\t", quote=F)
+``` {r label='output-table',eval=FALSE}
+write.table(book_map, file="book_map_new.txt", row.names=F, col.names=T, sep="\t", quote=F)
 ````
 
 这个时候就会得到book_map_new.txt这个文本文件，以制表符分隔。`write.table()`的主要参数有：

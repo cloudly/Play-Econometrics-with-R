@@ -44,3 +44,9 @@ write.table(book_map, file="data/book_map_new.txt", row.names=F, col.names=T, se
 
 data(Grunfeld, package = "plm")
 g_fixed_twoways <- plm(inv~value + capital, data = Grunfeld, effect = "twoways", model = "within")
+
+
+library(data.table)
+book_map <- read.delim("data/BOOK_MAP.txt", header = T)
+sample_merged <- merge(sample, book_map, by.x = "BOOK_ID", by.y = "BOOK_ID", 
+                       all.x = T, all.y = F)
