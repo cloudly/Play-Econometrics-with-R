@@ -298,10 +298,10 @@ sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
 而`read.csv()`、`read.csv2()`、`read.delim()`、`read.delim2()`都是`read.table()`不同默认参数的变形：
 
 ``` {r label='other-read-functions',eval=FALSE}
-read.csv(file, header = TRUE, sep = `",`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
-read.csv2(file, header = TRUE, sep = `";`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
-read.delim(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
-read.delim2(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
+usage(read.csv)
+usage(read.csv2)
+usage(read.delim)
+usage(read.delim2)
 ````
 
 当数据不整齐的时候，R会在读入过程中报错，并给出出错的行数。当然我们也可以通过更改参数来强制读入。`read.table()`的常用参数定义如下：
