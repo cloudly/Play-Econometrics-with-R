@@ -192,10 +192,12 @@ coeftest(Hprice_Result, vcov = vcovHC)
 
 ## 加权最小二乘估计 (WLS)
 
-### 扰动项形式已知
+### 扰动项形式已知<需添加例子>
 
 有些情况下，我们可以写出加权的形式，比如扰动项服从$Var(u_{i}|inc)=\sigma^{2}inc$ ，那么可以直接在`lm()`函数里附加一项weight来实现。
 
+<需添加例子>
+### 扰动项形式未知（Feasible Linear Regression）
 (@smoke)
 下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (cigs )、年收入 (income )、该州烟的价格 (cigpric )、受访者年龄 (age )、受教育程度 (educ )、该州有无饭店内吸烟禁令 (restaurn )。而后我们需要研究决定烟草需求的因素，即cigs 为被解释变量，其他为解释变量。
 
@@ -236,9 +238,9 @@ coeftest(Hprice_Result, vcov = vcovHC)
 
 在其中我们使用当`log(income)`的系数估计值收敛$(<10^{-7})$当作循环的条件。
 
-## 广义线性估计 (GLM)
+## 广义线性估计(GLM)
 
-通常被解释变量并不一定服从正态分布，因而产生了Probit, Logit等模型。在R中，在采取广义线性估计法（Generalized Linear Models, GLM）来估计的时候，我们可以调用**glm**包。
+通常被解释变量并不一定服从正态分布，比如为0-1的离散情况，因而需要进一步借助Probit, Logit等模型来进行估计。在R中，在采取广义线性估计法（Generalized Linear Models, GLM）来估计的时候，我们可以调用**glm**包。
 
 (@MORZ)
 这里我们看一个关于已婚妇女劳动参与率的例子（MROZ.dra）。当然，一个人工不工作是一个二值变量 (inlf )，我们设1为工作，0表示不工作。这里我们不妨认为其劳动参与行为主要取决于其他的收入来源——丈夫的工资 (nwifeinc )，受教育年限 (educ )，工作经验 (exper )，年龄 (age )，小于六岁的孩子数 (kidslt6 )，六到十八岁的孩子数 (kidsge6 )。
@@ -254,7 +256,7 @@ MROZ_LPM
 
 对于非线性的估计最常用的方法就是最大似然估计法（MLE）。在stats4包中有对应的函数mle()可进行相应的估计。但是由于在计量中单独用到最大似然估计的时候很少，大多数情况下都是用于估计特定模型（如GLM），有着特定的函数，所以在这里不再作特别介绍。
 
-### Probit和Logit模型
+### 离散被解释变量：Probit和Logit模型
 
 当然使用OLS来估计概率模型并不理想（线性模型需假设解释变量具有不变的边际效应），因此我们再分别使用非线性的Probit和Logit模型来估计上例。在使用`glm()`的时候，只需要指定回归的类型(family)，其他的用法和`lm()`类似。此外可以使用`logLik()`来获取Log-Likelihood统计量。
 
@@ -267,7 +269,7 @@ MROZ_Logit
 logLik(MROZ_Logit)
 ````
 
-### Tobit模型
+### 边角解：Tobit模型
 依旧是上例，我们观察到每年的工作时间变化很大：对于不工作的来说，该值为0。此时如果画散点图那么必有近一半的点（325人）聚集在数轴上。因此，年工作时间 (hours )呈现很强烈的“边角解 (coner solution)”特性，对于这种情况我们可以采取Tobit模型。Tobit模型也是被审查的回归（Censored Regression）的一个特例。
 其实Tobit很类似于生存分析里面的情况，因此可以调用*survival*包的`survreg()`函数。这里我们有个更简单的办法，*AER*包的作者进行了一个简单的转换，在包内自带了一个`tobit()`函数，调用更方便。这里我们将结果与OLS回归的进行对比。
 
@@ -361,6 +363,10 @@ summary(CRIME1_zip)
 
 ## 选择性样本问题
 
+### 被审查的样本（Censored Regression Models）
+
+### 被截断的样本（Truncated Regression Models）
+
 ### Heckit模型
 
 当样本不能保证随机性的时候，即面对样本自选择问题（最常见的为偶然断尾）之时，我们一般采用Heckit模型。回到那个已婚妇女参加工作的例子（2.5）<red>如何cross-reference?</red>。现在我们研究影响参与工作的妇女的工资问题。这里需要加载**sampleSelection**包。
@@ -373,12 +379,8 @@ summary(MROZ_Heckit)
 
 Heckit模型实际上就是先进行一个probit回归，而后再利用前面的得到的估计值加上解释变量对被解释变量回归。
 
-## 联立方程模型（Simultaneous Equations）
-
-由于经济系统内的各变量往往是相互联系的，所以在出现联立方程的情况下OLS估计会因为内生性的问题而产生偏差，此时需要借助两阶段最小二乘法（2SLS）来估计方程（组）。
-
-### 两阶段最小二乘法(2SLS)和工具变量法
-
+## 工具变量法（Instrument Variable Estimation）
+### 内生性问题与两阶段最小二乘法(2SLS)
 对于应用在结构单一的方程上的两阶段最小二乘法，我们只需要调用**sem**包中的`tsls()`函数。
 
 回到例2.5，我们想研究教育的回报率。这个时候需要估计工资log(wage)和受教育程度（educ）、经验（exper）之间的关系。但是我们怀疑受教育程度educ 是内生变量，但他父母的受教育程度$motheduc,\;\; fatheduc$ 则为外生变量，所以可以作为educ 的工具变量。
@@ -388,6 +390,13 @@ library(sem)
 MROZ_2SLS <- tsls(lwage~educ+exper+I(exper^2),~exper+I(exper^2)+motheduc+fatheduc, data=MROZ) 
 summary(MROZ_2SLS)
 ````
+
+### 联立方程模型（Simultaneous Equations）
+
+由于经济系统内的各变量往往是相互联系的，所以在出现联立方程的情况下OLS估计会因为内生性的问题而产生偏差，此时需要借助两阶段最小二乘法（2SLS）来估计方程（组）。
+
+### 内生性检验（Test for Endogeneity）
+### 过度识别约束检验（Test for Overidentification Restrictions）
 
 ### 联立方程模型估计：似不相关回归法（Seemingly Unrelated Regression）
 
@@ -409,6 +418,8 @@ summary(gr_sur, residCov = FALSE, equations = FALSE)
 
 从结果中我们可以得到似不相关回归的估计值。这里也可以调整一下`summary()`的参数来看更详细的回归结果。
 此外，也可以加参数2SLS来调用`systemfit()`来进行两阶段最小二乘估计，具体方法不再赘述，请参见函数说明。
+
+
 
 ## 代理变量 (Proxy Variables)
 
