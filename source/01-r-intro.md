@@ -292,7 +292,7 @@ update.views("Econometrics") #更新Econometrics主题下的包
 比如在当前工作目录下，我们有一个制表符（Tab或`\t`）分割的文本文件`sample.txt`，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：
 
 ``` {r label='read-text-files',cache=TRUE}
-sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
+sample_tab_data <- read.table("data/sample.txt",header=TRUE, sep="\t")
 ````
 
 而`read.csv()`、`read.csv2()`、`read.delim()`、`read.delim2()`都是`read.table()`不同默认参数的变形：
@@ -374,8 +374,8 @@ sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
 这个时候，可以用`names()`来查看变量名：
 
 ``` {r label='names-of-variables'}
-sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
-names(sample) 
+sample_tab_data <- read.table("data/sample.txt",header=TRUE, sep="\t")
+names(sample_tab_data) 
 ````
 
 而后，可以对变量进行重新命名：
@@ -383,14 +383,14 @@ names(sample)
 比如，我们想把第二个字段重命名为RECORD_DAY：
 
 ``` {r label='rename-variables'}
-names(sample)[2] <- "RECORD_DAY" 
+names(sample_tab_data)[2] <- "RECORD_DAY" 
 ````
-这里把`names(sample)`返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。
+这里把`names(sample_tab_data)`返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。
 
 或者，我们希望对导入的没有变量名的数据集进行重命名（一般这种情况下对应的默认变量名是V1、V2等），那么可以直接对整个数据集操作。
 
 ``` {r label='rename-all-variables'}
-names(sample) <- c("CUSTOMER","RECORD_DAY","LOCATION","LOCATION2","FROM","NOTE","BOOK_ID","NOTE2","BOOK_TYPE","CLASS_ID","CLASS_NAME","AMOUNT","LENGTH","LENGTH2","PAGES","PAGES2","BOOK_NAME")
+names(sample_tab_data) <- c("CUSTOMER","RECORD_DAY","LOCATION","LOCATION2","FROM","NOTE","BOOK_ID","NOTE2","BOOK_TYPE","CLASS_ID","CLASS_NAME","AMOUNT","LENGTH","LENGTH2","PAGES","PAGES2","BOOK_NAME")
 ````
 
 data.frame的行、列操作
@@ -399,7 +399,7 @@ data.frame的行、列操作
 在一个data.frame中，我们可以直接用$来调用其中的一个变量，是最简单的调用列的格式。如果希望调用某些行列，则需要分别指定调用条件，比如：
 
 ```{r label='data-frame'}
-sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")] 
+sub_sample <- sample_tab_data["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")] 
 ````
 
 那么sub_sample里面现在就得到了购买过编号为348368158这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
@@ -410,7 +410,7 @@ sub_sample <- sample["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")]
     对于各种数据集，一般读入之后默认的是data.frame格式。此外我们常用的还有向量格式vector、矩阵格式matrix、混合格式list等。简单的说，一个data.frame的一列就是一个vector，比如我们需要所有顾客的ID这个向量：
 
 ``` {r label='vector-selection'}
-CUSTOMER_ID <- sample$CUSTOMER
+CUSTOMER_ID <- sample_tab_data$CUSTOMER
 ````
 
     这个时候就会在workspace那里出现一个新向量CUSTOMER_ID。各个格式之间可以直接转换，比如
@@ -426,14 +426,14 @@ CUSTOMER_ID <- as.data.frame(CUSTOMER_ID)
 	对于向量中的元素，记录的格式则可能是逻辑型、文本型、整数型、数值型、因素型等等。各个向量格式之间可以直接转换，比如对于CLASS_ID这个变量，虽然是数值记录的但数值本身没有任何意义，只是一个相互区别和识别的代码，因此可以考虑专为character或者factor格式：
 
 ``` {r label='as-factor'}
-sample$CLASS_ID <- as.factor(sample$CLASS_ID)
+sample_tab_data$CLASS_ID <- as.factor(sample_tab_data$CLASS_ID)
 ````
 
     之后R里面就会识别其为文本或者因素型数据了。值得注意的是，如果需要把一个因素型的数据重新转换为整数型，则需要经过文本型过渡：
 
 ``` {r label='as-integer'}
-sample$CLASS_ID <- as.character(sample$CLASS_ID)
-sample$CLASS_ID <- as.integer(sample$CLASS_ID)
+sample_tab_data$CLASS_ID <- as.character(sample_tab_data$CLASS_ID)
+sample_tab_data$CLASS_ID <- as.integer(sample_tab_data$CLASS_ID)
 ````
 
     否则会被直接重编码，丢失原有的数据串信息。（注：花开两朵、各表一枝。实际上，我们也可以应用这种特性来进行重编码工作。）
@@ -445,14 +445,14 @@ sample$CLASS_ID <- as.integer(sample$CLASS_ID)
     如果我们基于一些记录判断生成新的变量，比如基于如果`用户购买量>0`，则我们认为其在当日有购买行为，那么可以使用：
 
 ``` {r label='logic-variable'}
-sample$purchase <- sample$AMOUNT > 0
+sample_tab_data$purchase <- sample_tab_data$AMOUNT > 0
 ````
 
     这样就生成了一个新的逻辑型变量purchase（取值为TRUE  或者FALSE）。逻辑型变量的一大用处就是可以直接通过相乘操作来进行多个行为之间的交集运算，比如除了是否购买之外，我们还关心购买的书籍是不是在标号为200的书店购买的，那么就可以：
 
 ``` {r label='logic-variable-2'}
-sample$book_store_200 <- sample$LOCATION == 200
-sample$purchase_bs200 <- sample$book_store_200*sample$purchase
+sample_tab_data$book_store_200 <- sample_tab_data$LOCATION == 200
+sample_tab_data$purchase_bs200 <- sample_tab_data$book_store_200*sample_tab_data$purchase
 ````
 
     最后得到的变量purchase_bs200为TRUE则该用户是在200号书店购买的图书。类似的，我们可以统计是不是每个月都有购买行为等。
@@ -460,7 +460,7 @@ sample$purchase_bs200 <- sample$book_store_200*sample$purchase
     这里还一并介绍一个有用的`%in%`运算符，表示一个元素是否属于一个给定的集合，比如：
 
 ``` {r label='in-operation'}
-sample$book_store <- sample$LOCATION %in% c(200,300)
+sample_tab_data$book_store <- sample_tab_data$LOCATION %in% c(200,300)
 ````
 
     表示用户在200或者300号书店进行了购买。`c()`为向量生成函数，故得到的向量含有200和300两个元素。
@@ -486,7 +486,7 @@ sample$book_store <- sample$LOCATION %in% c(200,300)
     字符操作最常见的就是字符串生成操作，比如我们有CUSTOMER、LOCATION、和BOOK_NAME三个变量，希望批量生成一个变量，然后发送给顾客作为反馈记录，希望的格式为“CUSTOMER顾客您好，您在编号为LOCATION的书店购买了书籍BOOK_NAME，仅供确认。”，那么我们可以使用paste()这个函数：
 
 ``` {r label='character-operation'}
-sample$message <- paste(sample$CUSTOMER,"顾客您好，您在编号为",sample$LOCATION,"的书店购买了书籍",sample$BOOK_NAME,"，仅供确认。",sep="")
+sample_tab_data$message <- paste(sample_tab_data$CUSTOMER,"顾客您好，您在编号为",sample_tab_data$LOCATION,"的书店购买了书籍",sample_tab_data$BOOK_NAME,"，仅供确认。",sep="")
 ````
     这个时候就得到的相应的新变量。`paste()`函数有个参数是`sep`，用来指定各个部分之间的连接符，默认为空格，如果不需要任何额外的符号用一对双引号设置为空即可。
 
@@ -503,7 +503,7 @@ sample$message <- paste(sample$CUSTOMER,"顾客您好，您在编号为",sample$
 
 ``` {r label='merge-operation'}
 book_map <- read.delim("data/BOOK_MAP.txt", header= T)
-sample_merged <- merge(sample,book_map, by.x="BOOK_ID", by.y="BOOK_ID", all.x=T, all.y=F)
+sample_merged <- merge(sample_tab_data,book_map, by.x="BOOK_ID", by.y="BOOK_ID", all.x=T, all.y=F)
 ````
 
 	这样就有了一列新的变量，记录的是重编码之后的书籍ID。
