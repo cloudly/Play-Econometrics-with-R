@@ -166,13 +166,13 @@ RStudio界面，分为四块。左上角是脚本编辑框和数据浏览框；�
 
 在R中，默认的工作目录依系统配置而变化，可以在直接启动R之后，通过`getwd()`命令来查看。
 
-``` {r label='set-working-directory'}
+``` {r label='set-working-directory', eval=FALSE}
 getwd() 
 ````
 
 另外，如果是通过后缀名为.R的脚本文件来直接调用R，那么工作目录就为该脚本文件所在的目录。如果对于任何命令的参数等希望得到进一步的说明，那么可以在命令前加上“?”来直接调用帮助。比如，
 
-``` {r label='help'} 
+``` {r label='help', eval=FALSE} 
 ?getwd
 ````
 
@@ -298,10 +298,10 @@ sample <- read.table("data/sample.txt",header=TRUE, sep="\t")
 而`read.csv()`、`read.csv2()`、`read.delim()`、`read.delim2()`都是`read.table()`不同默认参数的变形：
 
 ``` {r label='other-read-functions',eval=FALSE}
-read.csv(file, header = TRUE, sep = `",`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
-read.csv2(file, header = TRUE, sep = `";`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
-read.delim(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
-read.delim2(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
+usage(read.csv)
+usage(read.csv2)
+usage(read.delim)
+usage(read.delim2)
 ````
 
 当数据不整齐的时候，R会在读入过程中报错，并给出出错的行数。当然我们也可以通过更改参数来强制读入。`read.table()`的常用参数定义如下：

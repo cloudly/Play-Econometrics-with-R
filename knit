@@ -3,6 +3,8 @@
 ## ./knit [epub|github|html|pdf] to generate different types of output
 
 library(knitr)
+library(formatR)
+library(methods)
 
 ## global chunk options: use high quality Cairo PNG device
 pdf.options(pointsize = 10)  # smaller pointsize for recording plots
