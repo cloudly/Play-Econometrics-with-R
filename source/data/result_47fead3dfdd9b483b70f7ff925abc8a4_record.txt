@@ -1,0 +1,2 @@
+CUSTOMER	Amount	Book
+47fead3dfdd9b483b70f7ff925abc8a4	29	1

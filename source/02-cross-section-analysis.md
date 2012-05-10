@@ -6,15 +6,15 @@
 
 得到一个回归方程后，关心的第一件事就是系数和方程整体的显著性，分别由t检验和F检验实现。来看下面这个有关法学院的例子。
 
-(@在LAWSCH85)
+(@LAWSCH85)
 在LAWSCH85.DTA这个数据集中，法学院应届生薪水的中位数由下面的方程决定：
 
-$log(salary)=\beta_{0}+\beta_{1}LAST+\beta_{2}GPA+\beta_{3}log(libvol)+\beta_{4}log(cost)+\beta_{5}rank+u $
+$log(salary)=\beta_{0}+\beta_{1}LAST+\beta_{2}GPA+\beta_{3}log(libvol)+\beta_{4}log(cost)+\beta_{5}rank+u$
 
 其中LSAT 是班级里LSAT成绩中位数，GPA 是班级学习成绩的中位数，libvol 是法学院图书馆藏书卷数，cost 是在法学院的年消费额，rank 是法学院的排名（正序）。
 接下来我们估计这个方程:
 
-$LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank, data=LAW)$
+`LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank, data=LAW)`
 
 很容易得到回归结果如下：
 
@@ -24,12 +24,12 @@ LAW_Result <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank, data
 summary(LAW_Result)
 ````
 
-### t检验
+### 单变量显著性：t检验
 
 在回归结果中已经报告了各变量的t统计值，从而可知：rank 的估计值很显著（通过0.1%显著性水平检验）。而GPA 和(log)libvol 则通过了1%显著性水平检验。
 而变量LSAT 系数估计值不显著。
 
-### F检验
+### 多个变量显著性：F检验
 
 考虑到新生入学的时候只有GPA 和LSAT 两个变量可以观测，所以接下来我们进行变量GPA 和LSAT 的联合检验即F检验。该检验属于线性假设检验，在*RCommander*下可以在`Models -> Hypothesis Tests ->Linear hypothesis`里面通过图形化界面完成。
 
@@ -76,17 +76,18 @@ LAW$north_true <- factor(LAW$north, labels=c('others','north'))
 我想你不会手动的把所有的学校都赋一个虚拟变量值吧？在R里面，我们需要先通过`recode()`来依照分组创建一个新的factor形式的变量$rank\_f$，然后再进行回归。这样我们就不需要在原来的数据库里面新增加五个变量并赋逻辑值了。
 
 ``` {r label='group-by'}
-LAW$rank_f <- recode(LAW$rank, '1:10="top10"; 11:25="r11_25"; 26:40="r26_40";    41:60="r41_60";  61:100="r61_100"; else="r101_"; ', as.factor.result=TRUE)
+LAW$rank_f <- recode(LAW$rank, '1:10="top10"; 11:25="r11_25"; 26:40="r26_40"; 41:60="r41_60"; 61:100="r61_100"; else="r101_"; ', as.factor.result=TRUE)
 LAW_Result2 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + rank_f, data=LAW)
 summary(LAW_Result2)
 ````
 
 此外，我们可以通过*RCommander*里面，在`Data -> Recode Variables`的方框里逐行输入。
+
 ![Recode Varibles图形化界面](imgs/recode_variables.JPG)
 
-### 交叉项
+### 交叉项（intersections）
 
-我不知道这样叫是不是足够确切，在微观计量里面我们会经常用到两个变量相乘的回归项，比如$female\cdot single $，即单身女士。相比而言这样的虚拟变量并不需要特别的处理，在回归方程里面直接写成相乘的形式即可。注意此时不需要再写female 和single 变量，`lm()`会默认加入这两个变量。例如，在法学院的例子中，我们可以对top10 和west 两个变量进行相乘回归（这里top10 变量来源于数据库本身自带的）。
+我不知道这样叫是不是足够确切，在微观计量里面我们会经常用到两个变量相乘的回归项，比如$female\cdot single$，即单身女士。相比而言这样的虚拟变量并不需要特别的处理，在回归方程里面直接写成相乘的形式即可。注意此时不需要再写female 和single 变量，`lm()`会默认加入这两个变量。例如，在法学院的例子中，我们可以对top10 和west 两个变量进行相乘回归（这里top10 变量来源于数据库本身自带的）。
 
 ``` {r label='intersections'}
 LAW_Result3 <- lm(log(salary) ~ LSAT + GPA + log(libvol) + log(cost) + top10*west, data=LAW)
@@ -139,7 +140,9 @@ bptest(Hprice_Result)
 ````
 
 由结果来看，存在异方差。由于对数形式是消除异方差（尤其针对价格数据）的常用方法，因此我们再对对数形式进行回归:
+
 $\hat{log(price)}=\hat{\beta_{0}}+\hat{\beta_{1}}log(lotsize)+\hat{\beta_{2}}log(sqrft)+\hat{\beta_{3}}bdrms$
+
 得到回归结果如下：
 
 ``` {r label='log-regression'}
@@ -168,7 +171,7 @@ bptest(Hprice_Result2,studentize=FALSE,varformula = ~fitted.values(Hprice_Result
 
 还是上面这个例子，我们改用怀特检验。其实，我们可以把怀特检验看作广义上的BP检验的一种特殊形式，因此可以通过在`bptest()`里面赋予更多的参数来实现，即加入各个变量平方和交叉相乘的项。
 
-比如回归为`fm <- lm(y ~ x + z, data = foo)`，那么则应写成`bptest(fm, ~ x * z + I(x^2) + I(z^2), data = foo)` 。因为这里写出来较麻烦，所以不再举例。
+比如回归为`fm <- lm(y ~ x + z, data = foo)`，那么则应写成`bptest(fm, ~ x * z + I(x^2) + I(z^2), data = foo)` 。其余以此类推，不再举例。
 
 另，也可以通过**sandwich**这个专门对付“三明治”的包来实现怀特检验。
 
@@ -197,9 +200,10 @@ coeftest(Hprice_Result, vcov = vcovHC)
 有些情况下，我们可以写出加权的形式，比如扰动项服从$Var(u_{i}|inc)=\sigma^{2}inc$ ，那么可以直接在`lm()`函数里附加一项weight来实现。
 
 <需添加例子>
+
 ### 扰动项形式未知（Feasible Linear Regression）
 (@smoke)
-下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (cigs )、年收入 (income )、该州烟的价格 (cigpric )、受访者年龄 (age )、受教育程度 (educ )、该州有无饭店内吸烟禁令 (restaurn )。而后我们需要研究决定烟草需求的因素，即cigs 为被解释变量，其他为解释变量。
+下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (cigs)、年收入 (income)、该州烟的价格 (cigpric)、受访者年龄 (age)、受教育程度 (educ)、该州有无饭店内吸烟禁令 (restaurn)。而后我们需要研究决定烟草需求的因素，即cigs为被解释变量，其他为解释变量。
 
 * 使用FGLS的第一步是进行OLS估计，得到残差项的估计值$\hat{u}$ 。对于价格数据，我们取其对数形式。
 		
@@ -243,7 +247,7 @@ coeftest(Hprice_Result, vcov = vcovHC)
 通常被解释变量并不一定服从正态分布，比如为0-1的离散情况，因而需要进一步借助Probit, Logit等模型来进行估计。在R中，在采取广义线性估计法（Generalized Linear Models, GLM）来估计的时候，我们可以调用**glm**包。
 
 (@MORZ)
-这里我们看一个关于已婚妇女劳动参与率的例子（MROZ.dra）。当然，一个人工不工作是一个二值变量 (inlf )，我们设1为工作，0表示不工作。这里我们不妨认为其劳动参与行为主要取决于其他的收入来源——丈夫的工资 (nwifeinc )，受教育年限 (educ )，工作经验 (exper )，年龄 (age )，小于六岁的孩子数 (kidslt6 )，六到十八岁的孩子数 (kidsge6 )。
+这里我们看一个关于已婚妇女劳动参与率的例子（MROZ.dra）。当然，一个人工不工作是一个二值变量 (inlf)，我们设1为工作，0表示不工作。这里我们不妨认为其劳动参与行为主要取决于其他的收入来源——丈夫的工资 (nwifeinc)，受教育年限 (educ)，工作经验 (exper)，年龄 (age)，小于六岁的孩子数 (kidslt6)，六到十八岁的孩子数 (kidsge6)。
 首先我们使用OLS来估计线性概率模型（Linear Probability Model，LPM）。
 
 ``` {r label='glm-morz'}
@@ -256,7 +260,7 @@ MROZ_LPM
 
 对于非线性的估计最常用的方法就是最大似然估计法（MLE）。在stats4包中有对应的函数mle()可进行相应的估计。但是由于在计量中单独用到最大似然估计的时候很少，大多数情况下都是用于估计特定模型（如GLM），有着特定的函数，所以在这里不再作特别介绍。
 
-### 离散被解释变量：Probit和Logit模型
+### 二元被解释变量：Probit和Logit模型
 
 当然使用OLS来估计概率模型并不理想（线性模型需假设解释变量具有不变的边际效应），因此我们再分别使用非线性的Probit和Logit模型来估计上例。在使用`glm()`的时候，只需要指定回归的类型(family)，其他的用法和`lm()`类似。此外可以使用`logLik()`来获取Log-Likelihood统计量。
 
@@ -269,8 +273,10 @@ MROZ_Logit
 logLik(MROZ_Logit)
 ````
 
+### 离散被解释变量
+
 ### 边角解：Tobit模型
-依旧是上例，我们观察到每年的工作时间变化很大：对于不工作的来说，该值为0。此时如果画散点图那么必有近一半的点（325人）聚集在数轴上。因此，年工作时间 (hours )呈现很强烈的“边角解 (coner solution)”特性，对于这种情况我们可以采取Tobit模型。Tobit模型也是被审查的回归（Censored Regression）的一个特例。
+依旧是上例，我们观察到每年的工作时间变化很大：对于不工作的来说，该值为0。此时如果画散点图那么必有近一半的点（325人）聚集在数轴上。因此，年工作时间 (hours)呈现很强烈的“边角解 (coner solution)”特性，对于这种情况我们可以采取Tobit模型。Tobit模型也是被审查的回归（Censored Regression）的一个特例。
 其实Tobit很类似于生存分析里面的情况，因此可以调用*survival*包的`survreg()`函数。这里我们有个更简单的办法，*AER*包的作者进行了一个简单的转换，在包内自带了一个`tobit()`函数，调用更方便。这里我们将结果与OLS回归的进行对比。
 
 ``` {r label='tobit'}
@@ -353,7 +359,7 @@ logLik(rd_nb)
 
 ### 零膨胀泊松模型 (Zero-inflated Poisson Model, ZIP)
 
-对于计数模型来说，当数据集中的0观测值众多，所占比例超出泊松回归允许的范围时，回归结果就不是那么令人满意。此时需采用ZIP（Zero-inflated Poisson Model）模型。在R中，*pscl*包提供了一个函数`zeroinfl()`，用来实现ZIP泊松回归。比如例2.6中，大多数人($>70\%$ )并未被逮捕过。所以我们不妨采用ZIP模型（负二项回归形式，ZINB）。
+对于计数模型来说，当数据集中的0观测值众多，所占比例超出泊松回归允许的范围时，回归结果就不是那么令人满意。此时需采用ZIP（Zero-inflated Poisson Model）模型。在R中，*pscl*包提供了一个函数`zeroinfl()`，用来实现ZIP泊松回归。比如例2.6中，大多数人($>70\%$)并未被逮捕过。所以我们不妨采用ZIP模型（负二项回归形式，ZINB）。
 
 ``` {r label='zinb'}
 library("pscl")
@@ -373,7 +379,7 @@ summary(CRIME1_zip)
 
 ``` {r label='heckit'}
 library(sampleSelection)
-MROZ_Heckit <- heckit( inlf ~ nwifeinc + educ + exper + I( exper^2 ) + age + kidslt6+kidsge6, log( wage ) ~ educ + exper + I( exper^2 ), data=MROZ, method = "2step" )
+MROZ_Heckit <- heckit( inlf ~ nwifeinc + educ + exper + I( exper^2) + age + kidslt6+kidsge6, log( wage) ~ educ + exper + I( exper^2), data=MROZ, method = "2step")
 summary(MROZ_Heckit)
 ````
 

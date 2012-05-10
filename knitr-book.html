@@ -96,12 +96,12 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </ul></li>
 <li><a href="#稳健标准差"><span class="toc-section-number">4.5</span> 稳健标准差</a></li>
 <li><a href="#加权最小二乘估计-wls"><span class="toc-section-number">4.6</span> 加权最小二乘估计 (WLS)</a><ul>
-<li><a href="#扰动项形式已知"><span class="toc-section-number">4.6.1</span> 扰动项形式已知</a></li>
+<li><a href="#扰动项形式已知"><span class="toc-section-number">4.6.1</span> 扰动项形式已知<需添加例子></a></li>
 </ul></li>
-<li><a href="#广义线性估计-glm"><span class="toc-section-number">4.7</span> 广义线性估计 (GLM)</a><ul>
+<li><a href="#广义线性估计glm"><span class="toc-section-number">4.7</span> 广义线性估计(GLM)</a><ul>
 <li><a href="#最大似然估计-maximum-likelihood-estimation-mle"><span class="toc-section-number">4.7.1</span> 最大似然估计 (Maximum Likelihood Estimation, MLE)</a></li>
-<li><a href="#probit和logit模型"><span class="toc-section-number">4.7.2</span> Probit和Logit模型</a></li>
-<li><a href="#tobit模型"><span class="toc-section-number">4.7.3</span> Tobit模型</a></li>
+<li><a href="#离散被解释变量probit和logit模型"><span class="toc-section-number">4.7.2</span> 离散被解释变量：Probit和Logit模型</a></li>
+<li><a href="#边角解tobit模型"><span class="toc-section-number">4.7.3</span> 边角解：Tobit模型</a></li>
 <li><a href="#有序的probitlogit模型ordered-logitprobit"><span class="toc-section-number">4.7.4</span> 有序的probit/logit模型（Ordered Logit/Probit）</a></li>
 </ul></li>
 <li><a href="#计数模型-count-model"><span class="toc-section-number">4.8</span> 计数模型 (Count Model)</a><ul>
@@ -111,11 +111,16 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <li><a href="#零膨胀泊松模型-zero-inflated-poisson-model-zip"><span class="toc-section-number">4.8.4</span> 零膨胀泊松模型 (Zero-inflated Poisson Model, ZIP)</a></li>
 </ul></li>
 <li><a href="#选择性样本问题"><span class="toc-section-number">4.9</span> 选择性样本问题</a><ul>
-<li><a href="#heckit模型"><span class="toc-section-number">4.9.1</span> Heckit模型</a></li>
+<li><a href="#被审查的样本censored-regression-models"><span class="toc-section-number">4.9.1</span> 被审查的样本（Censored Regression Models）</a></li>
+<li><a href="#被截断的样本truncated-regression-models"><span class="toc-section-number">4.9.2</span> 被截断的样本（Truncated Regression Models）</a></li>
+<li><a href="#heckit模型"><span class="toc-section-number">4.9.3</span> Heckit模型</a></li>
 </ul></li>
-<li><a href="#联立方程模型simultaneous-equations"><span class="toc-section-number">4.10</span> 联立方程模型（Simultaneous Equations）</a><ul>
-<li><a href="#两阶段最小二乘法2sls和工具变量法"><span class="toc-section-number">4.10.1</span> 两阶段最小二乘法(2SLS)和工具变量法</a></li>
-<li><a href="#联立方程模型估计似不相关回归法seemingly-unrelated-regression"><span class="toc-section-number">4.10.2</span> 联立方程模型估计：似不相关回归法（Seemingly Unrelated Regression）</a></li>
+<li><a href="#工具变量法instrument-variable-estimation"><span class="toc-section-number">4.10</span> 工具变量法（Instrument Variable Estimation）</a><ul>
+<li><a href="#内生性问题与两阶段最小二乘法2sls"><span class="toc-section-number">4.10.1</span> 内生性问题与两阶段最小二乘法(2SLS)</a></li>
+<li><a href="#联立方程模型simultaneous-equations"><span class="toc-section-number">4.10.2</span> 联立方程模型（Simultaneous Equations）</a></li>
+<li><a href="#内生性检验test-for-endogeneity"><span class="toc-section-number">4.10.3</span> 内生性检验（Test for Endogeneity）</a></li>
+<li><a href="#过度识别约束检验test-for-overidentification-restrictions"><span class="toc-section-number">4.10.4</span> 过度识别约束检验（Test for Overidentification Restrictions）</a></li>
+<li><a href="#联立方程模型估计似不相关回归法seemingly-unrelated-regression"><span class="toc-section-number">4.10.5</span> 联立方程模型估计：似不相关回归法（Seemingly Unrelated Regression）</a></li>
 </ul></li>
 <li><a href="#代理变量-proxy-variables"><span class="toc-section-number">4.11</span> 代理变量 (Proxy Variables)</a></li>
 </ul></li>
@@ -274,9 +279,6 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>我们可以直接用最简单的<code>plot()</code>命令作图(当然更好的一个选择可能是<em><a href="ggplot2" title="ggplot2">ggplot2</a></em>)，用法如下：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(Papke_1995$mrate, Papke_1995$prate)
 <span class="kw">abline</span>(RegModel, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</code></pre>
-<div class="figure">
-<img src="http://i.imgur.com/Gk0cu.png" alt="plot of chunk scatter-the-data" /><p class="caption">plot of chunk scatter-the-data</p>
-</div>
 <p>第二行命令是添加了那条回归拟合线。 可见这个图本来就很散，也难怪线性拟合效果这么差了。</p>
 <h3 id="点预测"><a href="#TOC"><span class="header-section-number">2.2.4</span> 点预测</a></h3>
 <p>最后，就是依赖估计方程做预测了。这里需要的是做一个点预测。R里面需要依据另一个数据集来预测，而且这个数据集中必须含有mrate 这个变量。新建一个数据集并赋值的办法有许多，最简单的就是直接赋值，方法如下：</p>
@@ -340,11 +342,8 @@ Reg2 &lt;- <span class="kw">lm</span>(atndrte ~ priGPA + ACT, <span class="dt">d
 <h3 id="指定工作目录"><a href="#TOC"><span class="header-section-number">3.2.1</span> 指定工作目录</a></h3>
 <p>在R中，默认的工作目录依系统配置而变化，可以在直接启动R之后，通过<code>getwd()</code>命令来查看。</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getwd</span>()</code></pre>
-<pre><code>## [1] &quot;E:/documents/manuscripts/[Brochure] Play Econometrics with R/git/source&quot;</code></pre>
 <p>另外，如果是通过后缀名为.R的脚本文件来直接调用R，那么工作目录就为该脚本文件所在的目录。如果对于任何命令的参数等希望得到进一步的说明，那么可以在命令前加上“?”来直接调用帮助。比如，</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">?</span><span class="st">`</span>(getwd)</code></pre>
-<pre><code>## starting httpd help server ...</code></pre>
-<pre><code>##  done</code></pre>
 <p>这个时候R会弹出帮助文档窗口。</p>
 <p>在我们撰写R脚本之前，往往希望事前指定一个工作目录，这个时候就可以利用<code>setwd(file_path)</code>.</p>
 <p>R里面大多数操作都是面向对象的，所以上述代码的含义就是给<code>file_path</code>这个object赋上了<code>&quot;E:/example/&quot;</code>这个文本串作为其值。然后利用<code>setwd()</code>函数来指定工作目录。显然，这个代码和直接调用<code>setwd(&quot;E:/example/&quot;)</code>是等同的。</p>
@@ -410,12 +409,22 @@ Reg2 &lt;- <span class="kw">lm</span>(atndrte ~ priGPA + ACT, <span class="dt">d
 <li><p>quote: 文本被包裹的符号</p></li>
 </ul>
 <p>比如在当前工作目录下，我们有一个制表符（Tab或<code>\t</code>）分割的文本文件<code>sample.txt</code>，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：</p>
-<pre class="sourceCode r"><code class="sourceCode r">sample &lt;- <span class="kw">read.table</span>(<span class="st">&quot;data/sample.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data &lt;- <span class="kw">read.table</span>(<span class="st">&quot;data/sample_book_purschase.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, 
+    <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre>
 <p>而<code>read.csv()</code>、<code>read.csv2()</code>、<code>read.delim()</code>、<code>read.delim2()</code>都是<code>read.table()</code>不同默认参数的变形：</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read.csv</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;,</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>.<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) 
-<span class="kw">read.csv2</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;;</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>,<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) 
-<span class="kw">read.delim</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;</span><span class="ch">\t</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>.<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) 
-<span class="kw">read.delim2</span>(file, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">`</span><span class="dt">&quot;</span><span class="ch">\t</span><span class="st">`&quot;, quote=`&quot;</span>\<span class="st">`</span><span class="dt">&quot;</span><span class="st">`&quot;, dec=`&quot;</span>,<span class="st">`</span><span class="dt">&quot;, fill = TRUE, comment.char=</span><span class="st">`&quot;`&quot;</span>, ...) </code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;formatR&quot;</span>)
+<span class="kw">usage</span>(read.csv)</code></pre>
+<pre><code>## read.csv(file, header = TRUE, sep = &quot;,&quot;, quote = &quot;\&quot;&quot;, 
+##     dec = &quot;.&quot;, fill = TRUE, comment.char = &quot;&quot;, ...)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">usage</span>(read.csv2)</code></pre>
+<pre><code>## read.csv2(file, header = TRUE, sep = &quot;;&quot;, quote = &quot;\&quot;&quot;, 
+##     dec = &quot;,&quot;, fill = TRUE, comment.char = &quot;&quot;, ...)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">usage</span>(read.delim)</code></pre>
+<pre><code>## read.delim(file, header = TRUE, sep = &quot;\t&quot;, quote = &quot;\&quot;&quot;, 
+##     dec = &quot;.&quot;, fill = TRUE, comment.char = &quot;&quot;, ...)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">usage</span>(read.delim2)</code></pre>
+<pre><code>## read.delim2(file, header = TRUE, sep = &quot;\t&quot;, quote = &quot;\&quot;&quot;, 
+##     dec = &quot;,&quot;, fill = TRUE, comment.char = &quot;&quot;, ...)</code></pre>
 <p>当数据不整齐的时候，R会在读入过程中报错，并给出出错的行数。当然我们也可以通过更改参数来强制读入。<code>read.table()</code>的常用参数定义如下：</p>
 <ul>
 <li><p><code>header</code>：是否把第一行读为变量名</p></li>
@@ -437,18 +446,8 @@ sample_excel_2007 &lt;- <span class="kw">odbcConnectExcel2007</span>(<span class
 <h3 id="excel-格式通过xlsx包"><a href="#TOC"><span class="header-section-number">3.3.3</span> Excel 格式：通过xlsx包</a></h3>
 <p>除了ODBC之外，另一种简单的方式则是调用<strong>xlsx</strong>包（在linux平台下也可运行）。该包不仅仅可以读入excel数据，还可以“将Excel读取为数据框，以及将数据框写入为Excel文件都不是问题，而更加强大的是它能处理Excel中的格式，比如合并单元格，设置列的宽度，设置字体和颜色等等”（具体请参见<a href="http://yixuan.cos.name/cn/2012/01/new-method-to-read-excel-file-in-r/">yixuan的介绍</a>）。这样，就为通过R脚本重复生成excel格式的报表等铺平了道路。</p>
 <p>如果只是读入数据，那么直接调用<code>read.xlsx()</code>就可以了。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xlsx)</code></pre>
-<pre><code>## Loading required package: xlsxjars</code></pre>
-<pre><code>## Loading required package: rJava</code></pre>
-<pre><code>## Loading required package: methods</code></pre>
-<pre><code>## 
-## Attaching package: &#39;rJava&#39;
-## </code></pre>
-<pre><code>## The following object(s) are masked from &#39;package:data.table&#39;:
-## 
-##     J
-## </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">file &lt;- <span class="kw">system.file</span>(<span class="st">&quot;tests&quot;</span>, <span class="st">&quot;test_import.xlsx&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;xlsx&quot;</span>)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(xlsx)
+file &lt;- <span class="kw">system.file</span>(<span class="st">&quot;tests&quot;</span>, <span class="st">&quot;test_import.xlsx&quot;</span>, <span class="dt">package =</span> <span class="st">&quot;xlsx&quot;</span>)
 sample_sheet1 &lt;- <span class="kw">read.xlsx</span>(file, <span class="dv">1</span>)  <span class="co"># 读取第一个工作表</span></code></pre>
 <p>对于该包中<code>write.xlsx()</code>等写入excel文件函数感兴趣的读者，可以借助<code>?write.xlsx</code>来阅读详细的使用说明。注：该包只支持excel 07以上格式，对于<code>.xls</code>格式还请先用高版本的Excel等软件进行转换。</p>
 <h3 id="数据库sql"><a href="#TOC"><span class="header-section-number">3.3.4</span> 数据库（SQL）</a></h3>
@@ -465,67 +464,58 @@ sample_sheet1 &lt;- <span class="kw">read.xlsx</span>(file, <span class="dv">1</
 <h3 id="变量重命名"><a href="#TOC"><span class="header-section-number">3.4.1</span> 变量重命名</a></h3>
 <p>导入数据之后，可以在RStudio的右上方Workspace那里看到一个新的数据，名为sample，共有针对17个变量的99行记录。单击可以在左上角的数据浏览窗内看到对应的数据样本。</p>
 <p>这个时候，可以用<code>names()</code>来查看变量名：</p>
-<pre class="sourceCode r"><code class="sourceCode r">sample &lt;- <span class="kw">read.table</span>(<span class="st">&quot;data/sample.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
-<span class="kw">names</span>(sample)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data &lt;- <span class="kw">read.table</span>(<span class="st">&quot;data/sample_book_purschase.txt&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, 
+    <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+<span class="kw">names</span>(sample_tab_data)</code></pre>
 <pre><code>##  [1] &quot;CUSTOMER&quot;   &quot;DAY&quot;        &quot;LOCATION&quot;   &quot;LOCATION2&quot;  &quot;FROM&quot;      
 ##  [6] &quot;NOTE&quot;       &quot;BOOK_ID&quot;    &quot;NOTE2&quot;      &quot;BOOK_TYPE&quot;  &quot;CLASS_ID&quot;  
 ## [11] &quot;CLASS_NAME&quot; &quot;AMOUNT&quot;     &quot;LENGTH&quot;     &quot;LENGTH2&quot;    &quot;PAGES&quot;     
 ## [16] &quot;PAGES2&quot;     &quot;BOOK_NAME&quot; </code></pre>
 <p>而后，可以对变量进行重新命名：</p>
 <p>比如，我们想把第二个字段重命名为RECORD_DAY：</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(sample)[<span class="dv">2</span>] &lt;- <span class="st">&quot;RECORD_DAY&quot;</span></code></pre>
-<pre><code>## Error: names() applied to a non-vector</code></pre>
-<p>这里把<code>names(sample)</code>返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(sample_tab_data)[<span class="dv">2</span>] &lt;- <span class="st">&quot;RECORD_DAY&quot;</span></code></pre>
+<p>这里把<code>names(sample_tab_data)</code>返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。</p>
 <p>或者，我们希望对导入的没有变量名的数据集进行重命名（一般这种情况下对应的默认变量名是V1、V2等），那么可以直接对整个数据集操作。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(sample) &lt;- <span class="kw">c</span>(<span class="st">&quot;CUSTOMER&quot;</span>, <span class="st">&quot;RECORD_DAY&quot;</span>, <span class="st">&quot;LOCATION&quot;</span>, <span class="st">&quot;LOCATION2&quot;</span>, 
-    <span class="st">&quot;FROM&quot;</span>, <span class="st">&quot;NOTE&quot;</span>, <span class="st">&quot;BOOK_ID&quot;</span>, <span class="st">&quot;NOTE2&quot;</span>, <span class="st">&quot;BOOK_TYPE&quot;</span>, <span class="st">&quot;CLASS_ID&quot;</span>, <span class="st">&quot;CLASS_NAME&quot;</span>, 
-    <span class="st">&quot;AMOUNT&quot;</span>, <span class="st">&quot;LENGTH&quot;</span>, <span class="st">&quot;LENGTH2&quot;</span>, <span class="st">&quot;PAGES&quot;</span>, <span class="st">&quot;PAGES2&quot;</span>, <span class="st">&quot;BOOK_NAME&quot;</span>)</code></pre>
-<pre><code>## Error: names() applied to a non-vector</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(sample_tab_data) &lt;- <span class="kw">c</span>(<span class="st">&quot;CUSTOMER&quot;</span>, <span class="st">&quot;RECORD_DAY&quot;</span>, <span class="st">&quot;LOCATION&quot;</span>, 
+    <span class="st">&quot;LOCATION2&quot;</span>, <span class="st">&quot;FROM&quot;</span>, <span class="st">&quot;NOTE&quot;</span>, <span class="st">&quot;BOOK_ID&quot;</span>, <span class="st">&quot;NOTE2&quot;</span>, <span class="st">&quot;BOOK_TYPE&quot;</span>, <span class="st">&quot;CLASS_ID&quot;</span>, 
+    <span class="st">&quot;CLASS_NAME&quot;</span>, <span class="st">&quot;AMOUNT&quot;</span>, <span class="st">&quot;LENGTH&quot;</span>, <span class="st">&quot;LENGTH2&quot;</span>, <span class="st">&quot;PAGES&quot;</span>, <span class="st">&quot;PAGES2&quot;</span>, <span class="st">&quot;BOOK_NAME&quot;</span>)</code></pre>
 <h2 id="data.frame的行列操作"><a href="#TOC"><span class="header-section-number">3.5</span> data.frame的行、列操作</a></h2>
 <p>在一个data.frame中，我们可以直接用$来调用其中的一个变量，是最简单的调用列的格式。如果希望调用某些行列，则需要分别指定调用条件，比如：</p>
-<pre class="sourceCode r"><code class="sourceCode r">sub_sample &lt;- sample[<span class="st">&quot;BOOK_ID&quot;</span> == <span class="dv">348368158</span>, <span class="kw">c</span>(<span class="st">&quot;CUSTOMER&quot;</span>, <span class="st">&quot;RECORD_DAY&quot;</span>, 
-    <span class="st">&quot;BOOK_ID&quot;</span>)]</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
-<p>那么sub_sample里面现在就得到了购买过编号为348368158这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。<code>c()</code>为向量生成函数。</p>
+<pre class="sourceCode r"><code class="sourceCode r">sub_sample &lt;- sample_tab_data[<span class="st">&quot;BOOK_ID&quot;</span> == <span class="dv">348918047</span>, <span class="kw">c</span>(<span class="st">&quot;CUSTOMER&quot;</span>, 
+    <span class="st">&quot;RECORD_DAY&quot;</span>, <span class="st">&quot;BOOK_ID&quot;</span>)]</code></pre>
+<p>那么sub_sample里面现在就得到了购买过编号为348918047这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。<code>c()</code>为向量生成函数。</p>
 <h3 id="数据格式的转换"><a href="#TOC"><span class="header-section-number">3.5.1</span> 数据格式的转换</a></h3>
 <ul>
 <li>vector, data.frame , matrix, list 对于各种数据集，一般读入之后默认的是data.frame格式。此外我们常用的还有向量格式vector、矩阵格式matrix、混合格式list等。简单的说，一个data.frame的一列就是一个vector，比如我们需要所有顾客的ID这个向量：</li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r">CUSTOMER_ID &lt;- sample$CUSTOMER</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">CUSTOMER_ID &lt;- sample_tab_data$CUSTOMER</code></pre>
 <pre><code>这个时候就会在workspace那里出现一个新向量CUSTOMER_ID。各个格式之间可以直接转换，比如</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">CUSTOMER_ID &lt;- <span class="kw">as.data.frame</span>(CUSTOMER_ID)</code></pre>
-<pre><code>## Error: object &#39;CUSTOMER_ID&#39; not found</code></pre>
 <pre><code>那么这个时候customer_ID就成为了只有一个变量的data.frame格式了。</code></pre>
 <ul>
 <li><p>logic, character, integer, numeric, factor</p>
 <p>对于向量中的元素，记录的格式则可能是逻辑型、文本型、整数型、数值型、因素型等等。各个向量格式之间可以直接转换，比如对于CLASS_ID这个变量，虽然是数值记录的但数值本身没有任何意义，只是一个相互区别和识别的代码，因此可以考虑专为character或者factor格式：</p></li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r">sample$CLASS_ID &lt;- <span class="kw">as.factor</span>(sample$CLASS_ID)</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data$CLASS_ID &lt;- <span class="kw">as.factor</span>(sample_tab_data$CLASS_ID)</code></pre>
 <pre><code>之后R里面就会识别其为文本或者因素型数据了。值得注意的是，如果需要把一个因素型的数据重新转换为整数型，则需要经过文本型过渡：</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample$CLASS_ID &lt;- <span class="kw">as.character</span>(sample$CLASS_ID)</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample$CLASS_ID &lt;- <span class="kw">as.integer</span>(sample$CLASS_ID)</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data$CLASS_ID &lt;- <span class="kw">as.character</span>(sample_tab_data$CLASS_ID)
+sample_tab_data$CLASS_ID &lt;- <span class="kw">as.integer</span>(sample_tab_data$CLASS_ID)</code></pre>
 <pre><code>否则会被直接重编码，丢失原有的数据串信息。（注：花开两朵、各表一枝。实际上，我们也可以应用这种特性来进行重编码工作。）</code></pre>
 <h3 id="新变量生成"><a href="#TOC"><span class="header-section-number">3.5.2</span> 新变量生成</a></h3>
 <ul>
 <li><p>逻辑型</p>
 <p>如果我们基于一些记录判断生成新的变量，比如基于如果<code>用户购买量&gt;0</code>，则我们认为其在当日有购买行为，那么可以使用：</p></li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r">sample$purchase &lt;- sample$AMOUNT &gt; <span class="dv">0</span></code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data$purchase &lt;- sample_tab_data$AMOUNT &gt; <span class="dv">0</span></code></pre>
 <pre><code>这样就生成了一个新的逻辑型变量purchase（取值为TRUE  或者FALSE）。逻辑型变量的一大用处就是可以直接通过相乘操作来进行多个行为之间的交集运算，比如除了是否购买之外，我们还关心购买的书籍是不是在标号为200的书店购买的，那么就可以：</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample$book_store_200 &lt;- sample$LOCATION == <span class="dv">200</span></code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample$purchase_bs200 &lt;- sample$book_store_200 * sample$purchase</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data$book_store_200 &lt;- sample_tab_data$LOCATION == <span class="dv">200</span>
+sample_tab_data$purchase_bs200 &lt;- sample_tab_data$book_store_200 * 
+    sample_tab_data$purchase</code></pre>
 <pre><code>最后得到的变量purchase_bs200为TRUE则该用户是在200号书店购买的图书。类似的，我们可以统计是不是每个月都有购买行为等。
 
 这里还一并介绍一个有用的`%in%`运算符，表示一个元素是否属于一个给定的集合，比如：</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample$book_store &lt;- sample$LOCATION %in% <span class="kw">c</span>(<span class="dv">200</span>, <span class="dv">300</span>)</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data$book_store &lt;- sample_tab_data$LOCATION %in% <span class="kw">c</span>(<span class="dv">200</span>, 
+    <span class="dv">300</span>)</code></pre>
 <pre><code>表示用户在200或者300号书店进行了购买。`c()`为向量生成函数，故得到的向量含有200和300两个元素。</code></pre>
 <ul>
 <li><p>数值型</p>
@@ -541,10 +531,9 @@ sample_sheet1 &lt;- <span class="kw">read.xlsx</span>(file, <span class="dv">1</
 <li><p>字符操作</p>
 <p>字符操作最常见的就是字符串生成操作，比如我们有CUSTOMER、LOCATION、和BOOK_NAME三个变量，希望批量生成一个变量，然后发送给顾客作为反馈记录，希望的格式为“CUSTOMER顾客您好，您在编号为LOCATION的书店购买了书籍BOOK_NAME，仅供确认。”，那么我们可以使用paste()这个函数：</p></li>
 </ul>
-<pre class="sourceCode r"><code class="sourceCode r">sample$message &lt;- <span class="kw">paste</span>(sample$CUSTOMER, <span class="st">&quot;顾客您好，您在编号为&quot;</span>, 
-    sample$LOCATION, <span class="st">&quot;的书店购买了书籍&quot;</span>, sample$BOOK_NAME, <span class="st">&quot;，仅供确认。&quot;</span>, 
-    <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sample_tab_data$message &lt;- <span class="kw">paste</span>(sample_tab_data$CUSTOMER, <span class="st">&quot;顾客您好，您在编号为&quot;</span>, 
+    sample_tab_data$LOCATION, <span class="st">&quot;的书店购买了书籍&quot;</span>, sample_tab_data$BOOK_NAME, 
+    <span class="st">&quot;，仅供确认。&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)</code></pre>
 <pre><code>这个时候就得到的相应的新变量。`paste()`函数有个参数是`sep`，用来指定各个部分之间的连接符，默认为空格，如果不需要任何额外的符号用一对双引号设置为空即可。
 
 字符的其他操作亦包括查找、截取`substr()`等。</code></pre>
@@ -555,19 +544,16 @@ sample_sheet1 &lt;- <span class="kw">read.xlsx</span>(file, <span class="dv">1</
 <li><p>数据集合并：<code>merge()</code>函数提供了更强大的数据集合并操作命令，可以按照一个主键（即用来识别个体的变量）来合并，比如我们另有一个文件 BOOK_MAP.txt，里面记录的是重编码后的书籍ID和原编码对照表，则可以读入之后利用来<code>merge()</code>合并：</p></li>
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r">book_map &lt;- <span class="kw">read.delim</span>(<span class="st">&quot;data/BOOK_MAP.txt&quot;</span>, <span class="dt">header =</span> T)
-sample_merged &lt;- <span class="kw">merge</span>(sample, book_map, <span class="dt">by.x =</span> <span class="st">&quot;BOOK_ID&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;BOOK_ID&quot;</span>, 
-    <span class="dt">all.x =</span> T, <span class="dt">all.y =</span> F)</code></pre>
-<pre><code>## Error: C stack usage is too close to the limit</code></pre>
+sample_merged &lt;- <span class="kw">merge</span>(sample_tab_data, book_map, <span class="dt">by.x =</span> <span class="st">&quot;BOOK_ID&quot;</span>, 
+    <span class="dt">by.y =</span> <span class="st">&quot;BOOK_ID&quot;</span>, <span class="dt">all.x =</span> T, <span class="dt">all.y =</span> F)</code></pre>
 <pre><code>这样就有了一列新的变量，记录的是重编码之后的书籍ID。</code></pre>
 <ul>
 <li><p>删除/提取变量</p>
 <p>如果要删除某个变量，可以直接使用NULL值置空，即：</p></li>
 </ul>
 <pre class="sourceCode r"><code class="sourceCode r">sample_merged$CLASS_NAME &lt;- <span class="ot">NULL</span></code></pre>
-<pre><code>## Error: object &#39;sample_merged&#39; not found</code></pre>
 <pre><code>会删除掉` CLASS_NAME`这个变量。在需要删除多个变量的时候，不如只保留几个变量，如：</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">sample_merged &lt;- sample_merged[, <span class="kw">c</span>(<span class="st">&quot;BOOK_ID&quot;</span>, <span class="st">&quot;CLASS_ID&quot;</span>)]</code></pre>
-<pre><code>## Error: object &#39;sample_merged&#39; not found</code></pre>
 <pre><code>会只保留`BOOK_ID`, `CLASS_ID` 两个变量。</code></pre>
 <h3 id="数据集形状的转换reshape2包"><a href="#TOC"><span class="header-section-number">3.5.4</span> 数据集形状的转换（reshape2包）</a></h3>
 <p>除了这些基本的变量操作之外，还有一类可能的需求就是对于整个数据集做一个形状的转换，比如把“长数据集”转换为“宽数据集”。这样的过程类似于“揉面”，而帮我们玩转面团的利器便是<strong>reshape2</strong>这个包。</p>
@@ -669,46 +655,35 @@ reshape_sample_long &lt;- <span class="kw">melt</span>(reshape_sample_wide, <spa
 <p>日常分析工作中，最常用到的就是分类统计了。简单的说，就是按一个字段归类之后，统计其他字段的量。</p>
 <p>比如，我们现在希望知道每个顾客购买的图书的总数。那么可以使用如下的代码：</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
-sample_stat &lt;- <span class="kw">data.table</span>(sample)
-sample_stat &lt;- sample_stat[, <span class="kw">list</span>(<span class="dt">Amount =</span> <span class="kw">sum</span>(AMOUNT), <span class="dt">Book =</span> <span class="kw">length</span>(<span class="kw">unique</span>(BOOK_ID))), 
-    by = <span class="st">&quot;CUSTOMER&quot;</span>]</code></pre>
-<pre><code>## Error: object &#39;CUSTOMER&#39; not found</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample_stat</code></pre>
-<pre><code>##                                                             sample
-##  [1,]            function (x, size, replace = FALSE, prob = NULL) 
-##  [2,]                                                            {
-##  [3,]            if (length(x) == 1L &amp;&amp; is.numeric(x) &amp;&amp; x &gt;= 1) {
-##  [4,]                                          if (missing(size)) 
-##  [5,]                                                    size &lt;- x
-##  [6,]                    .Internal(sample(x, size, replace, prob))
-##  [7,]                                                            }
-##  [8,]                                                       else {
-##  [9,]                                          if (missing(size)) 
-## [10,]                                            size &lt;- length(x)
-## [11,]         x[.Internal(sample(length(x), size, replace, prob))]
-## [12,]                                                            }
-## [13,]                                                            }</code></pre>
-<p>这样在新的对象sample_stat里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载<code>data.table</code>这个包，然后利用<code>data.table()</code>函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如</p>
+sample_tab_data_frame &lt;- <span class="kw">data.table</span>(sample_tab_data)
+sample_stats &lt;- sample_tab_data_frame[, <span class="kw">list</span>(<span class="dt">Amount =</span> <span class="kw">sum</span>(AMOUNT), 
+    <span class="dt">Book =</span> <span class="kw">length</span>(<span class="kw">unique</span>(BOOK_ID))), by = <span class="st">&quot;CUSTOMER&quot;</span>]
+sample_stats</code></pre>
+<pre><code>##                               CUSTOMER Amount Book
+##  [1,] 297017f0d704830c05774f455c5919e3   5876   76
+##  [2,] c6970366fd1f9f6de96e80ca77151c58      1    1
+##  [3,] fcd51818074819c811c9dd3f3b9eecbc      4    1
+##  [4,] ace38a66dcc1133cfec26d6adb870091     12    3
+##  [5,] 4ae62768ad286695948069b95a4ed36e      1    1
+##  [6,] fa57634cdf8f3a99ff894cab54084452      1    1
+##  [7,] f6461a358469ffa52dd9cd2e295dbc76     12    2
+##  [8,] 47fead3dfdd9b483b70f7ff925abc8a4     29    1
+##  [9,] ba6a3dde6168c6207a63b7f73559b0a7    491    5</code></pre>
+<p>这样在新的对象sample_stats里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载<code>data.table</code>这个包，然后利用<code>data.table()</code>函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(data.table)
-sample_stat_by_day &lt;- <span class="kw">data.table</span>(sample)
-sample_stat_by_day &lt;- sample_stat_by_day[, <span class="kw">list</span>(<span class="dt">Amount =</span> <span class="kw">sum</span>(AMOUNT), 
-    <span class="dt">Book =</span> <span class="kw">length</span>(<span class="kw">unique</span>(BOOK_ID))), by = <span class="kw">c</span>(<span class="st">&quot;CUSTOMER&quot;</span>, <span class="st">&quot;RECORD_DAY&quot;</span>)]</code></pre>
-<pre><code>## Error: Each item in the &#39;by&#39; or &#39;keyby&#39; list must be same length as rows in x (1): 2</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sample_stat</code></pre>
-<pre><code>##                                                             sample
-##  [1,]            function (x, size, replace = FALSE, prob = NULL) 
-##  [2,]                                                            {
-##  [3,]            if (length(x) == 1L &amp;&amp; is.numeric(x) &amp;&amp; x &gt;= 1) {
-##  [4,]                                          if (missing(size)) 
-##  [5,]                                                    size &lt;- x
-##  [6,]                    .Internal(sample(x, size, replace, prob))
-##  [7,]                                                            }
-##  [8,]                                                       else {
-##  [9,]                                          if (missing(size)) 
-## [10,]                                            size &lt;- length(x)
-## [11,]         x[.Internal(sample(length(x), size, replace, prob))]
-## [12,]                                                            }
-## [13,]                                                            }</code></pre>
+sample_stat_by_day &lt;- sample_tab_data_frame[, <span class="kw">list</span>(<span class="dt">Amount =</span> <span class="kw">sum</span>(AMOUNT), 
+    <span class="dt">Book =</span> <span class="kw">length</span>(<span class="kw">unique</span>(BOOK_ID))), by = <span class="kw">c</span>(<span class="st">&quot;CUSTOMER&quot;</span>, <span class="st">&quot;RECORD_DAY&quot;</span>)]
+sample_stat_by_day</code></pre>
+<pre><code>##                               CUSTOMER RECORD_DAY Amount Book
+##  [1,] 297017f0d704830c05774f455c5919e3     201106   5876   76
+##  [2,] c6970366fd1f9f6de96e80ca77151c58     201106      1    1
+##  [3,] fcd51818074819c811c9dd3f3b9eecbc     201106      4    1
+##  [4,] ace38a66dcc1133cfec26d6adb870091     201106     12    3
+##  [5,] 4ae62768ad286695948069b95a4ed36e     201106      1    1
+##  [6,] fa57634cdf8f3a99ff894cab54084452     201106      1    1
+##  [7,] f6461a358469ffa52dd9cd2e295dbc76     201106     12    2
+##  [8,] 47fead3dfdd9b483b70f7ff925abc8a4     201106     29    1
+##  [9,] ba6a3dde6168c6207a63b7f73559b0a7     201106    491    5</code></pre>
 <p>这样返回的就是逐日统计的每位顾客的购买数量了。值得多说的是，<code>sum()</code>函数代表求和，<code>length()</code>函数代表计数，而<code>unique()</code>函数则是去掉重复值。</p>
 <h2 id="循环和判断"><a href="#TOC"><span class="header-section-number">3.8</span> 循环和判断</a></h2>
 <p>我们常用的循环和判断有三种：</p>
@@ -718,13 +693,12 @@ sample_stat_by_day &lt;- sample_stat_by_day[, <span class="kw">list</span>(<span
 <li><p>if</p></li>
 </ul>
 <p>循环和判断是基本的逻辑操作语句。在R中，大部分常用功能都已经有现成的函数，所以极少用到循环，我们也非常不提倡在R里面写循环（效率一般很低，因为一个循环背后往往是现有函数内部的许多层循环）。有的时候，为了一些特殊的情况，知道怎么写循环还是有用的。比如，我们希望把统计好的顾客购买记录按照顾客ID写入不同的文本文件，这里就需要用到for循环或者while循环。</p>
-<pre class="sourceCode r"><code class="sourceCode r">for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(sample_stat)) {
-    file_name &lt;- <span class="kw">paste</span>(<span class="st">&quot;data/result_&quot;</span>, sample_stat[i, ]$CUSTOMER, <span class="st">&quot;_record.txt&quot;</span>, 
+<pre class="sourceCode r"><code class="sourceCode r">for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(sample_stats)) {
+    file_name &lt;- <span class="kw">paste</span>(<span class="st">&quot;data/result_&quot;</span>, sample_stats[i, ]$CUSTOMER, <span class="st">&quot;_record.txt&quot;</span>, 
         <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
-    <span class="kw">write.table</span>(sample_stat[i, ], <span class="dt">file =</span> file_name, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">row.names =</span> F, 
+    <span class="kw">write.table</span>(sample_stats[i, ], <span class="dt">file =</span> file_name, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">row.names =</span> F, 
         <span class="dt">col.names =</span> T, <span class="dt">quote =</span> F)
 }</code></pre>
-<pre><code>## Error: object of type &#39;closure&#39; is not subsettable</code></pre>
 <p>这里用到了for循环。另，<code>nrow()</code>是用来统计一个data.frame行数的函数，同样的<code>ncol()</code>会返回其列数。符号:会生成一个向量，从1到<code>nrow(sample_stat)</code>。常用的循环还有while，同时可以使用if来进行一些判断。这里不再赘述。</p>
 <h1 id="从截面数据分析说起"><a href="#TOC"><span class="header-section-number">4</span> 从截面数据分析说起</a></h1>
 <p>上面简单的说了一下多元回归，下面则是一些我们在回归分析中常用分析的实现。</p>
@@ -948,16 +922,8 @@ Hprice_Result</code></pre>
 ## </code></pre>
 <h3 id="bp检验-breusch-pagan-test"><a href="#TOC"><span class="header-section-number">4.4.1</span> BP检验 (Breusch-Pagan Test)</a></h3>
 <p>下面我们进行BP检验来测定是否有异方差。进行BP检验需要加载包<em>lmtest</em>，而后者需要加载包<em>zoo</em>。调用BP检验最简单的方法就是直接写回归结果变量。更多参数关于该命令各种参数设置请使用<code>?bptest</code>来查看帮助文档。可以通过<em>RCommander</em>里面的图形化界面设定，位于<code>Models &gt; Numberical diagnostics &gt; Breusch-Pagan Test for heteroskedasticity</code>。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;lmtest&quot;</span>)</code></pre>
-<pre><code>## Loading required package: zoo</code></pre>
-<pre><code>## 
-## Attaching package: &#39;zoo&#39;
-## </code></pre>
-<pre><code>## The following object(s) are masked from &#39;package:base&#39;:
-## 
-##     as.Date, as.Date.numeric
-## </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">bptest</span>(Hprice_Result)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;lmtest&quot;</span>)
+<span class="kw">bptest</span>(Hprice_Result)</code></pre>
 <pre><code>## 
 ##  studentized Breusch-Pagan test
 ## 
@@ -1028,9 +994,9 @@ Hprice_Result2</code></pre>
 ## </code></pre>
 <p>此外，对于含有自回归异方差的情形，可以采用<code>vcovHAC()</code>函数。更多相关用法后面章节中详述。这两个函数均可以附加到参数检验<code>coeftest()</code>或者<code>waldtest()</code>一起使用。</p>
 <h2 id="加权最小二乘估计-wls"><a href="#TOC"><span class="header-section-number">4.6</span> 加权最小二乘估计 (WLS)</a></h2>
-<h3 id="扰动项形式已知"><a href="#TOC"><span class="header-section-number">4.6.1</span> 扰动项形式已知</a></h3>
+<h3 id="扰动项形式已知"><a href="#TOC"><span class="header-section-number">4.6.1</span> 扰动项形式已知<需添加例子></a></h3>
 <p>有些情况下，我们可以写出加权的形式，比如扰动项服从\(Var(u_{i}|inc)=\sigma^{2}inc\) ，那么可以直接在<code>lm()</code>函数里附加一项weight来实现。</p>
-<p>(@smoke) 下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (cigs )、年收入 (income )、该州烟的价格 (cigpric )、受访者年龄 (age )、受教育程度 (educ )、该州有无饭店内吸烟禁令 (restaurn )。而后我们需要研究决定烟草需求的因素，即cigs 为被解释变量，其他为解释变量。</p>
+<p><需添加例子> ### 扰动项形式未知（Feasible Linear Regression） (@smoke) 下面是一个烟草需求的例子。在SMOKE.rda中有如下几个变量：每天吸烟的数量 (cigs )、年收入 (income )、该州烟的价格 (cigpric )、受访者年龄 (age )、受教育程度 (educ )、该州有无饭店内吸烟禁令 (restaurn )。而后我们需要研究决定烟草需求的因素，即cigs 为被解释变量，其他为解释变量。</p>
 <ul>
 <li>使用FGLS的第一步是进行OLS估计，得到残差项的估计值\(\hat{u}\) 。对于价格数据，我们取其对数形式。</li>
 </ul>
@@ -1115,8 +1081,8 @@ SMOKE_FGLS2 &lt;- <span class="kw">lm</span>(cigs ~ <span class="kw">log</span>(
 ## F-statistic: 15.9 on 6 and 800 DF,  p-value: &lt;2e-16 
 ## </code></pre>
 <p>在其中我们使用当<code>log(income)</code>的系数估计值收敛\((&lt;10^{-7})\)当作循环的条件。</p>
-<h2 id="广义线性估计-glm"><a href="#TOC"><span class="header-section-number">4.7</span> 广义线性估计 (GLM)</a></h2>
-<p>通常被解释变量并不一定服从正态分布，因而产生了Probit, Logit等模型。在R中，在采取广义线性估计法（Generalized Linear Models, GLM）来估计的时候，我们可以调用<strong>glm</strong>包。</p>
+<h2 id="广义线性估计glm"><a href="#TOC"><span class="header-section-number">4.7</span> 广义线性估计(GLM)</a></h2>
+<p>通常被解释变量并不一定服从正态分布，比如为0-1的离散情况，因而需要进一步借助Probit, Logit等模型来进行估计。在R中，在采取广义线性估计法（Generalized Linear Models, GLM）来估计的时候，我们可以调用<strong>glm</strong>包。</p>
 <p>(@MORZ) 这里我们看一个关于已婚妇女劳动参与率的例子（MROZ.dra）。当然，一个人工不工作是一个二值变量 (inlf )，我们设1为工作，0表示不工作。这里我们不妨认为其劳动参与行为主要取决于其他的收入来源——丈夫的工资 (nwifeinc )，受教育年限 (educ )，工作经验 (exper )，年龄 (age )，小于六岁的孩子数 (kidslt6 )，六到十八岁的孩子数 (kidsge6 )。 首先我们使用OLS来估计线性概率模型（Linear Probability Model，LPM）。</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">load</span>(<span class="st">&quot;data/MROZ.rda&quot;</span>)
 MROZ_LPM &lt;- <span class="kw">lm</span>(inlf ~ nwifeinc + educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + age + 
@@ -1135,7 +1101,7 @@ MROZ_LPM</code></pre>
 ## </code></pre>
 <h3 id="最大似然估计-maximum-likelihood-estimation-mle"><a href="#TOC"><span class="header-section-number">4.7.1</span> 最大似然估计 (Maximum Likelihood Estimation, MLE)</a></h3>
 <p>对于非线性的估计最常用的方法就是最大似然估计法（MLE）。在stats4包中有对应的函数mle()可进行相应的估计。但是由于在计量中单独用到最大似然估计的时候很少，大多数情况下都是用于估计特定模型（如GLM），有着特定的函数，所以在这里不再作特别介绍。</p>
-<h3 id="probit和logit模型"><a href="#TOC"><span class="header-section-number">4.7.2</span> Probit和Logit模型</a></h3>
+<h3 id="离散被解释变量probit和logit模型"><a href="#TOC"><span class="header-section-number">4.7.2</span> 离散被解释变量：Probit和Logit模型</a></h3>
 <p>当然使用OLS来估计概率模型并不理想（线性模型需假设解释变量具有不变的边际效应），因此我们再分别使用非线性的Probit和Logit模型来估计上例。在使用<code>glm()</code>的时候，只需要指定回归的类型(family)，其他的用法和<code>lm()</code>类似。此外可以使用<code>logLik()</code>来获取Log-Likelihood统计量。</p>
 <pre class="sourceCode r"><code class="sourceCode r">MROZ_Probit &lt;- <span class="kw">glm</span>(inlf ~ nwifeinc + educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
     age + kidsge6 + kidslt6, <span class="dt">family =</span> <span class="kw">binomial</span>(probit), <span class="dt">data =</span> MROZ)
@@ -1173,14 +1139,10 @@ MROZ_Logit</code></pre>
 ## Residual Deviance: 803   AIC: 819 </code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">logLik</span>(MROZ_Logit)</code></pre>
 <pre><code>## &#39;log Lik.&#39; -401.3 (df=8)</code></pre>
-<h3 id="tobit模型"><a href="#TOC"><span class="header-section-number">4.7.3</span> Tobit模型</a></h3>
+<h3 id="边角解tobit模型"><a href="#TOC"><span class="header-section-number">4.7.3</span> 边角解：Tobit模型</a></h3>
 <p>依旧是上例，我们观察到每年的工作时间变化很大：对于不工作的来说，该值为0。此时如果画散点图那么必有近一半的点（325人）聚集在数轴上。因此，年工作时间 (hours )呈现很强烈的“边角解 (coner solution)”特性，对于这种情况我们可以采取Tobit模型。Tobit模型也是被审查的回归（Censored Regression）的一个特例。 其实Tobit很类似于生存分析里面的情况，因此可以调用<em>survival</em>包的<code>survreg()</code>函数。这里我们有个更简单的办法，<em>AER</em>包的作者进行了一个简单的转换，在包内自带了一个<code>tobit()</code>函数，调用更方便。这里我们将结果与OLS回归的进行对比。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;AER&quot;</span>)</code></pre>
-<pre><code>## Loading required package: Formula</code></pre>
-<pre><code>## Loading required package: strucchange</code></pre>
-<pre><code>## Loading required package: survival</code></pre>
-<pre><code>## Loading required package: splines</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">MROZ_Tobit &lt;- <span class="kw">tobit</span>(hours ~ nwifeinc + educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;AER&quot;</span>)
+MROZ_Tobit &lt;- <span class="kw">tobit</span>(hours ~ nwifeinc + educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
     age + kidslt6 + kidsge6, <span class="dt">data =</span> MROZ)
 MROZ_Tobit</code></pre>
 <pre><code>## 
@@ -1322,29 +1284,8 @@ rd_nb &lt;- <span class="kw">glm.nb</span>(trips ~ ., <span class="dt">data =</s
 <pre><code>## &#39;log Lik.&#39; -825.6 (df=9)</code></pre>
 <h3 id="零膨胀泊松模型-zero-inflated-poisson-model-zip"><a href="#TOC"><span class="header-section-number">4.8.4</span> 零膨胀泊松模型 (Zero-inflated Poisson Model, ZIP)</a></h3>
 <p>对于计数模型来说，当数据集中的0观测值众多，所占比例超出泊松回归允许的范围时，回归结果就不是那么令人满意。此时需采用ZIP（Zero-inflated Poisson Model）模型。在R中，<em>pscl</em>包提供了一个函数<code>zeroinfl()</code>，用来实现ZIP泊松回归。比如例2.6中，大多数人(\(&gt;70\%\) )并未被逮捕过。所以我们不妨采用ZIP模型（负二项回归形式，ZINB）。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;pscl&quot;</span>)</code></pre>
-<pre><code>## Loading required package: mvtnorm</code></pre>
-<pre><code>## Loading required package: coda</code></pre>
-<pre><code>## Loading required package: lattice</code></pre>
-<pre><code>## Loading required package: gam</code></pre>
-<pre><code>## Loaded gam 1.06.2
-## </code></pre>
-<pre><code>## Loading required package: vcd</code></pre>
-<pre><code>## Loading required package: grid</code></pre>
-<pre><code>## Loading required package: colorspace</code></pre>
-<pre><code>## Classes and Methods for R developed in the
-## </code></pre>
-<pre><code>## Political Science Computational Laboratory
-## </code></pre>
-<pre><code>## Department of Political Science
-## </code></pre>
-<pre><code>## Stanford University
-## </code></pre>
-<pre><code>## Simon Jackman
-## </code></pre>
-<pre><code>## hurdle and zeroinfl functions by Achim Zeileis
-## </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">CRIME1_zip &lt;- <span class="kw">zeroinfl</span>(narr86 ~ pcnv + avgsen + tottime + ptime86 + 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;pscl&quot;</span>)
+CRIME1_zip &lt;- <span class="kw">zeroinfl</span>(narr86 ~ pcnv + avgsen + tottime + ptime86 + 
     qemp86 + inc86 + black + hispan + born60 | inc86, <span class="dt">data =</span> CRIME1, <span class="dt">dist =</span> <span class="st">&quot;negbin&quot;</span>)
 <span class="kw">summary</span>(CRIME1_zip)</code></pre>
 <pre><code>## 
@@ -1382,14 +1323,12 @@ rd_nb &lt;- <span class="kw">glm.nb</span>(trips ~ ., <span class="dt">data =</s
 ## Number of iterations in BFGS optimization: 87 
 ## Log-likelihood: -2.15e+03 on 13 Df</code></pre>
 <h2 id="选择性样本问题"><a href="#TOC"><span class="header-section-number">4.9</span> 选择性样本问题</a></h2>
-<h3 id="heckit模型"><a href="#TOC"><span class="header-section-number">4.9.1</span> Heckit模型</a></h3>
+<h3 id="被审查的样本censored-regression-models"><a href="#TOC"><span class="header-section-number">4.9.1</span> 被审查的样本（Censored Regression Models）</a></h3>
+<h3 id="被截断的样本truncated-regression-models"><a href="#TOC"><span class="header-section-number">4.9.2</span> 被截断的样本（Truncated Regression Models）</a></h3>
+<h3 id="heckit模型"><a href="#TOC"><span class="header-section-number">4.9.3</span> Heckit模型</a></h3>
 <p>当样本不能保证随机性的时候，即面对样本自选择问题（最常见的为偶然断尾）之时，我们一般采用Heckit模型。回到那个已婚妇女参加工作的例子（2.5）<red>如何cross-reference?</red>。现在我们研究影响参与工作的妇女的工资问题。这里需要加载<strong>sampleSelection</strong>包。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sampleSelection)</code></pre>
-<pre><code>## Loading required package: maxLik</code></pre>
-<pre><code>## Loading required package: miscTools</code></pre>
-<pre><code>## Loading required package: systemfit</code></pre>
-<pre><code>## Loading required package: Matrix</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">MROZ_Heckit &lt;- <span class="kw">heckit</span>(inlf ~ nwifeinc + educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sampleSelection)
+MROZ_Heckit &lt;- <span class="kw">heckit</span>(inlf ~ nwifeinc + educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
     age + kidslt6 + kidsge6, <span class="kw">log</span>(wage) ~ educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>), <span class="dt">data =</span> MROZ, 
     <span class="dt">method =</span> <span class="st">&quot;2step&quot;</span>)
 <span class="kw">summary</span>(MROZ_Heckit)</code></pre>
@@ -1422,60 +1361,48 @@ rd_nb &lt;- <span class="kw">glm.nb</span>(trips ~ ., <span class="dt">data =</s
 ## rho             0.0486         NA      NA       NA
 ## --------------------------------------------</code></pre>
 <p>Heckit模型实际上就是先进行一个probit回归，而后再利用前面的得到的估计值加上解释变量对被解释变量回归。</p>
-<h2 id="联立方程模型simultaneous-equations"><a href="#TOC"><span class="header-section-number">4.10</span> 联立方程模型（Simultaneous Equations）</a></h2>
-<p>由于经济系统内的各变量往往是相互联系的，所以在出现联立方程的情况下OLS估计会因为内生性的问题而产生偏差，此时需要借助两阶段最小二乘法（2SLS）来估计方程（组）。</p>
-<h3 id="两阶段最小二乘法2sls和工具变量法"><a href="#TOC"><span class="header-section-number">4.10.1</span> 两阶段最小二乘法(2SLS)和工具变量法</a></h3>
+<h2 id="工具变量法instrument-variable-estimation"><a href="#TOC"><span class="header-section-number">4.10</span> 工具变量法（Instrument Variable Estimation）</a></h2>
+<h3 id="内生性问题与两阶段最小二乘法2sls"><a href="#TOC"><span class="header-section-number">4.10.1</span> 内生性问题与两阶段最小二乘法(2SLS)</a></h3>
 <p>对于应用在结构单一的方程上的两阶段最小二乘法，我们只需要调用<strong>sem</strong>包中的<code>tsls()</code>函数。</p>
 <p>回到例2.5，我们想研究教育的回报率。这个时候需要估计工资log(wage)和受教育程度（educ）、经验（exper）之间的关系。但是我们怀疑受教育程度educ 是内生变量，但他父母的受教育程度\(motheduc,\;\; fatheduc\) 则为外生变量，所以可以作为educ 的工具变量。</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sem)</code></pre>
-<pre><code>## Loading required package: matrixcalc</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">MROZ_2SLS &lt;- <span class="kw">tsls</span>(lwage ~ educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>), ~exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(sem)
+MROZ_2SLS &lt;- <span class="kw">tsls</span>(lwage ~ educ + exper + <span class="kw">I</span>(exper^<span class="dv">2</span>), ~exper + <span class="kw">I</span>(exper^<span class="dv">2</span>) + 
     motheduc + fatheduc, <span class="dt">data =</span> MROZ)
 <span class="kw">summary</span>(MROZ_2SLS)</code></pre>
 <pre><code>## 
 ##  2SLS Estimates
 ## 
 ## Model Formula: lwage ~ educ + exper + I(exper^2)
-## &lt;environment: 0x049689d0&gt;
+## &lt;environment: 0x10458a60&gt;
 ## 
 ## Instruments: ~exper + I(exper^2) + motheduc + fatheduc
-## &lt;environment: 0x049689d0&gt;
+## &lt;environment: 0x10458a60&gt;
 ## 
 ## Residuals:
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 ## -3.1000 -0.3200  0.0551  0.0000  0.3690  2.3500 
 ## 
-##              Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)  0.048100  0.4003281  0.1202 0.904419
-## educ         0.061397  0.0314367  1.9530 0.051474
-## exper        0.044170  0.0134325  3.2883 0.001092
-## I(exper^2)  -0.000899  0.0004017 -2.2380 0.025740
+##              Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  0.048100   0.400328    0.12   0.9044   
+## educ         0.061397   0.031437    1.95   0.0515 . 
+## exper        0.044170   0.013432    3.29   0.0011 **
+## I(exper^2)  -0.000899   0.000402   -2.24   0.0257 * 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1 
 ## 
 ## Residual standard error: 0.6747 on 424 degrees of freedom
 ## </code></pre>
-<h3 id="联立方程模型估计似不相关回归法seemingly-unrelated-regression"><a href="#TOC"><span class="header-section-number">4.10.2</span> 联立方程模型估计：似不相关回归法（Seemingly Unrelated Regression）</a></h3>
+<h3 id="联立方程模型simultaneous-equations"><a href="#TOC"><span class="header-section-number">4.10.2</span> 联立方程模型（Simultaneous Equations）</a></h3>
+<p>由于经济系统内的各变量往往是相互联系的，所以在出现联立方程的情况下OLS估计会因为内生性的问题而产生偏差，此时需要借助两阶段最小二乘法（2SLS）来估计方程（组）。</p>
+<h3 id="内生性检验test-for-endogeneity"><a href="#TOC"><span class="header-section-number">4.10.3</span> 内生性检验（Test for Endogeneity）</a></h3>
+<h3 id="过度识别约束检验test-for-overidentification-restrictions"><a href="#TOC"><span class="header-section-number">4.10.4</span> 过度识别约束检验（Test for Overidentification Restrictions）</a></h3>
+<h3 id="联立方程模型估计似不相关回归法seemingly-unrelated-regression"><a href="#TOC"><span class="header-section-number">4.10.5</span> 联立方程模型估计：似不相关回归法（Seemingly Unrelated Regression）</a></h3>
 <p>对于联立方程模型，终极的解决方案莫过于<strong>systemfit</strong>包，它提供了似不相关回归及其变形、两阶段最小二乘法和工具变量等多种估计方法。这里我们看一个似不相关回归法来估计联立方程模型的例子。</p>
 <p>(@Grunfeld) 我们现在来看投资和企业价值及资本存量之间的关系。在数据集Grunfeld之中，invest 代表总投资值，value 代表企业的价值，capital 代表企业的资本存量，以上数据都是剔除了通胀因素之后的真实值。 为了简单起见，我们只考虑两个厂商Chrysler和IBM，因此首先要使用<code>subset()</code>函数来从原数据集中找出一个子集。厂商之间可能是有联系的，所以需要分别设定变量，这里我们就可以用到factor类型的数据。这里最方便的就是利用面板数据的类型，调用<em>plm</em>包里面的<code>plm.data()</code>函数。</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(Grunfeld, <span class="dt">package =</span> <span class="st">&quot;AER&quot;</span>)
 <span class="kw">library</span>(<span class="st">&quot;systemfit&quot;</span>)
-<span class="kw">library</span>(<span class="st">&quot;plm&quot;</span>)</code></pre>
-<pre><code>## Loading required package: bdsmatrix</code></pre>
-<pre><code>## 
-## Attaching package: &#39;bdsmatrix&#39;
-## </code></pre>
-<pre><code>## The following object(s) are masked from &#39;package:base&#39;:
-## 
-##     backsolve
-## </code></pre>
-<pre><code>## Loading required package: nlme</code></pre>
-<pre><code>## 
-## Attaching package: &#39;plm&#39;
-## </code></pre>
-<pre><code>## The following object(s) are masked from &#39;package:data.table&#39;:
-## 
-##     between
-## </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">gr2 &lt;- <span class="kw">subset</span>(Grunfeld, firm %in% <span class="kw">c</span>(<span class="st">&quot;Chrysler&quot;</span>, <span class="st">&quot;IBM&quot;</span>))
+<span class="kw">library</span>(<span class="st">&quot;plm&quot;</span>)
+gr2 &lt;- <span class="kw">subset</span>(Grunfeld, firm %in% <span class="kw">c</span>(<span class="st">&quot;Chrysler&quot;</span>, <span class="st">&quot;IBM&quot;</span>))
 pgr2 &lt;- <span class="kw">plm.data</span>(gr2, <span class="kw">c</span>(<span class="st">&quot;firm&quot;</span>, <span class="st">&quot;year&quot;</span>))
 gr_sur &lt;- <span class="kw">systemfit</span>(invest ~ value + capital, <span class="dt">method =</span> <span class="st">&quot;SUR&quot;</span>, <span class="dt">data =</span> pgr2)
 <span class="kw">summary</span>(gr_sur, <span class="dt">residCov =</span> <span class="ot">FALSE</span>, <span class="dt">equations =</span> <span class="ot">FALSE</span>)</code></pre>
@@ -1791,10 +1718,15 @@ Hed &lt;- <span class="kw">plm</span>(mv ~ crim + zn + indus + chas + nox + rm +
 <p>对于该函数来说，还可以附加参数<code>type</code>，可选<code>bp, honda, kw, ghm</code>之一。至于必须指明的<code>effect</code>参数，可选<code>individual, time, twoways</code>之一。</p>
 <p>此外，还可以做各种效应的F检验（基于混合模型与固定效应模型之间的比较）。依旧用例2.8：</p>
 <pre class="sourceCode r"><code class="sourceCode r">g_fixed_twoways &lt;- <span class="kw">plm</span>(inv ~ value + capital, <span class="dt">data =</span> Grunfeld, <span class="dt">effect =</span> <span class="st">&quot;twoways&quot;</span>, 
-    <span class="dt">model =</span> <span class="st">&quot;within&quot;</span>)</code></pre>
-<pre><code>## Error: cannot open file &#39;cache-upload/sur_1fc09f25342da747c062498313dc32c6.rdb&#39;: No such file or directory</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pFtest</span>(g_fixed_twoways, g_pooled)</code></pre>
-<pre><code>## Error: object &#39;g_fixed_twoways&#39; not found</code></pre>
+    <span class="dt">model =</span> <span class="st">&quot;within&quot;</span>)
+<span class="kw">pFtest</span>(g_fixed_twoways, g_pooled)</code></pre>
+<pre><code>## 
+##  F test for twoways effects
+## 
+## data:  inv ~ value + capital 
+## F = 17.4, df1 = 28, df2 = 169, p-value &lt; 2.2e-16
+## alternative hypothesis: significant effects 
+## </code></pre>
 <p>当然，<code>pFtest()</code>函数也提供了另外一种直接的调用形式，如<code>pFtest(inv value + capital, data = Grunfeld, effect = &quot;twoways&quot;)</code>。</p>
 <h3 id="hausman检验"><a href="#TOC"><span class="header-section-number">5.4.3</span> Hausman检验</a></h3>
 <p>为了判断到底是采用固定效应还是随机效应模型，我们一般采取经典的Hausman检验，这可以通过调用<code>phtest()</code>函数实现。注：这里我们只展示Hausman检验的用法，至于实际应用中该检验结果是否足以支撑模型选择，则需另作学术讨论。</p>
@@ -1821,8 +1753,10 @@ gr &lt;- <span class="kw">plm</span>(inv ~ value + capital, <span class="dt">dat
 <h2 id="变系数模型variable-coeffcients-model"><a href="#TOC"><span class="header-section-number">5.5</span> 变系数模型（Variable coeffcients model）</a></h2>
 <p>一般说来在固定或随机效应模型中，系数都被假设为不变的而截距项是变化的。下面我们可以考虑系数也变化的情形。依旧以2.8（Grunfeld）为例，欲使用变系数模型我们只需要调用<code>pvcm()</code>函数即可。</p>
 <pre class="sourceCode r"><code class="sourceCode r">g_varw &lt;- <span class="kw">pvcm</span>(inv ~ value + capital, <span class="dt">data =</span> Grunfeld, <span class="dt">model =</span> <span class="st">&quot;within&quot;</span>)
-g_varr &lt;- <span class="kw">pvcm</span>(inv ~ value + capital, <span class="dt">data =</span> Grunfeld, <span class="dt">model =</span> <span class="st">&quot;random&quot;</span>)
-<span class="kw">summary</span>(g_varr)</code></pre>
+g_varr &lt;- <span class="kw">pvcm</span>(inv ~ value + capital, <span class="dt">data =</span> Grunfeld, <span class="dt">model =</span> <span class="st">&quot;random&quot;</span>)</code></pre>
+<pre><code>## [1]  3.340e-02  1.633e-03 -1.120e+03
+## attention</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(g_varr)</code></pre>
 <pre><code>## Oneway (individual) effect Random coefficients model
 ## 
 ## Call:
@@ -1831,8 +1765,9 @@ g_varr &lt;- <span class="kw">pvcm</span>(inv ~ value + capital, <span class="dt
 ## Balanced Panel: n=10, T=20, N=200
 ## 
 ## Residuals:
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##  -211.0   -32.3    -4.3     9.1    12.7   579.0 
+## total sum of squares : 2178000 
+##      id    time 
+## 0.67678 0.02974 
 ## 
 ## Estimated mean of the coefficients:
 ##             Estimate Std. Error z-value Pr(&gt;|z|)    

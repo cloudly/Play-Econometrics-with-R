@@ -1,0 +1,2 @@
+CUSTOMER	Amount	Book
+ba6a3dde6168c6207a63b7f73559b0a7	491	5

@@ -1,0 +1,2 @@
+CUSTOMER	Amount	Book
+c6970366fd1f9f6de96e80ca77151c58	1	1

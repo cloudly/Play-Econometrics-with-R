@@ -1,0 +1,2 @@
+CUSTOMER	Amount	Book
+fcd51818074819c811c9dd3f3b9eecbc	4	1

@@ -193,7 +193,7 @@ plot(Papke_1995$mrate, Papke_1995$prate)
 abline(RegModel, col = "red")
 ```
 
-![plot of chunk scatter-the-data](http://i.imgur.com/Gk0cu.png) 
+
 
 
 第二行命令是添加了那条回归拟合线。
@@ -331,12 +331,6 @@ getwd()
 
 
 
-```
-## [1] "E:/documents/manuscripts/[Brochure] Play Econometrics with R/git/source"
-```
-
-
-
 
 另外，如果是通过后缀名为.R的脚本文件来直接调用R，那么工作目录就为该脚本文件所在的目录。如果对于任何命令的参数等希望得到进一步的说明，那么可以在命令前加上“?”来直接调用帮助。比如，
 
@@ -344,18 +338,6 @@ getwd()
 
 ```r
 `?`(getwd)
-```
-
-
-
-```
-## starting httpd help server ...
-```
-
-
-
-```
-##  done
 ```
 
 
@@ -489,7 +471,8 @@ update.views("Econometrics")  #更新Econometrics主题下的包
 
 
 ```r
-sample <- read.table("data/sample.txt", header = TRUE, sep = "\t")
+sample_tab_data <- read.table("data/sample_book_purschase.txt", header = TRUE, 
+    sep = "\t")
 ```
 
 
@@ -500,10 +483,54 @@ sample <- read.table("data/sample.txt", header = TRUE, sep = "\t")
 
 
 ```r
-read.csv(file, header = TRUE, sep = `",`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
-read.csv2(file, header = TRUE, sep = `";`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
-read.delim(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`".`", fill = TRUE, comment.char=`"`", ...) 
-read.delim2(file, header = TRUE, sep = `"\t`", quote=`"\`"`", dec=`",`", fill = TRUE, comment.char=`"`", ...) 
+library("formatR")
+usage(read.csv)
+```
+
+
+
+```
+## read.csv(file, header = TRUE, sep = ",", quote = "\"", 
+##     dec = ".", fill = TRUE, comment.char = "", ...)
+```
+
+
+
+```r
+usage(read.csv2)
+```
+
+
+
+```
+## read.csv2(file, header = TRUE, sep = ";", quote = "\"", 
+##     dec = ",", fill = TRUE, comment.char = "", ...)
+```
+
+
+
+```r
+usage(read.delim)
+```
+
+
+
+```
+## read.delim(file, header = TRUE, sep = "\t", quote = "\"", 
+##     dec = ".", fill = TRUE, comment.char = "", ...)
+```
+
+
+
+```r
+usage(read.delim2)
+```
+
+
+
+```
+## read.delim2(file, header = TRUE, sep = "\t", quote = "\"", 
+##     dec = ",", fill = TRUE, comment.char = "", ...)
 ```
 
 
@@ -554,46 +581,6 @@ sample_excel_2007 <- odbcConnectExcel2007("data/sample.xlsx")  #对于07版excel
 
 ```r
 library(xlsx)
-```
-
-
-
-```
-## Loading required package: xlsxjars
-```
-
-
-
-```
-## Loading required package: rJava
-```
-
-
-
-```
-## Loading required package: methods
-```
-
-
-
-```
-## 
-## Attaching package: 'rJava'
-## 
-```
-
-
-
-```
-## The following object(s) are masked from 'package:data.table':
-## 
-##     J
-## 
-```
-
-
-
-```r
 file <- system.file("tests", "test_import.xlsx", package = "xlsx")
 sample_sheet1 <- read.xlsx(file, 1)  # 读取第一个工作表
 ```
@@ -631,8 +618,9 @@ sample_sheet1 <- read.xlsx(file, 1)  # 读取第一个工作表
 
 
 ```r
-sample <- read.table("data/sample.txt", header = TRUE, sep = "\t")
-names(sample)
+sample_tab_data <- read.table("data/sample_book_purschase.txt", header = TRUE, 
+    sep = "\t")
+names(sample_tab_data)
 ```
 
 
@@ -654,33 +642,21 @@ names(sample)
 
 
 ```r
-names(sample)[2] <- "RECORD_DAY"
+names(sample_tab_data)[2] <- "RECORD_DAY"
 ```
 
 
 
-```
-## Error: names() applied to a non-vector
-```
-
-
-
-这里把`names(sample)`返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。
+这里把`names(sample_tab_data)`返回的第二个元素重新定义为了RECORD_DAY，故而实现了变量的重命名。
 
 或者，我们希望对导入的没有变量名的数据集进行重命名（一般这种情况下对应的默认变量名是V1、V2等），那么可以直接对整个数据集操作。
 
 
 
 ```r
-names(sample) <- c("CUSTOMER", "RECORD_DAY", "LOCATION", "LOCATION2", 
-    "FROM", "NOTE", "BOOK_ID", "NOTE2", "BOOK_TYPE", "CLASS_ID", "CLASS_NAME", 
-    "AMOUNT", "LENGTH", "LENGTH2", "PAGES", "PAGES2", "BOOK_NAME")
-```
-
-
-
-```
-## Error: names() applied to a non-vector
+names(sample_tab_data) <- c("CUSTOMER", "RECORD_DAY", "LOCATION", 
+    "LOCATION2", "FROM", "NOTE", "BOOK_ID", "NOTE2", "BOOK_TYPE", "CLASS_ID", 
+    "CLASS_NAME", "AMOUNT", "LENGTH", "LENGTH2", "PAGES", "PAGES2", "BOOK_NAME")
 ```
 
 
@@ -694,20 +670,14 @@ data.frame的行、列操作
 
 
 ```r
-sub_sample <- sample["BOOK_ID" == 348368158, c("CUSTOMER", "RECORD_DAY", 
-    "BOOK_ID")]
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sub_sample <- sample_tab_data["BOOK_ID" == 348918047, c("CUSTOMER", 
+    "RECORD_DAY", "BOOK_ID")]
 ```
 
 
 
 
-那么sub_sample里面现在就得到了购买过编号为348368158这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
+那么sub_sample里面现在就得到了购买过编号为348918047这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
 
 ###数据格式的转换
 
@@ -717,13 +687,7 @@ sub_sample <- sample["BOOK_ID" == 348368158, c("CUSTOMER", "RECORD_DAY",
 
 
 ```r
-CUSTOMER_ID <- sample$CUSTOMER
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+CUSTOMER_ID <- sample_tab_data$CUSTOMER
 ```
 
 
@@ -739,12 +703,6 @@ CUSTOMER_ID <- as.data.frame(CUSTOMER_ID)
 
 
 
-```
-## Error: object 'CUSTOMER_ID' not found
-```
-
-
-
 
     那么这个时候customer_ID就成为了只有一个变量的data.frame格式了。
 
@@ -755,13 +713,7 @@ CUSTOMER_ID <- as.data.frame(CUSTOMER_ID)
 
 
 ```r
-sample$CLASS_ID <- as.factor(sample$CLASS_ID)
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sample_tab_data$CLASS_ID <- as.factor(sample_tab_data$CLASS_ID)
 ```
 
 
@@ -772,25 +724,8 @@ sample$CLASS_ID <- as.factor(sample$CLASS_ID)
 
 
 ```r
-sample$CLASS_ID <- as.character(sample$CLASS_ID)
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
-```
-
-
-
-```r
-sample$CLASS_ID <- as.integer(sample$CLASS_ID)
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sample_tab_data$CLASS_ID <- as.character(sample_tab_data$CLASS_ID)
+sample_tab_data$CLASS_ID <- as.integer(sample_tab_data$CLASS_ID)
 ```
 
 
@@ -807,13 +742,7 @@ sample$CLASS_ID <- as.integer(sample$CLASS_ID)
 
 
 ```r
-sample$purchase <- sample$AMOUNT > 0
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sample_tab_data$purchase <- sample_tab_data$AMOUNT > 0
 ```
 
 
@@ -824,25 +753,9 @@ sample$purchase <- sample$AMOUNT > 0
 
 
 ```r
-sample$book_store_200 <- sample$LOCATION == 200
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
-```
-
-
-
-```r
-sample$purchase_bs200 <- sample$book_store_200 * sample$purchase
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sample_tab_data$book_store_200 <- sample_tab_data$LOCATION == 200
+sample_tab_data$purchase_bs200 <- sample_tab_data$book_store_200 * 
+    sample_tab_data$purchase
 ```
 
 
@@ -855,13 +768,8 @@ sample$purchase_bs200 <- sample$book_store_200 * sample$purchase
 
 
 ```r
-sample$book_store <- sample$LOCATION %in% c(200, 300)
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sample_tab_data$book_store <- sample_tab_data$LOCATION %in% c(200, 
+    300)
 ```
 
 
@@ -892,15 +800,9 @@ sample$book_store <- sample$LOCATION %in% c(200, 300)
 
 
 ```r
-sample$message <- paste(sample$CUSTOMER, "顾客您好，您在编号为", 
-    sample$LOCATION, "的书店购买了书籍", sample$BOOK_NAME, "，仅供确认。", 
-    sep = "")
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
+sample_tab_data$message <- paste(sample_tab_data$CUSTOMER, "顾客您好，您在编号为", 
+    sample_tab_data$LOCATION, "的书店购买了书籍", sample_tab_data$BOOK_NAME, 
+    "，仅供确认。", sep = "")
 ```
 
 
@@ -922,14 +824,8 @@ sample$message <- paste(sample$CUSTOMER, "顾客您好，您在编号为",
 
 ```r
 book_map <- read.delim("data/BOOK_MAP.txt", header = T)
-sample_merged <- merge(sample, book_map, by.x = "BOOK_ID", by.y = "BOOK_ID", 
-    all.x = T, all.y = F)
-```
-
-
-
-```
-## Error: C stack usage is too close to the limit
+sample_merged <- merge(sample_tab_data, book_map, by.x = "BOOK_ID", 
+    by.y = "BOOK_ID", all.x = T, all.y = F)
 ```
 
 
@@ -949,12 +845,6 @@ sample_merged$CLASS_NAME <- NULL
 
 
 
-```
-## Error: object 'sample_merged' not found
-```
-
-
-
 
     会删除掉` CLASS_NAME`这个变量。在需要删除多个变量的时候，不如只保留几个变量，如：
 
@@ -962,12 +852,6 @@ sample_merged$CLASS_NAME <- NULL
 
 ```r
 sample_merged <- sample_merged[, c("BOOK_ID", "CLASS_ID")]
-```
-
-
-
-```
-## Error: object 'sample_merged' not found
 ```
 
 
@@ -1157,85 +1041,54 @@ write.table(book_map, file = "book_map_new.txt", row.names = F, col.names = T,
 
 ```r
 library(data.table)
-sample_stat <- data.table(sample)
-sample_stat <- sample_stat[, list(Amount = sum(AMOUNT), Book = length(unique(BOOK_ID))), 
-    by = "CUSTOMER"]
+sample_tab_data_frame <- data.table(sample_tab_data)
+sample_stats <- sample_tab_data_frame[, list(Amount = sum(AMOUNT), 
+    Book = length(unique(BOOK_ID))), by = "CUSTOMER"]
+sample_stats
 ```
 
 
 
 ```
-## Error: object 'CUSTOMER' not found
-```
-
-
-
-```r
-sample_stat
-```
-
-
-
-```
-##                                                             sample
-##  [1,]            function (x, size, replace = FALSE, prob = NULL) 
-##  [2,]                                                            {
-##  [3,]            if (length(x) == 1L && is.numeric(x) && x >= 1) {
-##  [4,]                                          if (missing(size)) 
-##  [5,]                                                    size <- x
-##  [6,]                    .Internal(sample(x, size, replace, prob))
-##  [7,]                                                            }
-##  [8,]                                                       else {
-##  [9,]                                          if (missing(size)) 
-## [10,]                                            size <- length(x)
-## [11,]         x[.Internal(sample(length(x), size, replace, prob))]
-## [12,]                                                            }
-## [13,]                                                            }
+##                               CUSTOMER Amount Book
+##  [1,] 297017f0d704830c05774f455c5919e3   5876   76
+##  [2,] c6970366fd1f9f6de96e80ca77151c58      1    1
+##  [3,] fcd51818074819c811c9dd3f3b9eecbc      4    1
+##  [4,] ace38a66dcc1133cfec26d6adb870091     12    3
+##  [5,] 4ae62768ad286695948069b95a4ed36e      1    1
+##  [6,] fa57634cdf8f3a99ff894cab54084452      1    1
+##  [7,] f6461a358469ffa52dd9cd2e295dbc76     12    2
+##  [8,] 47fead3dfdd9b483b70f7ff925abc8a4     29    1
+##  [9,] ba6a3dde6168c6207a63b7f73559b0a7    491    5
 ```
 
 
 
 
-这样在新的对象sample_stat里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载`data.table`这个包，然后利用`data.table()`函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如
+这样在新的对象sample_stats里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载`data.table`这个包，然后利用`data.table()`函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如
 
 
 
 ```r
 library(data.table)
-sample_stat_by_day <- data.table(sample)
-sample_stat_by_day <- sample_stat_by_day[, list(Amount = sum(AMOUNT), 
+sample_stat_by_day <- sample_tab_data_frame[, list(Amount = sum(AMOUNT), 
     Book = length(unique(BOOK_ID))), by = c("CUSTOMER", "RECORD_DAY")]
+sample_stat_by_day
 ```
 
 
 
 ```
-## Error: Each item in the 'by' or 'keyby' list must be same length as rows in x (1): 2
-```
-
-
-
-```r
-sample_stat
-```
-
-
-
-```
-##                                                             sample
-##  [1,]            function (x, size, replace = FALSE, prob = NULL) 
-##  [2,]                                                            {
-##  [3,]            if (length(x) == 1L && is.numeric(x) && x >= 1) {
-##  [4,]                                          if (missing(size)) 
-##  [5,]                                                    size <- x
-##  [6,]                    .Internal(sample(x, size, replace, prob))
-##  [7,]                                                            }
-##  [8,]                                                       else {
-##  [9,]                                          if (missing(size)) 
-## [10,]                                            size <- length(x)
-## [11,]         x[.Internal(sample(length(x), size, replace, prob))]
-## [12,]                                                            }
-## [13,]                                                            }
+##                               CUSTOMER RECORD_DAY Amount Book
+##  [1,] 297017f0d704830c05774f455c5919e3     201106   5876   76
+##  [2,] c6970366fd1f9f6de96e80ca77151c58     201106      1    1
+##  [3,] fcd51818074819c811c9dd3f3b9eecbc     201106      4    1
+##  [4,] ace38a66dcc1133cfec26d6adb870091     201106     12    3
+##  [5,] 4ae62768ad286695948069b95a4ed36e     201106      1    1
+##  [6,] fa57634cdf8f3a99ff894cab54084452     201106      1    1
+##  [7,] f6461a358469ffa52dd9cd2e295dbc76     201106     12    2
+##  [8,] 47fead3dfdd9b483b70f7ff925abc8a4     201106     29    1
+##  [9,] ba6a3dde6168c6207a63b7f73559b0a7     201106    491    5
 ```
 
 
@@ -1258,18 +1111,12 @@ sample_stat
 
 
 ```r
-for (i in 1:nrow(sample_stat)) {
-    file_name <- paste("data/result_", sample_stat[i, ]$CUSTOMER, "_record.txt", 
+for (i in 1:nrow(sample_stats)) {
+    file_name <- paste("data/result_", sample_stats[i, ]$CUSTOMER, "_record.txt", 
         sep = "")
-    write.table(sample_stat[i, ], file = file_name, sep = "\t", row.names = F, 
+    write.table(sample_stats[i, ], file = file_name, sep = "\t", row.names = F, 
         col.names = T, quote = F)
 }
-```
-
-
-
-```
-## Error: object of type 'closure' is not subsettable
 ```
 
 

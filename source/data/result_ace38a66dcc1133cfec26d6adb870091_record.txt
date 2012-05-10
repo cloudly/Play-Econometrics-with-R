@@ -1,0 +1,2 @@
+CUSTOMER	Amount	Book
+ace38a66dcc1133cfec26d6adb870091	12	3

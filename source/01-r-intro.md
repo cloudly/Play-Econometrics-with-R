@@ -81,7 +81,7 @@ $\hat{prate}=83.0755+5.8611mrate$
 
 [ggplot2]: ggplot2       "ggplot2"
  
-``` {r label='scatter-the-data'}
+``` {r label='scatter-the-data',eval=FALSE}
 plot(Papke_1995$mrate,Papke_1995$prate) 
 abline(RegModel,col="red")
 ````
@@ -292,12 +292,13 @@ update.views("Econometrics") #更新Econometrics主题下的包
 比如在当前工作目录下，我们有一个制表符（Tab或`\t`）分割的文本文件`sample.txt`，第一行含有英文变量名（中文变量名可能会出错，依系统而异），然后文本没有被任何符号包裹，那么我们读入它的时候需要采用：
 
 ``` {r label='read-text-files',cache=TRUE}
-sample_tab_data <- read.table("data/sample.txt",header=TRUE, sep="\t")
+sample_tab_data <- read.table("data/sample_book_purschase.txt",header=TRUE, sep="\t")
 ````
 
 而`read.csv()`、`read.csv2()`、`read.delim()`、`read.delim2()`都是`read.table()`不同默认参数的变形：
 
-``` {r label='other-read-functions',eval=FALSE}
+``` {r label='other-read-functions'}
+library("formatR")
 usage(read.csv)
 usage(read.csv2)
 usage(read.delim)
@@ -374,7 +375,7 @@ sample_sheet1 <- read.xlsx(file, 1) # 读取第一个工作表
 这个时候，可以用`names()`来查看变量名：
 
 ``` {r label='names-of-variables'}
-sample_tab_data <- read.table("data/sample.txt",header=TRUE, sep="\t")
+sample_tab_data <- read.table("data/sample_book_purschase.txt",header=TRUE, sep="\t")
 names(sample_tab_data) 
 ````
 
@@ -399,10 +400,10 @@ data.frame的行、列操作
 在一个data.frame中，我们可以直接用$来调用其中的一个变量，是最简单的调用列的格式。如果希望调用某些行列，则需要分别指定调用条件，比如：
 
 ```{r label='data-frame'}
-sub_sample <- sample_tab_data["BOOK_ID"==348368158,c("CUSTOMER","RECORD_DAY","BOOK_ID")] 
+sub_sample <- sample_tab_data["BOOK_ID"==348918047,c("CUSTOMER","RECORD_DAY","BOOK_ID")] 
 ````
 
-那么sub_sample里面现在就得到了购买过编号为348368158这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
+那么sub_sample里面现在就得到了购买过编号为348918047这本书的所有顾客购买记录，包括顾客ID、购买日期和书籍ID。即，对于任何一个data.frame对象，都可以在中括号内，逗号之前指定行选择条件，逗号之后指定要选择的列（变量）。`c()`为向量生成函数。
 
 ###数据格式的转换
 
@@ -579,18 +580,17 @@ write.table(book_map, file="book_map_new.txt", row.names=F, col.names=T, sep="\t
 
 ``` {r label='data-table-sum'}
 library(data.table)
-sample_stat <- data.table(sample)
-sample_stat <- sample_stat[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),by="CUSTOMER"]
-sample_stat
+sample_tab_data_frame <- data.table(sample_tab_data)
+sample_stats <- sample_tab_data_frame[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),by="CUSTOMER"]
+sample_stats
 ````
 
-这样在新的对象sample_stat里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载`data.table`这个包，然后利用`data.table()`函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如
+这样在新的对象sample_stats里面，就有了每个顾客购买书籍的总本书、以及不同图书的数量。简单的说，需要使用这样的分类统计的时候，就是先加载`data.table`这个包，然后利用`data.table()`函数转换一个data.frame为data.table格式，然后在原有的data.frame行、列操作基础上，增加了一个by参数，可以用来指定分类的依据。当然这里我们可以同时针对多个变量及其组合分类统计，比如
 
 ``` {r label='data-table-by-group'}
 library(data.table)
-sample_stat_by_day <- data.table(sample)
-sample_stat_by_day <- sample_stat_by_day[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),                       by=c("CUSTOMER","RECORD_DAY")]
-sample_stat
+sample_stat_by_day <- sample_tab_data_frame[,list(Amount=sum(AMOUNT),Book=length(unique(BOOK_ID))),                       by=c("CUSTOMER","RECORD_DAY")]
+sample_stat_by_day
 ````
 
 这样返回的就是逐日统计的每位顾客的购买数量了。值得多说的是，`sum()`函数代表求和，`length()`函数代表计数，而`unique()`函数则是去掉重复值。
@@ -608,9 +608,9 @@ sample_stat
 循环和判断是基本的逻辑操作语句。在R中，大部分常用功能都已经有现成的函数，所以极少用到循环，我们也非常不提倡在R里面写循环（效率一般很低，因为一个循环背后往往是现有函数内部的许多层循环）。有的时候，为了一些特殊的情况，知道怎么写循环还是有用的。比如，我们希望把统计好的顾客购买记录按照顾客ID写入不同的文本文件，这里就需要用到for循环或者while循环。
 
 ``` {r label='loops'}
-for (i in 1:nrow(sample_stat)) 
-{file_name <- paste("data/result_",sample_stat[i,]$CUSTOMER,"_record.txt",sep="")  
-write.table(sample_stat[i,],file=file_name,sep="\t",row.names=F, col.names=T, quote= F)    
+for (i in 1:nrow(sample_stats)) 
+{file_name <- paste("data/result_",sample_stats[i,]$CUSTOMER,"_record.txt",sep="")  
+ write.table(sample_stats[i,],file=file_name,sep="\t",row.names=F, col.names=T, quote= F)    
 }
 ````
 
